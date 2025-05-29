@@ -37,7 +37,7 @@ dev = [
 
 [project.scripts]
 run_websocket_server = "nn_websocket.main:run"
-run_mock_client = "nn_websocket.mock_client:run"
+run_mock_client = "nn_websocket.tools.mock_client:run"
 
 [project.urls]
 repository = "https://https://github.com/javidahmed64592/neural-network-websocket"
