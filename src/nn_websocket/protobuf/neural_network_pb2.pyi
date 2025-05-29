@@ -26,22 +26,21 @@ class _ActivationFunction:
 class _ActivationFunctionEnumTypeWrapper(google.protobuf.internal.enum_type_wrapper._EnumTypeWrapper[_ActivationFunction.ValueType], builtins.type):
     DESCRIPTOR: google.protobuf.descriptor.EnumDescriptor
     LINEAR: _ActivationFunction.ValueType  # 0
-    SIGMOID: _ActivationFunction.ValueType  # 1
-    RELU: _ActivationFunction.ValueType  # 2
-    TANH: _ActivationFunction.ValueType  # 3
+    RELU: _ActivationFunction.ValueType  # 1
+    SIGMOID: _ActivationFunction.ValueType  # 2
 
 class ActivationFunction(_ActivationFunction, metaclass=_ActivationFunctionEnumTypeWrapper): ...
 
 LINEAR: ActivationFunction.ValueType  # 0
-SIGMOID: ActivationFunction.ValueType  # 1
-RELU: ActivationFunction.ValueType  # 2
-TANH: ActivationFunction.ValueType  # 3
+RELU: ActivationFunction.ValueType  # 1
+SIGMOID: ActivationFunction.ValueType  # 2
 global___ActivationFunction = ActivationFunction
 
 @typing.final
 class NeuralNetworkConfig(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
+    NUM_NETWORKS_FIELD_NUMBER: builtins.int
     NUM_INPUTS_FIELD_NUMBER: builtins.int
     NUM_OUTPUTS_FIELD_NUMBER: builtins.int
     HIDDEN_LAYER_SIZES_FIELD_NUMBER: builtins.int
@@ -52,6 +51,7 @@ class NeuralNetworkConfig(google.protobuf.message.Message):
     INPUT_ACTIVATION_FIELD_NUMBER: builtins.int
     HIDDEN_ACTIVATION_FIELD_NUMBER: builtins.int
     OUTPUT_ACTIVATION_FIELD_NUMBER: builtins.int
+    num_networks: builtins.int
     num_inputs: builtins.int
     num_outputs: builtins.int
     weights_min: builtins.float
@@ -66,6 +66,7 @@ class NeuralNetworkConfig(google.protobuf.message.Message):
     def __init__(
         self,
         *,
+        num_networks: builtins.int = ...,
         num_inputs: builtins.int = ...,
         num_outputs: builtins.int = ...,
         hidden_layer_sizes: collections.abc.Iterable[builtins.int] | None = ...,
@@ -77,25 +78,6 @@ class NeuralNetworkConfig(google.protobuf.message.Message):
         hidden_activation: global___ActivationFunction.ValueType = ...,
         output_activation: global___ActivationFunction.ValueType = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["bias_max", b"bias_max", "bias_min", b"bias_min", "hidden_activation", b"hidden_activation", "hidden_layer_sizes", b"hidden_layer_sizes", "input_activation", b"input_activation", "num_inputs", b"num_inputs", "num_outputs", b"num_outputs", "output_activation", b"output_activation", "weights_max", b"weights_max", "weights_min", b"weights_min"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["bias_max", b"bias_max", "bias_min", b"bias_min", "hidden_activation", b"hidden_activation", "hidden_layer_sizes", b"hidden_layer_sizes", "input_activation", b"input_activation", "num_inputs", b"num_inputs", "num_networks", b"num_networks", "num_outputs", b"num_outputs", "output_activation", b"output_activation", "weights_max", b"weights_max", "weights_min", b"weights_min"]) -> None: ...
 
 global___NeuralNetworkConfig = NeuralNetworkConfig
-
-@typing.final
-class NeuralNetworkBatchConfig(google.protobuf.message.Message):
-    DESCRIPTOR: google.protobuf.descriptor.Descriptor
-
-    NUM_NETWORKS_FIELD_NUMBER: builtins.int
-    NETWORK_CONFIGS_FIELD_NUMBER: builtins.int
-    num_networks: builtins.int
-    @property
-    def network_configs(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___NeuralNetworkConfig]: ...
-    def __init__(
-        self,
-        *,
-        num_networks: builtins.int = ...,
-        network_configs: collections.abc.Iterable[global___NeuralNetworkConfig] | None = ...,
-    ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["network_configs", b"network_configs", "num_networks", b"num_networks"]) -> None: ...
-
-global___NeuralNetworkBatchConfig = NeuralNetworkBatchConfig
