@@ -12,6 +12,22 @@ from nn_websocket.protobuf.proto_types import (
     ObservationData,
 )
 
+
+# Config fixtures
+@pytest.fixture
+def mock_config() -> Config:
+    """Fixture for Config object."""
+    return Config(host="localhost", port=8765)
+
+
+@pytest.fixture
+def mock_load_config(mock_config: Config) -> Generator[MagicMock, None, None]:
+    """Patch the load_config function to return the mock config."""
+    with patch("nn_websocket.models.config.Config.load_config") as mock_load_config:
+        mock_load_config.return_value = mock_config
+        yield mock_load_config
+
+
 # Protobuf fixtures
 # As an example, we will assume 10 agents with 5 inputs and 2 outputs each.
 MOCK_NUM_AGENTS = 10
@@ -59,17 +75,3 @@ def action_data() -> ActionData:
     return ActionData(
         outputs=np.arange(MOCK_NUM_OUTPUTS * MOCK_NUM_AGENTS, dtype=np.float32).tolist(),
     )
-
-
-@pytest.fixture
-def mock_config() -> Config:
-    """Fixture for Config object."""
-    return Config(host="localhost", port=8765)
-
-
-@pytest.fixture
-def mock_load_config(mock_config: Config) -> Generator[MagicMock, None, None]:
-    """Patch the load_config function to return the mock config."""
-    with patch("nn_websocket.main.load_config") as mock_load_config:
-        mock_load_config.return_value = mock_config
-        yield mock_load_config

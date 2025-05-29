@@ -1,35 +1,17 @@
 import asyncio
-import json
-from unittest.mock import AsyncMock, MagicMock, mock_open, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from nn_websocket.main import (
     configure_neural_networks,
     handle_connection,
-    load_config,
     main,
     process_observations,
     run,
 )
 from nn_websocket.models.config import Config
 from nn_websocket.protobuf.proto_types import ActionData, NeuralNetworkConfigData, ObservationData
-
-
-class TestLoadConfig:
-    def test_load_config(self) -> None:
-        """Test that the configuration is loaded correctly from a file."""
-        mock_host = "test_host"
-        mock_port = 9999
-        mock_config = {"host": mock_host, "port": mock_port}
-
-        # Use builtins.open rather than trying to patch Path.open
-        with patch("pathlib.Path.open", mock_open(read_data=json.dumps(mock_config))):
-            config = load_config()
-
-            assert isinstance(config, Config)
-            assert config.host == mock_host
-            assert config.port == mock_port
 
 
 class TestConfigureNeuralNetworks:
@@ -116,8 +98,7 @@ class TestMain:
             mock_serve.return_value.__aenter__.return_value = None
             mock_serve.return_value.__aexit__.return_value = None
 
-            # Create a real Future object that can be awaited
-            future = asyncio.Future()
+            future: asyncio.Future = asyncio.Future()
             future.set_result(None)
 
             with patch("asyncio.Future", return_value=future):
