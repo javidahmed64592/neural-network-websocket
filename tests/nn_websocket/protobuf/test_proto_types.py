@@ -2,10 +2,18 @@ import pytest
 from google.protobuf.message import DecodeError
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation
 
-from nn_websocket.protobuf.neural_network_pb2 import ActivationFunction
-from nn_websocket.protobuf.proto_types import ActivationFunctionEnum, NeuralNetworkConfigData
+from nn_websocket.protobuf.compiled.neural_network_pb2 import ActivationFunction
+from nn_websocket.protobuf.proto_types import (
+    ActivationFunctionEnum,
+    NeuralNetworkConfigData,
+    ObservationBatchData,
+    ObservationData,
+    OutputBatchData,
+    OutputData,
+)
 
 
+# neural_network.proto
 class TestNeuralNetworkConfigData:
     def test_to_bytes(self) -> None:
         config_data = NeuralNetworkConfigData(
@@ -82,3 +90,108 @@ class TestActivationFunctionEnum:
 
             assert converted_enum == enum_value
             assert converted_enum.get_class() == enum_value.get_class()
+
+
+# frame_data.proto
+class TestObservationData:
+    def test_to_bytes(self) -> None:
+        observation_data = ObservationData(agent_id=1, inputs=[0.1, 0.2, 0.3])
+
+        assert isinstance(ObservationData.to_bytes(observation_data), bytes)
+
+    def test_from_bytes(self) -> None:
+        observation_data = ObservationData(agent_id=1, inputs=[0.1, 0.2, 0.3])
+
+        msg_bytes = ObservationData.to_bytes(observation_data)
+        result = ObservationData.from_bytes(msg_bytes)
+
+        assert result.agent_id == observation_data.agent_id
+        assert result.inputs == pytest.approx(observation_data.inputs)
+
+    def test_from_bytes_invalid(self) -> None:
+        with pytest.raises(DecodeError):
+            ObservationData.from_bytes(b"invalid data")
+
+
+class TestObservationBatchData:
+    def test_to_bytes(self) -> None:
+        observation_batch_data = ObservationBatchData(
+            observations=[
+                ObservationData(agent_id=1, inputs=[0.1, 0.2, 0.3]),
+                ObservationData(agent_id=2, inputs=[0.4, 0.5, 0.6]),
+            ]
+        )
+
+        assert isinstance(ObservationBatchData.to_bytes(observation_batch_data), bytes)
+
+    def test_from_bytes(self) -> None:
+        observation_batch_data = ObservationBatchData(
+            observations=[
+                ObservationData(agent_id=1, inputs=[0.1, 0.2, 0.3]),
+                ObservationData(agent_id=2, inputs=[0.4, 0.5, 0.6]),
+            ]
+        )
+
+        msg_bytes = ObservationBatchData.to_bytes(observation_batch_data)
+        result = ObservationBatchData.from_bytes(msg_bytes)
+
+        assert len(result.observations) == len(observation_batch_data.observations)
+        for orig, new in zip(observation_batch_data.observations, result.observations, strict=False):
+            assert orig.agent_id == new.agent_id
+            assert orig.inputs == pytest.approx(new.inputs)
+
+    def test_from_bytes_invalid(self) -> None:
+        with pytest.raises(DecodeError):
+            ObservationBatchData.from_bytes(b"invalid data")
+
+
+class TestOutputData:
+    def test_to_bytes(self) -> None:
+        output_data = OutputData(agent_id=1, actions=[0.1, 0.2, 0.3])
+
+        assert isinstance(OutputData.to_bytes(output_data), bytes)
+
+    def test_from_bytes(self) -> None:
+        output_data = OutputData(agent_id=1, actions=[0.1, 0.2, 0.3])
+
+        msg_bytes = OutputData.to_bytes(output_data)
+        result = OutputData.from_bytes(msg_bytes)
+
+        assert result.agent_id == output_data.agent_id
+        assert result.actions == pytest.approx(output_data.actions)
+
+    def test_from_bytes_invalid(self) -> None:
+        with pytest.raises(DecodeError):
+            OutputData.from_bytes(b"invalid data")
+
+
+class TestOutputBatchData:
+    def test_to_bytes(self) -> None:
+        output_batch_data = OutputBatchData(
+            outputs=[
+                OutputData(agent_id=1, actions=[0.1, 0.2, 0.3]),
+                OutputData(agent_id=2, actions=[0.4, 0.5, 0.6]),
+            ]
+        )
+
+        assert isinstance(OutputBatchData.to_bytes(output_batch_data), bytes)
+
+    def test_from_bytes(self) -> None:
+        output_batch_data = OutputBatchData(
+            outputs=[
+                OutputData(agent_id=1, actions=[0.1, 0.2, 0.3]),
+                OutputData(agent_id=2, actions=[0.4, 0.5, 0.6]),
+            ]
+        )
+
+        msg_bytes = OutputBatchData.to_bytes(output_batch_data)
+        result = OutputBatchData.from_bytes(msg_bytes)
+
+        assert len(result.outputs) == len(output_batch_data.outputs)
+        for orig, new in zip(output_batch_data.outputs, result.outputs, strict=False):
+            assert orig.agent_id == new.agent_id
+            assert orig.actions == pytest.approx(new.actions)
+
+    def test_from_bytes_invalid(self) -> None:
+        with pytest.raises(DecodeError):
+            OutputBatchData.from_bytes(b"invalid data")
