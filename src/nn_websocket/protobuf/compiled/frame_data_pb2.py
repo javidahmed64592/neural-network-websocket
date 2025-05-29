@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x66rame_data.proto\x12\x0cnn_websocket\"/\n\x0bObservation\x12\x10\n\x08\x61gent_id\x18\x01 \x01(\x05\x12\x0e\n\x06inputs\x18\x02 \x03(\x02\"C\n\x10ObservationBatch\x12/\n\x0cobservations\x18\x01 \x03(\x0b\x32\x19.nn_websocket.Observation\"+\n\x06Output\x12\x10\n\x08\x61gent_id\x18\x01 \x01(\x05\x12\x0f\n\x07\x61\x63tions\x18\x02 \x03(\x02\"4\n\x0bOutputBatch\x12%\n\x07outputs\x18\x01 \x03(\x0b\x32\x14.nn_websocket.Outputb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x66rame_data.proto\x12\x0cnn_websocket\"\x1d\n\x0bObservation\x12\x0e\n\x06inputs\x18\x02 \x03(\x02\"\x19\n\x06\x41\x63tion\x12\x0f\n\x07outputs\x18\x02 \x03(\x02\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,11 +32,7 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'frame_data_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_OBSERVATION']._serialized_start=34
-  _globals['_OBSERVATION']._serialized_end=81
-  _globals['_OBSERVATIONBATCH']._serialized_start=83
-  _globals['_OBSERVATIONBATCH']._serialized_end=150
-  _globals['_OUTPUT']._serialized_start=152
-  _globals['_OUTPUT']._serialized_end=195
-  _globals['_OUTPUTBATCH']._serialized_start=197
-  _globals['_OUTPUTBATCH']._serialized_end=249
+  _globals['_OBSERVATION']._serialized_end=63
+  _globals['_ACTION']._serialized_start=65
+  _globals['_ACTION']._serialized_end=90
 # @@protoc_insertion_point(module_scope)

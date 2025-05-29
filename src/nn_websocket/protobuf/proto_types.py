@@ -5,7 +5,7 @@ from enum import IntEnum
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation
 from pydantic.dataclasses import dataclass
 
-from nn_websocket.protobuf.compiled.frame_data_pb2 import Observation, ObservationBatch, Output, OutputBatch
+from nn_websocket.protobuf.compiled.frame_data_pb2 import Action, Observation
 from nn_websocket.protobuf.compiled.neural_network_pb2 import ActivationFunction, NeuralNetworkConfig
 
 
@@ -95,7 +95,6 @@ class ActivationFunctionEnum(IntEnum):
 class ObservationData:
     """Data class to hold observation data."""
 
-    agent_id: int
     inputs: list[float]
 
     @classmethod
@@ -104,82 +103,31 @@ class ObservationData:
         observation = Observation()
         observation.ParseFromString(data)
 
-        return cls(agent_id=observation.agent_id, inputs=list(observation.inputs))
+        return cls(inputs=list(observation.inputs))
 
     @staticmethod
     def to_bytes(observation_data: ObservationData) -> bytes:
         """Converts ObservationData to Protobuf bytes."""
-        observation = Observation(agent_id=observation_data.agent_id, inputs=observation_data.inputs)
+        observation = Observation(inputs=observation_data.inputs)
         return observation.SerializeToString()
 
 
 @dataclass
-class ObservationBatchData:
-    """Data class to hold a batch of observation data."""
+class ActionData:
+    """Data class to hold action data."""
 
-    observations: list[ObservationData]
-
-    @classmethod
-    def from_bytes(cls, data: bytes) -> ObservationBatchData:
-        """Creates an ObservationBatchData instance from Protobuf bytes."""
-        observation_batch = ObservationBatch()
-        observation_batch.ParseFromString(data)
-
-        return cls(
-            observations=[ObservationData.from_bytes(obs.SerializeToString()) for obs in observation_batch.observations]
-        )
-
-    @staticmethod
-    def to_bytes(observation_batch_data: ObservationBatchData) -> bytes:
-        """Converts ObservationBatchData to Protobuf bytes."""
-        observation_batch = ObservationBatch(
-            observations=[
-                Observation().FromString(ObservationData.to_bytes(obs)) for obs in observation_batch_data.observations
-            ]
-        )
-        return observation_batch.SerializeToString()
-
-
-@dataclass
-class OutputData:
-    """Data class to hold output data."""
-
-    agent_id: int
-    actions: list[float]
+    outputs: list[float]
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> OutputData:
-        """Creates an OutputData instance from Protobuf bytes."""
-        output = Output()
-        output.ParseFromString(data)
+    def from_bytes(cls, data: bytes) -> ActionData:
+        """Creates an ActionData instance from Protobuf bytes."""
+        action = Action()
+        action.ParseFromString(data)
 
-        return cls(agent_id=output.agent_id, actions=list(output.actions))
-
-    @staticmethod
-    def to_bytes(output_data: OutputData) -> bytes:
-        """Converts OutputData to Protobuf bytes."""
-        output = Output(agent_id=output_data.agent_id, actions=output_data.actions)
-        return output.SerializeToString()
-
-
-@dataclass
-class OutputBatchData:
-    """Data class to hold a batch of output data."""
-
-    outputs: list[OutputData]
-
-    @classmethod
-    def from_bytes(cls, data: bytes) -> OutputBatchData:
-        """Creates an OutputBatchData instance from Protobuf bytes."""
-        output_batch = OutputBatch()
-        output_batch.ParseFromString(data)
-
-        return cls(outputs=[OutputData.from_bytes(out.SerializeToString()) for out in output_batch.outputs])
+        return cls(outputs=list(action.outputs))
 
     @staticmethod
-    def to_bytes(output_batch_data: OutputBatchData) -> bytes:
-        """Converts OutputBatchData to Protobuf bytes."""
-        output_batch = OutputBatch(
-            outputs=[Output().FromString(OutputData.to_bytes(out)) for out in output_batch_data.outputs]
-        )
-        return output_batch.SerializeToString()
+    def to_bytes(action_data: ActionData) -> bytes:
+        """Converts ActionData to Protobuf bytes."""
+        action = Action(outputs=action_data.outputs)
+        return action.SerializeToString()
