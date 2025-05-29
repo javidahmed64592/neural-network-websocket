@@ -15,6 +15,12 @@ logger = logging.getLogger(__name__)
 neural_network_suite = NeuralNetworkSuite()
 
 
+def load_config() -> Config:
+    with CONFIG_FILEPATH.open() as f:
+        config_dict = json.load(f)
+    return Config(**config_dict)
+
+
 async def handle_connection(websocket: websockets.ServerConnection) -> None:
     num_messages = 0
     async for message in websocket:
@@ -44,9 +50,7 @@ async def process_observations(websocket: websockets.ServerConnection, message: 
 
 
 async def main() -> None:
-    with CONFIG_FILEPATH.open() as f:
-        config_dict = json.load(f)
-    config = Config(**config_dict)
+    config = load_config()
 
     async with websockets.serve(handle_connection, config.host, config.port):
         logger.info("Neural network websocket server running on %s:%s", config.host, config.port)

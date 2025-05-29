@@ -1,6 +1,10 @@
+from collections.abc import Generator
+from unittest.mock import MagicMock, patch
+
 import numpy as np
 import pytest
 
+from nn_websocket.models.config import Config
 from nn_websocket.protobuf.proto_types import (
     ActionData,
     ActivationFunctionEnum,
@@ -55,3 +59,17 @@ def action_data() -> ActionData:
     return ActionData(
         outputs=np.arange(MOCK_NUM_OUTPUTS * MOCK_NUM_AGENTS, dtype=np.float32).tolist(),
     )
+
+
+@pytest.fixture
+def mock_config() -> Config:
+    """Fixture for Config object."""
+    return Config(host="localhost", port=8765)
+
+
+@pytest.fixture
+def mock_load_config(mock_config: Config) -> Generator[MagicMock, None, None]:
+    """Patch the load_config function to return the mock config."""
+    with patch("nn_websocket.main.load_config") as mock_load_config:
+        mock_load_config.return_value = mock_config
+        yield mock_load_config
