@@ -20,18 +20,22 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
-    "numpy",
+    "pydantic",
+    "websockets",
+    "neural-network@git+https://github.com/javidahmed64592/neural-network",
 ]
 
 [project.optional-dependencies]
 dev = [
     "ruff",
     "mypy",
-    "mypy-protobuf",
     "pytest",
     "pytest-cov",
     "tomli",
 ]
+
+[project.scripts]
+run_websocket = "nn_websocket.main:run"
 
 [project.urls]
 repository = "https://https://github.com/javidahmed64592/neural-network-websocket"
@@ -78,7 +82,7 @@ exclude = [
 ]
 
 extend-exclude = [
-    "src/nn_websocket/protobuf",
+    "src/nn_websocket/protobuf/compiled",
 ]
 
 [tool.ruff.lint]
@@ -141,5 +145,6 @@ pretty = true
 [[tool.mypy.overrides]]
 module = [
     "numpy.*",
+    "neural_network.*"
 ]
 ignore_missing_imports = true
