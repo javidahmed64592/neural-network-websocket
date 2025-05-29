@@ -24,19 +24,19 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x66rame_data.proto\"6\n\x10ObservationBatch\x12\"\n\x0cobservations\x18\x01 \x03(\x0b\x32\x0c.Observation\"/\n\x0bObservation\x12\x10\n\x08\x61gent_id\x18\x01 \x01(\x05\x12\x0e\n\x06inputs\x18\x02 \x03(\x02\"\'\n\x0bOutputBatch\x12\x18\n\x07outputs\x18\x01 \x03(\x0b\x32\x07.Output\"+\n\x06Output\x12\x10\n\x08\x61gent_id\x18\x01 \x01(\x05\x12\x0f\n\x07\x61\x63tions\x18\x02 \x03(\x02\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x66rame_data.proto\x12\x0cnn_websocket\"C\n\x10ObservationBatch\x12/\n\x0cobservations\x18\x01 \x03(\x0b\x32\x19.nn_websocket.Observation\"/\n\x0bObservation\x12\x10\n\x08\x61gent_id\x18\x01 \x01(\x05\x12\x0e\n\x06inputs\x18\x02 \x03(\x02\"4\n\x0bOutputBatch\x12%\n\x07outputs\x18\x01 \x03(\x0b\x32\x14.nn_websocket.Output\"+\n\x06Output\x12\x10\n\x08\x61gent_id\x18\x01 \x01(\x05\x12\x0f\n\x07\x61\x63tions\x18\x02 \x03(\x02\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'frame_data_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_OBSERVATIONBATCH']._serialized_start=20
-  _globals['_OBSERVATIONBATCH']._serialized_end=74
-  _globals['_OBSERVATION']._serialized_start=76
-  _globals['_OBSERVATION']._serialized_end=123
-  _globals['_OUTPUTBATCH']._serialized_start=125
-  _globals['_OUTPUTBATCH']._serialized_end=164
-  _globals['_OUTPUT']._serialized_start=166
-  _globals['_OUTPUT']._serialized_end=209
+  _globals['_OBSERVATIONBATCH']._serialized_start=34
+  _globals['_OBSERVATIONBATCH']._serialized_end=101
+  _globals['_OBSERVATION']._serialized_start=103
+  _globals['_OBSERVATION']._serialized_end=150
+  _globals['_OUTPUTBATCH']._serialized_start=152
+  _globals['_OUTPUTBATCH']._serialized_end=204
+  _globals['_OUTPUT']._serialized_start=206
+  _globals['_OUTPUT']._serialized_end=249
 # @@protoc_insertion_point(module_scope)

@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package nn_websocket;
+
 message NeuralNetworkConfig {
     int32 num_networks = 1;
     int32 num_inputs = 2;

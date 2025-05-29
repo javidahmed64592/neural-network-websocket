@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package nn_websocket;
+
 message ObservationBatch {
     repeated Observation observations = 1;
 }
