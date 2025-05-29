@@ -53,25 +53,26 @@ class NeuralNetworkSuite:
         self.set_networks(config_data)
 
     @staticmethod
-    def feedforward_through_network(nn: NeuralNetwork, observation: NDArray) -> ActionData:
+    def feedforward_through_network(nn: NeuralNetwork, observation: NDArray) -> NDArray:
         """Feedforward through the neural network and return the action data."""
-        outputs = nn.feedforward(observation)
-        return ActionData(outputs=outputs)
+        return nn.feedforward(observation)
 
-    def feedforward_through_networks(self, observation_data: ObservationData) -> list[ActionData]:
+    def feedforward_through_networks(self, observation_data: ObservationData) -> ActionData:
         """Feedforward through all networks and return a list of action data."""
         observations = np.reshape(
             observation_data.inputs,
             (len(self.networks), -1),
         )
 
-        action_data_list = []
-        for i, network in enumerate(self.networks):
-            action_data = NeuralNetworkSuite.feedforward_through_network(network, observations[i])
-            action_data_list.append(action_data)
-        return action_data_list
+        actions = np.array(
+            [
+                NeuralNetworkSuite.feedforward_through_network(network, observations[i])
+                for i, network in enumerate(self.networks)
+            ]
+        )
+        return ActionData(outputs=actions.flatten())
 
-    def feedforward_through_networks_from_bytes(self, observation_data_bytes: bytes) -> list[ActionData]:
+    def feedforward_through_networks_from_bytes(self, observation_data_bytes: bytes) -> ActionData:
         """Feedforward through all networks from bytes representation of observation data."""
         observation_data = ObservationData.from_bytes(observation_data_bytes)
         return self.feedforward_through_networks(observation_data)
