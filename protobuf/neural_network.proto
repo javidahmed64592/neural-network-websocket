@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+message NeuralNetworkConfig {
+    int32 num_inputs = 1;
+    int32 num_outputs = 2;
+    repeated int32 hidden_layer_sizes = 3;
+    float weights_min = 4;
+    float weights_max = 5;
+    float bias_min = 6;
+    float bias_max = 7;
+    ActivationFunction input_activation = 8;
+    ActivationFunction hidden_activation = 9;
+    ActivationFunction output_activation = 10;
+}
+
+enum ActivationFunction {
+    LINEAR = 0;
+    SIGMOID = 1;
+    RELU = 2;
+    TANH = 3;
+}
+
+message NeuralNetworkBatchConfig {
+    int32 num_networks = 1;
+    repeated NeuralNetworkConfig network_configs = 2;
+}

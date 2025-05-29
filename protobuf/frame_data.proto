@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+message ObservationBatch {
+    repeated Observation observations = 1;
+}
+
+message Observation {
+    int32 agent_id = 1;
+    repeated float inputs = 2;
+}
+
+message OutputBatch {
+    repeated Output outputs = 1;
+}
+
+message Output {
+    int32 agent_id = 1;
+    repeated float actions = 2;
+}
