@@ -1,5 +1,9 @@
+import numpy as np
+
 from nn_websocket.models.nn_suite import NeuralNetworkSuite
-from nn_websocket.protobuf.proto_types import NeuralNetworkConfigData
+from nn_websocket.protobuf.proto_types import NeuralNetworkConfigData, ObservationData
+
+rng = np.random.default_rng()
 
 
 class TestNeuralNetworkSuite:
@@ -29,3 +33,25 @@ class TestNeuralNetworkSuite:
                 and layer._bias_range == (nn_config_data.bias_min, nn_config_data.bias_max)
                 for layer in network.layers[1:]
             )
+
+    def test_feedforward_through_network(self, nn_config_data: NeuralNetworkConfigData) -> None:
+        suite = NeuralNetworkSuite()
+        suite.set_networks(nn_config_data)
+
+        observation_data = rng.random(nn_config_data.num_inputs)
+
+        for network in suite.networks:
+            action_data = suite.feedforward_through_network(network, observation_data)
+            assert len(action_data.outputs) == nn_config_data.num_outputs
+
+    def test_feedforward_through_networks(
+        self, nn_config_data: NeuralNetworkConfigData, observation_data: ObservationData
+    ) -> None:
+        suite = NeuralNetworkSuite()
+        suite.set_networks(nn_config_data)
+
+        action_data_list = suite.feedforward_through_networks(observation_data)
+
+        assert len(action_data_list) == nn_config_data.num_networks
+        for action_data in action_data_list:
+            assert len(action_data.outputs) == nn_config_data.num_outputs
