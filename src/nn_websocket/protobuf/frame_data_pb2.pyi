@@ -6,12 +6,6 @@ from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class ObservationBatch(_message.Message):
-    __slots__ = ("observations",)
-    OBSERVATIONS_FIELD_NUMBER: _ClassVar[int]
-    observations: _containers.RepeatedCompositeFieldContainer[Observation]
-    def __init__(self, observations: _Optional[_Iterable[_Union[Observation, _Mapping]]] = ...) -> None: ...
-
 class Observation(_message.Message):
     __slots__ = ("agent_id", "inputs")
     AGENT_ID_FIELD_NUMBER: _ClassVar[int]
@@ -20,11 +14,11 @@ class Observation(_message.Message):
     inputs: _containers.RepeatedScalarFieldContainer[float]
     def __init__(self, agent_id: _Optional[int] = ..., inputs: _Optional[_Iterable[float]] = ...) -> None: ...
 
-class OutputBatch(_message.Message):
-    __slots__ = ("outputs",)
-    OUTPUTS_FIELD_NUMBER: _ClassVar[int]
-    outputs: _containers.RepeatedCompositeFieldContainer[Output]
-    def __init__(self, outputs: _Optional[_Iterable[_Union[Output, _Mapping]]] = ...) -> None: ...
+class ObservationBatch(_message.Message):
+    __slots__ = ("observations",)
+    OBSERVATIONS_FIELD_NUMBER: _ClassVar[int]
+    observations: _containers.RepeatedCompositeFieldContainer[Observation]
+    def __init__(self, observations: _Optional[_Iterable[_Union[Observation, _Mapping]]] = ...) -> None: ...
 
 class Output(_message.Message):
     __slots__ = ("agent_id", "actions")
@@ -33,3 +27,9 @@ class Output(_message.Message):
     agent_id: int
     actions: _containers.RepeatedScalarFieldContainer[float]
     def __init__(self, agent_id: _Optional[int] = ..., actions: _Optional[_Iterable[float]] = ...) -> None: ...
+
+class OutputBatch(_message.Message):
+    __slots__ = ("outputs",)
+    OUTPUTS_FIELD_NUMBER: _ClassVar[int]
+    outputs: _containers.RepeatedCompositeFieldContainer[Output]
+    def __init__(self, outputs: _Optional[_Iterable[_Union[Output, _Mapping]]] = ...) -> None: ...
