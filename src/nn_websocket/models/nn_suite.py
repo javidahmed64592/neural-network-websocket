@@ -5,7 +5,6 @@ from numpy.typing import NDArray
 
 from nn_websocket.protobuf.proto_types import (
     ActionData,
-    ActivationFunctionEnum,
     NeuralNetworkConfigData,
     ObservationData,
 )
@@ -48,6 +47,11 @@ class NeuralNetworkSuite:
             network = NeuralNetwork.from_layers(layers=[input_layer, *hidden_layers, output_layer])
             self.networks.append(network)
 
+    def set_networks_from_bytes(self, config_data_bytes: bytes) -> None:
+        """Set the neural networks from a bytes representation of the configuration data."""
+        config_data = NeuralNetworkConfigData.from_bytes(config_data_bytes)
+        self.set_networks(config_data)
+
     @staticmethod
     def feedforward_through_network(nn: NeuralNetwork, observation: NDArray) -> ActionData:
         """Feedforward through the neural network and return the action data."""
@@ -66,3 +70,8 @@ class NeuralNetworkSuite:
             action_data = NeuralNetworkSuite.feedforward_through_network(network, observations[i])
             action_data_list.append(action_data)
         return action_data_list
+
+    def feedforward_through_networks_from_bytes(self, observation_data_bytes: bytes) -> list[ActionData]:
+        """Feedforward through all networks from bytes representation of observation data."""
+        observation_data = ObservationData.from_bytes(observation_data_bytes)
+        return self.feedforward_through_networks(observation_data)
