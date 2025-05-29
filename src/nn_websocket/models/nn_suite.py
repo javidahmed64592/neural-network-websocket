@@ -1,3 +1,5 @@
+from typing import cast
+
 import numpy as np
 from neural_network.layer import HiddenLayer, InputLayer, OutputLayer
 from neural_network.neural_network import NeuralNetwork
@@ -53,9 +55,9 @@ class NeuralNetworkSuite:
         self.set_networks(config_data)
 
     @staticmethod
-    def feedforward_through_network(nn: NeuralNetwork, observation: NDArray) -> NDArray:
+    def feedforward_through_network(nn: NeuralNetwork, observation: NDArray) -> list[float]:
         """Feedforward through the neural network and return the action data."""
-        return nn.feedforward(observation)
+        return cast(list[float], nn.feedforward(observation))
 
     def feedforward_through_networks(self, observation_data: ObservationData) -> ActionData:
         """Feedforward through all networks and return a list of action data."""
@@ -68,9 +70,9 @@ class NeuralNetworkSuite:
             [
                 NeuralNetworkSuite.feedforward_through_network(network, observations[i])
                 for i, network in enumerate(self.networks)
-            ]
+            ],
         )
-        return ActionData(outputs=actions.flatten())
+        return ActionData(outputs=actions.flatten().tolist())
 
     def feedforward_through_networks_from_bytes(self, observation_data_bytes: bytes) -> ActionData:
         """Feedforward through all networks from bytes representation of observation data."""
