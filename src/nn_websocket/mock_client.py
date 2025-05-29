@@ -17,9 +17,7 @@ rng = np.random.default_rng()
 
 # Load websocket config from JSON file (same as main.py)
 CONFIG_FILEPATH = Path("config") / "websocket_config.json"
-with CONFIG_FILEPATH.open() as f:
-    config_dict = json.load(f)
-config = Config(**config_dict)
+config = Config.load_config(CONFIG_FILEPATH)
 SERVER_URI = f"ws://{config.host}:{config.port}"
 
 # Configuration for the mock client
