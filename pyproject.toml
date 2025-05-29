@@ -5,9 +5,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "template-python"
+name = "neural-network-websocket"
 version = "0.1.0"
-description = "An example pyproject.toml."
+description = "A Python websocket application to communicate with NeuralNetwork package."
 readme = "README.md"
 requires-python = ">=3.12"
 license = { file = "LICENSE" }
@@ -27,13 +27,14 @@ dependencies = [
 dev = [
     "ruff",
     "mypy",
+    "mypy-protobuf",
     "pytest",
     "pytest-cov",
     "tomli",
 ]
 
 [project.urls]
-repository = "https://github.com/javidahmed64592/template-python"
+repository = "https://https://github.com/javidahmed64592/neural-network-websocket"
 
 [tool.pytest.ini_options]
 addopts = [
@@ -74,6 +75,10 @@ exclude = [
     "node_modules",
     "site-packages",
     "venv",
+]
+
+extend-exclude = [
+    "src/nn_websocket/protobuf",
 ]
 
 [tool.ruff.lint]
