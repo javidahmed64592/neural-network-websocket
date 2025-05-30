@@ -20,6 +20,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
+    "protobuf",
     "pydantic",
     "websockets",
     "neural-network@git+https://github.com/javidahmed64592/neural-network",
@@ -146,6 +147,7 @@ pretty = true
 
 [[tool.mypy.overrides]]
 module = [
+    "google.*",
     "numpy.*",
     "neural_network.*"
 ]
