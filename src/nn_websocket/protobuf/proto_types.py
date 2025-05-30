@@ -6,8 +6,8 @@ from typing import cast
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation
 from pydantic.dataclasses import dataclass
 
-from nn_websocket.protobuf.compiled.frame_data_pb2 import Action, Observation
-from nn_websocket.protobuf.compiled.neural_network_pb2 import ActivationFunction, NeuralNetworkConfig
+from nn_websocket.protobuf.compiled.FrameData_pb2 import Action, Observation
+from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import ActivationFunction, NeuralNetworkConfig
 
 
 # neural_network.proto
