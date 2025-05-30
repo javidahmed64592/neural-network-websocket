@@ -2,7 +2,7 @@ import pytest
 from google.protobuf.message import DecodeError
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation
 
-from nn_websocket.protobuf.compiled.neural_network_pb2 import ActivationFunction
+from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import ActivationFunction
 from nn_websocket.protobuf.proto_types import (
     ActionData,
     ActivationFunctionEnum,
