@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from enum import IntEnum
+from typing import cast
 
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation
 from pydantic.dataclasses import dataclass
@@ -62,7 +63,7 @@ class NeuralNetworkConfigData:
             hidden_activation=ActivationFunctionEnum.to_protobuf(config_data.hidden_activation),
             output_activation=ActivationFunctionEnum.to_protobuf(config_data.output_activation),
         )
-        return config.SerializeToString()
+        return cast(bytes, config.SerializeToString())
 
 
 class ActivationFunctionEnum(IntEnum):
@@ -109,7 +110,7 @@ class ObservationData:
     def to_bytes(observation_data: ObservationData) -> bytes:
         """Converts ObservationData to Protobuf bytes."""
         observation = Observation(inputs=observation_data.inputs)
-        return observation.SerializeToString()
+        return cast(bytes, observation.SerializeToString())
 
 
 @dataclass
@@ -130,4 +131,4 @@ class ActionData:
     def to_bytes(action_data: ActionData) -> bytes:
         """Converts ActionData to Protobuf bytes."""
         action = Action(outputs=action_data.outputs)
-        return action.SerializeToString()
+        return cast(bytes, action.SerializeToString())
