@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package nn_websocket;
+
+message NeuralNetworkConfig {
+    int32 num_networks = 1;
+    int32 num_inputs = 2;
+    int32 num_outputs = 3;
+    repeated int32 hidden_layer_sizes = 4;
+    float weights_min = 5;
+    float weights_max = 6;
+    float bias_min = 7;
+    float bias_max = 8;
+    ActivationFunction input_activation = 9;
+    ActivationFunction hidden_activation = 10;
+    ActivationFunction output_activation = 11;
+}
+
+enum ActivationFunction {
+    LINEAR = 0;
+    RELU = 1;
+    SIGMOID = 2;
+}

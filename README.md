@@ -2,8 +2,8 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 <!-- omit from toc -->
-# Template Python Repository
-This repository can be used as a template for a Python application.
+# Neural Network Websocket
+A Python websocket application to communicate with NeuralNetwork package.
 
 <!-- omit from toc -->
 ## Table of Contents

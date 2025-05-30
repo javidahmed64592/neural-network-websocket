@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package nn_websocket;
+
+message Observation {
+    repeated float inputs = 2;
+}
+
+message Action {
+    repeated float outputs = 2;
+}

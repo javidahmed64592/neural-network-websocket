@@ -5,9 +5,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "template-python"
+name = "neural-network-websocket"
 version = "0.1.0"
-description = "An example pyproject.toml."
+description = "A Python websocket application to communicate with NeuralNetwork package."
 readme = "README.md"
 requires-python = ">=3.12"
 license = { file = "LICENSE" }
@@ -20,7 +20,10 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
-    "numpy",
+    "protobuf",
+    "pydantic",
+    "websockets",
+    "neural-network@git+https://github.com/javidahmed64592/neural-network",
 ]
 
 [project.optional-dependencies]
@@ -28,12 +31,17 @@ dev = [
     "ruff",
     "mypy",
     "pytest",
+    "pytest-asyncio",
     "pytest-cov",
     "tomli",
 ]
 
+[project.scripts]
+run_websocket_server = "nn_websocket.main:run"
+run_mock_client = "nn_websocket.tools.mock_client:run"
+
 [project.urls]
-repository = "https://github.com/javidahmed64592/template-python"
+repository = "https://https://github.com/javidahmed64592/neural-network-websocket"
 
 [tool.pytest.ini_options]
 addopts = [
@@ -74,6 +82,10 @@ exclude = [
     "node_modules",
     "site-packages",
     "venv",
+]
+
+extend-exclude = [
+    "src/nn_websocket/protobuf/compiled",
 ]
 
 [tool.ruff.lint]
@@ -135,6 +147,8 @@ pretty = true
 
 [[tool.mypy.overrides]]
 module = [
+    "google.*",
     "numpy.*",
+    "neural_network.*"
 ]
 ignore_missing_imports = true
