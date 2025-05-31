@@ -19,13 +19,21 @@ class NeuralNetworkWebsocketServer:
         self.config_filepath = config_filepath
         self.config = Config.load_config(self.config_filepath)
 
-    async def start(self) -> None:
-        async with websockets.serve(NeuralNetworkWebsocketServer.handle_connection, self.config.host, self.config.port):
-            logger.info("Neural network websocket server running on %s:%s", self.config.host, self.config.port)
-            await asyncio.Future()
+    @staticmethod
+    def configure_neural_networks(config: bytes) -> NeuralNetworkSuite:
+        logger.info("Configuring neural networks...")
+        return NeuralNetworkSuite.from_bytes(config)
 
-    def run(self) -> None:
-        asyncio.run(self.start())
+    @staticmethod
+    def crossover_neural_networks(
+        neural_network_suite: NeuralNetworkSuite, population_fitness: PopulationFitnessData
+    ) -> None:
+        logger.info("Crossover neural networks...")
+        neural_network_suite.crossover_networks(population_fitness)
+
+    @staticmethod
+    def process_observations(neural_network_suite: NeuralNetworkSuite, observation: ObservationData) -> ActionData:
+        return neural_network_suite.feedforward_through_networks(observation)
 
     @staticmethod
     async def handle_connection(websocket: websockets.ServerConnection) -> None:
@@ -45,21 +53,13 @@ class NeuralNetworkWebsocketServer:
                     actions = NeuralNetworkWebsocketServer.process_observations(neural_network_suite, observation)
                     await websocket.send(actions.to_bytes(actions))
 
-    @staticmethod
-    def configure_neural_networks(config: bytes) -> NeuralNetworkSuite:
-        logger.info("Configuring neural networks...")
-        return NeuralNetworkSuite.from_bytes(config)
+    async def start(self) -> None:
+        async with websockets.serve(NeuralNetworkWebsocketServer.handle_connection, self.config.host, self.config.port):
+            logger.info("Neural network websocket server running on %s:%s", self.config.host, self.config.port)
+            await asyncio.Future()
 
-    @staticmethod
-    def crossover_neural_networks(
-        neural_network_suite: NeuralNetworkSuite, population_fitness: PopulationFitnessData
-    ) -> None:
-        logger.info("Crossover neural networks...")
-        neural_network_suite.crossover_networks(population_fitness)
-
-    @staticmethod
-    def process_observations(neural_network_suite: NeuralNetworkSuite, observation: ObservationData) -> ActionData:
-        return neural_network_suite.feedforward_through_networks(observation)
+    def run(self) -> None:
+        asyncio.run(self.start())
 
 
 def run() -> None:
