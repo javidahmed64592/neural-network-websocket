@@ -3,11 +3,11 @@ option optimize_for = LITE_RUNTIME;
 package NNWebsocket;
 
 message Observation {
-    repeated float inputs = 2;
+    repeated float inputs = 1;
 }
 
 message Action {
-    repeated float outputs = 2;
+    repeated float outputs = 1;
 }
 
 message PopulationFitness {
