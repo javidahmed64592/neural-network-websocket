@@ -36,7 +36,6 @@ class TestMockClient:
                 assert isinstance(config_bytes, bytes)
                 # Verify we can decode it as a NeuralNetworkConfigData
                 decoded_config = NeuralNetworkConfigData.from_bytes(config_bytes)
-                assert decoded_config.num_networks > 0
                 assert decoded_config.num_inputs > 0
                 assert decoded_config.num_outputs > 0
 

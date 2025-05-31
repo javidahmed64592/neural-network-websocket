@@ -33,7 +33,6 @@ HIDDEN_ACTIVATION = ActivationFunctionEnum.RELU
 OUTPUT_ACTIVATION = ActivationFunctionEnum.LINEAR
 
 nn_config = NeuralNetworkConfigData(
-    num_networks=NUM_NETWORKS,
     num_inputs=NUM_INPUTS,
     num_outputs=NUM_OUTPUTS,
     hidden_layer_sizes=HIDDEN_LAYER_SIZES,
