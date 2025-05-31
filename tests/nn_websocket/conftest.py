@@ -78,7 +78,7 @@ def configuration_data(
 def population_fitness_data() -> PopulationFitnessData:
     """Fixture for PopulationFitnessData."""
     return PopulationFitnessData(
-        fitness=np.arange(MOCK_NUM_AGENTS).tolist(),
+        fitness=np.arange(MOCK_NUM_AGENTS, dtype=float).tolist(),
     )
 
 
@@ -187,7 +187,9 @@ def mock_crossover_neural_networks() -> Generator[MagicMock, None, None]:
 def mock_process_observations() -> Generator[MagicMock, None, None]:
     """Patch the process_observations function."""
     with patch("nn_websocket.main.NeuralNetworkWebsocketServer.process_observations") as mock_process:
-        mock_process.return_value = ActionData(outputs=np.arange(MOCK_NUM_OUTPUTS * MOCK_NUM_AGENTS).tolist())
+        mock_process.return_value = ActionData(
+            outputs=np.arange(MOCK_NUM_OUTPUTS * MOCK_NUM_AGENTS, dtype=float).tolist()
+        )
         yield mock_process
 
 

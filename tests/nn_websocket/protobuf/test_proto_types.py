@@ -99,8 +99,7 @@ class TestFrameRequestData:
         msg_bytes = FrameRequestData.to_bytes(frame_request_data_population)
         result = FrameRequestData.from_bytes(msg_bytes)
 
-        assert result.population_fitness is not None
-        assert result.observation is None
+        assert isinstance(result.population_fitness, PopulationFitnessData)
         assert result.population_fitness.fitness == pytest.approx(
             frame_request_data_population.population_fitness.fitness
         )
@@ -110,8 +109,7 @@ class TestFrameRequestData:
         msg_bytes = FrameRequestData.to_bytes(frame_request_data_observation)
         result = FrameRequestData.from_bytes(msg_bytes)
 
-        assert result.observation is not None
-        assert result.population_fitness is None
+        assert isinstance(result.observation, ObservationData)
         assert result.observation.inputs == pytest.approx(frame_request_data_observation.observation.inputs)
 
 

@@ -66,7 +66,7 @@ class NeuralNetworkGA(GeneticAlgorithm):
         Returns:
             int: Size of the population
         """
-        return self._population.size
+        return int(self._population.size)
 
     def set_population_fitness(self, fitness_scores: list[float]) -> None:
         """
@@ -78,7 +78,7 @@ class NeuralNetworkGA(GeneticAlgorithm):
         for member, score in zip(self.nn_members, fitness_scores, strict=False):
             member.fitness = score
 
-    def evolve(self, population_fitness: PopulationFitnessData):
+    def evolve(self, population_fitness: PopulationFitnessData) -> None:
         """
         Evolve the population based on the provided fitness data.
 
