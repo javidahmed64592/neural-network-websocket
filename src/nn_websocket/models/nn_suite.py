@@ -11,6 +11,7 @@ from nn_websocket.protobuf.proto_types import (
     ActionData,
     ConfigurationData,
     ObservationData,
+    PopulationFitnessData,
 )
 
 
@@ -56,6 +57,10 @@ class NeuralNetworkSuite:
         """
         config_data = ConfigurationData.from_bytes(config_data_bytes)
         return cls.from_config_data(config_data)
+
+    def crossover_networks(self, population_fitness: PopulationFitnessData) -> None:
+        """Perform crossover on the neural networks based on population fitness."""
+        self.nn_ga.evolve(population_fitness)
 
     @staticmethod
     def feedforward_through_network(nn: NeuralNetwork, observation: NDArray) -> list[float]:
