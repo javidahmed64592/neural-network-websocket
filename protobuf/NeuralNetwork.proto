@@ -2,6 +2,11 @@ syntax = "proto3";
 option optimize_for = LITE_RUNTIME;
 package NNWebsocket;
 
+message Configuration {
+    GeneticAlgorithmConfig genetic_algorithm = 1;
+    NeuralNetworkConfig neural_network = 2;
+}
+
 message GeneticAlgorithmConfig {
     int32 population_size = 1;
     float mutation_rate = 2;

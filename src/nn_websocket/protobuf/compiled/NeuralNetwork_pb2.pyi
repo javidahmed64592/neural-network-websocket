@@ -2,7 +2,7 @@ from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from collections.abc import Iterable as _Iterable
+from collections.abc import Iterable as _Iterable, Mapping as _Mapping
 from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
@@ -15,6 +15,14 @@ class ActivationFunction(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
 LINEAR: ActivationFunction
 RELU: ActivationFunction
 SIGMOID: ActivationFunction
+
+class Configuration(_message.Message):
+    __slots__ = ("genetic_algorithm", "neural_network")
+    GENETIC_ALGORITHM_FIELD_NUMBER: _ClassVar[int]
+    NEURAL_NETWORK_FIELD_NUMBER: _ClassVar[int]
+    genetic_algorithm: GeneticAlgorithmConfig
+    neural_network: NeuralNetworkConfig
+    def __init__(self, genetic_algorithm: _Optional[_Union[GeneticAlgorithmConfig, _Mapping]] = ..., neural_network: _Optional[_Union[NeuralNetworkConfig, _Mapping]] = ...) -> None: ...
 
 class GeneticAlgorithmConfig(_message.Message):
     __slots__ = ("population_size", "mutation_rate")
