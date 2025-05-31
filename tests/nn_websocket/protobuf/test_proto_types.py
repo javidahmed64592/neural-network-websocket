@@ -49,7 +49,7 @@ class TestGeneticAlgorithmConfigData:
     def test_to_bytes(self, ga_config_data: GeneticAlgorithmConfigData) -> None:
         assert isinstance(GeneticAlgorithmConfigData.to_bytes(ga_config_data), bytes)
 
-    def test_from_protobuf(self, ga_config_data: GeneticAlgorithmConfigData) -> None:
+    def test_from_bytes(self, ga_config_data: GeneticAlgorithmConfigData) -> None:
         msg_bytes = GeneticAlgorithmConfigData.to_bytes(ga_config_data)
         result = GeneticAlgorithmConfigData.from_bytes(msg_bytes)
 
@@ -65,7 +65,7 @@ class TestNeuralNetworkConfigData:
     def test_to_bytes(self, nn_config_data: NeuralNetworkConfigData) -> None:
         assert isinstance(NeuralNetworkConfigData.to_bytes(nn_config_data), bytes)
 
-    def test_from_protobuf(self, nn_config_data: NeuralNetworkConfigData) -> None:
+    def test_from_bytes(self, nn_config_data: NeuralNetworkConfigData) -> None:
         msg_bytes = NeuralNetworkConfigData.to_bytes(nn_config_data)
         result = NeuralNetworkConfigData.from_bytes(msg_bytes)
 
