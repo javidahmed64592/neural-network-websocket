@@ -96,6 +96,12 @@ class TestNeuralNetworkWebsocketServer:
 
 
 class TestRunFunction:
+    def test_run_success(self) -> None:
+        """Test that the run function executes without exceptions."""
+        with patch("asyncio.run") as mock_run:
+            run()
+            mock_run.assert_called_once()
+
     def test_run_keyboard_interrupt(self) -> None:
         """Test that KeyboardInterrupt is properly handled."""
         with patch("asyncio.run", side_effect=KeyboardInterrupt):
