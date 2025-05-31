@@ -1,4 +1,5 @@
 from collections.abc import Generator
+from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import numpy as np
@@ -21,7 +22,7 @@ from nn_websocket.protobuf.proto_types import (
 )
 
 # As an example, we will assume 10 agents with 5 inputs and 2 outputs each.
-MOCK_CONFIG_FILEPATH = "path/to/websocket_config.json"
+MOCK_CONFIG_FILEPATH = Path("path/to/websocket_config.json")
 MOCK_NUM_AGENTS = 10
 MOCK_MUTATION_RATE = 0.1
 MOCK_NUM_INPUTS = 5
