@@ -17,3 +17,9 @@ class Action(_message.Message):
     OUTPUTS_FIELD_NUMBER: _ClassVar[int]
     outputs: _containers.RepeatedScalarFieldContainer[float]
     def __init__(self, outputs: _Optional[_Iterable[float]] = ...) -> None: ...
+
+class PopulationFitness(_message.Message):
+    __slots__ = ("fitness",)
+    FITNESS_FIELD_NUMBER: _ClassVar[int]
+    fitness: _containers.RepeatedScalarFieldContainer[float]
+    def __init__(self, fitness: _Optional[_Iterable[float]] = ...) -> None: ...
