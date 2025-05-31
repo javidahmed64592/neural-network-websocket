@@ -35,6 +35,7 @@ dev = [
     "pytest-asyncio",
     "pytest-cov",
     "tomli",
+    "types-protobuf",
 ]
 
 [project.scripts]
