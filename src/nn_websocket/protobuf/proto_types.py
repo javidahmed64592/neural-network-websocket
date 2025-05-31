@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from enum import IntEnum
-from typing import cast
 
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation
 from pydantic.dataclasses import dataclass
@@ -50,7 +49,7 @@ class ConfigurationData:
     def to_bytes(config_data: ConfigurationData) -> bytes:
         """Converts ConfigurationData to Protobuf bytes."""
         config = ConfigurationData.to_protobuf(config_data)
-        return cast(bytes, config.SerializeToString())
+        return config.SerializeToString()
 
 
 @dataclass
@@ -87,7 +86,7 @@ class GeneticAlgorithmConfigData:
     def to_bytes(config_data: GeneticAlgorithmConfigData) -> bytes:
         """Converts GeneticAlgorithmConfigData to Protobuf bytes."""
         config = GeneticAlgorithmConfigData.to_protobuf(config_data)
-        return cast(bytes, config.SerializeToString())
+        return config.SerializeToString()
 
 
 @dataclass
@@ -148,7 +147,7 @@ class NeuralNetworkConfigData:
     def to_bytes(config_data: NeuralNetworkConfigData) -> bytes:
         """Converts NeuralNetworkConfigData to Protobuf bytes."""
         config = NeuralNetworkConfigData.to_protobuf(config_data)
-        return cast(bytes, config.SerializeToString())
+        return config.SerializeToString()
 
 
 class ActivationFunctionEnum(IntEnum):
@@ -213,7 +212,7 @@ class FrameRequestData:
         elif frame_request_data.observation is not None:
             frame_request.observation.CopyFrom(ObservationData.to_protobuf(frame_request_data.observation))
 
-        return cast(bytes, frame_request.SerializeToString())
+        return frame_request.SerializeToString()
 
 
 @dataclass
@@ -243,7 +242,7 @@ class PopulationFitnessData:
     def to_bytes(population_fitness_data: PopulationFitnessData) -> bytes:
         """Converts PopulationFitnessData to Protobuf bytes."""
         population_fitness = PopulationFitnessData.to_protobuf(population_fitness_data)
-        return cast(bytes, population_fitness.SerializeToString())
+        return population_fitness.SerializeToString()
 
 
 @dataclass
@@ -273,7 +272,7 @@ class ObservationData:
     def to_bytes(observation_data: ObservationData) -> bytes:
         """Converts ObservationData to Protobuf bytes."""
         observation = ObservationData.to_protobuf(observation_data)
-        return cast(bytes, observation.SerializeToString())
+        return observation.SerializeToString()
 
 
 @dataclass
@@ -303,4 +302,4 @@ class ActionData:
     def to_bytes(action_data: ActionData) -> bytes:
         """Converts ActionData to Protobuf bytes."""
         action = ActionData.to_protobuf(action_data)
-        return cast(bytes, action.SerializeToString())
+        return action.SerializeToString()
