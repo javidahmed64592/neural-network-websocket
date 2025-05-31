@@ -4,6 +4,8 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
+from nn_websocket.ga.nn_ga import NeuralNetworkGA
+from nn_websocket.ga.nn_member import NeuralNetworkMember
 from nn_websocket.models.config import Config
 from nn_websocket.protobuf.proto_types import (
     ActionData,
@@ -13,6 +15,20 @@ from nn_websocket.protobuf.proto_types import (
     ObservationData,
     PopulationFitnessData,
 )
+
+# As an example, we will assume 10 agents with 5 inputs and 2 outputs each.
+MOCK_NUM_AGENTS = 10
+MOCK_MUTATION_RATE = 0.1
+MOCK_NUM_INPUTS = 5
+MOCK_NUM_OUTPUTS = 2
+MOCK_HIDDEN_LAYER_SIZES = [4, 4]
+MOCK_WEIGHTS_MIN = -1.0
+MOCK_WEIGHTS_MAX = 1.0
+MOCK_BIAS_MIN = -1.0
+MOCK_BIAS_MAX = 1.0
+MOCK_INPUT_ACTIVATION = ActivationFunctionEnum.LINEAR
+MOCK_HIDDEN_ACTIVATION = ActivationFunctionEnum.RELU
+MOCK_OUTPUT_ACTIVATION = ActivationFunctionEnum.SIGMOID
 
 
 # Config fixtures
@@ -31,21 +47,6 @@ def mock_load_config(mock_config: Config) -> Generator[MagicMock, None, None]:
 
 
 # Protobuf fixtures
-# As an example, we will assume 10 agents with 5 inputs and 2 outputs each.
-MOCK_NUM_AGENTS = 10
-MOCK_MUTATION_RATE = 0.1
-MOCK_NUM_INPUTS = 5
-MOCK_NUM_OUTPUTS = 2
-MOCK_HIDDEN_LAYER_SIZES = [4, 4]
-MOCK_WEIGHTS_MIN = -1.0
-MOCK_WEIGHTS_MAX = 1.0
-MOCK_BIAS_MIN = -1.0
-MOCK_BIAS_MAX = 1.0
-MOCK_INPUT_ACTIVATION = ActivationFunctionEnum.LINEAR
-MOCK_HIDDEN_ACTIVATION = ActivationFunctionEnum.RELU
-MOCK_OUTPUT_ACTIVATION = ActivationFunctionEnum.SIGMOID
-
-
 @pytest.fixture
 def ga_config_data() -> GeneticAlgorithmConfigData:
     """Fixture for GeneticAlgorithmConfigData."""
@@ -94,3 +95,18 @@ def population_fitness_data() -> PopulationFitnessData:
     return PopulationFitnessData(
         fitness=np.arange(MOCK_NUM_AGENTS).tolist(),
     )
+
+
+# Genetic Algorithm fixtures
+@pytest.fixture
+def mock_neural_network_member(nn_config_data: NeuralNetworkConfigData) -> NeuralNetworkMember:
+    """Fixture for NeuralNetworkMember."""
+    return NeuralNetworkMember.from_config_data(nn_config_data)
+
+
+@pytest.fixture
+def mock_neural_network_ga(
+    nn_config_data: NeuralNetworkConfigData, ga_config_data: GeneticAlgorithmConfigData
+) -> NeuralNetworkGA:
+    """Fixture for NeuralNetworkGA."""
+    return NeuralNetworkGA.from_config_data(nn_config_data, ga_config_data)
