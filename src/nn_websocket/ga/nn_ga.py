@@ -5,7 +5,7 @@ from typing import cast
 from genetic_algorithm.ga import GeneticAlgorithm
 
 from nn_websocket.ga.nn_member import NeuralNetworkMember
-from nn_websocket.protobuf.proto_types import GeneticAlgorithmConfigData, NeuralNetworkConfigData
+from nn_websocket.protobuf.proto_types import GeneticAlgorithmConfigData, NeuralNetworkConfigData, PopulationFitnessData
 
 
 class NeuralNetworkGA(GeneticAlgorithm):
@@ -77,3 +77,14 @@ class NeuralNetworkGA(GeneticAlgorithm):
         """
         for member, score in zip(self.nn_members, fitness_scores, strict=False):
             member.fitness = score
+
+    def evolve(self, population_fitness: PopulationFitnessData):
+        """
+        Evolve the population based on the provided fitness data.
+
+        Parameters:
+            population_fitness (PopulationFitnessData): Population fitness data containing fitness scores
+        """
+        self.set_population_fitness(population_fitness.fitness)
+        self._population.evaluate()
+        self._evolve()

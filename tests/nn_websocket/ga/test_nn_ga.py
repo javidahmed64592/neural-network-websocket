@@ -2,7 +2,7 @@ import numpy as np
 
 from nn_websocket.ga.nn_ga import NeuralNetworkGA
 from nn_websocket.ga.nn_member import NeuralNetworkMember
-from nn_websocket.protobuf.proto_types import GeneticAlgorithmConfigData, NeuralNetworkConfigData
+from nn_websocket.protobuf.proto_types import GeneticAlgorithmConfigData, NeuralNetworkConfigData, PopulationFitnessData
 
 
 class TestNeuralNetworkGA:
@@ -77,3 +77,19 @@ class TestNeuralNetworkGA:
 
         for member, score in zip(mock_neural_network_ga.nn_members, fitness_scores, strict=False):
             assert member.fitness == score
+
+    def test_evolve(
+        self,
+        mock_neural_network_ga: NeuralNetworkGA,
+        population_fitness_data: PopulationFitnessData,
+    ) -> None:
+        """Test evolution of the neural network population."""
+        initial_chromosomes = [member.chromosome for member in mock_neural_network_ga.nn_members]
+        mock_neural_network_ga.evolve(population_fitness_data)
+        new_chromosomes = [member.chromosome for member in mock_neural_network_ga.nn_members]
+
+        for index, member in enumerate(mock_neural_network_ga.nn_members):
+            assert member.fitness == population_fitness_data.fitness[index]
+
+        assert all(mock_neural_network_ga._population._population_fitness == population_fitness_data.fitness)
+        assert initial_chromosomes != new_chromosomes
