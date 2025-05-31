@@ -62,7 +62,7 @@ class NeuralNetworkMember(Member):
             bias_range=self._bias_range,
         )
         self._nn = NeuralNetwork.from_layers(layers=self.nn_layers)
-        self._score = 0
+        self._score: float = 0
 
     @classmethod
     def from_config_data(cls, config_data: NeuralNetworkConfigData) -> NeuralNetworkMember:
