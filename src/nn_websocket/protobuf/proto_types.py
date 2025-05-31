@@ -6,8 +6,12 @@ from typing import cast
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation
 from pydantic.dataclasses import dataclass
 
-from nn_websocket.protobuf.compiled.FrameData_pb2 import Action, Observation
-from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import ActivationFunction, NeuralNetworkConfig
+from nn_websocket.protobuf.compiled.FrameData_pb2 import Action, Observation, PopulationFitness
+from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
+    ActivationFunction,
+    GeneticAlgorithmConfig,
+    NeuralNetworkConfig,
+)
 
 
 # neural_network.proto
@@ -129,3 +133,24 @@ class ActionData:
         """Converts ActionData to Protobuf bytes."""
         action = Action(outputs=action_data.outputs)
         return cast(bytes, action.SerializeToString())
+
+
+@dataclass
+class PopulationFitnessData:
+    """Data class to hold population fitness data."""
+
+    fitness: list[float]
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> PopulationFitnessData:
+        """Creates a PopulationFitnessData instance from Protobuf bytes."""
+        population_fitness = PopulationFitness()
+        population_fitness.ParseFromString(data)
+
+        return cls(fitness=list(population_fitness.fitness))
+
+    @staticmethod
+    def to_bytes(population_fitness_data: PopulationFitnessData) -> bytes:
+        """Converts PopulationFitnessData to Protobuf bytes."""
+        population_fitness = PopulationFitness(fitness=population_fitness_data.fitness)
+        return cast(bytes, population_fitness.SerializeToString())

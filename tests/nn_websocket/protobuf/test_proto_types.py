@@ -8,6 +8,7 @@ from nn_websocket.protobuf.proto_types import (
     ActivationFunctionEnum,
     NeuralNetworkConfigData,
     ObservationData,
+    PopulationFitnessData,
 )
 
 
@@ -90,3 +91,18 @@ class TestActionData:
     def test_from_bytes_invalid(self) -> None:
         with pytest.raises(DecodeError):
             ActionData.from_bytes(b"invalid data")
+
+
+class TestPopulationFitnessData:
+    def test_to_bytes(self, population_fitness_data: PopulationFitnessData) -> None:
+        assert isinstance(PopulationFitnessData.to_bytes(population_fitness_data), bytes)
+
+    def test_from_bytes(self, population_fitness_data: PopulationFitnessData) -> None:
+        msg_bytes = PopulationFitnessData.to_bytes(population_fitness_data)
+        result = PopulationFitnessData.from_bytes(msg_bytes)
+
+        assert result.fitness == pytest.approx(population_fitness_data.fitness)
+
+    def test_from_bytes_invalid(self) -> None:
+        with pytest.raises(DecodeError):
+            PopulationFitnessData.from_bytes(b"invalid data")
