@@ -6,34 +6,34 @@ from nn_websocket.protobuf.proto_types import NeuralNetworkConfigData
 
 
 class TestNeuralNetworkMember:
-    def test_initialization(self, nn_config_data: NeuralNetworkConfigData) -> None:
+    def test_initialization(
+        self, mock_neural_network_member: NeuralNetworkMember, nn_config_data: NeuralNetworkConfigData
+    ) -> None:
         """Test initialization of NeuralNetworkMember."""
-        member = NeuralNetworkMember.from_config_data(nn_config_data)
+        assert mock_neural_network_member._num_inputs == nn_config_data.num_inputs
+        assert mock_neural_network_member._num_outputs == nn_config_data.num_outputs
+        assert mock_neural_network_member._hidden_layer_sizes == nn_config_data.hidden_layer_sizes
+        assert mock_neural_network_member._weights_range == (nn_config_data.weights_min, nn_config_data.weights_max)
+        assert mock_neural_network_member._bias_range == (nn_config_data.bias_min, nn_config_data.bias_max)
+        assert mock_neural_network_member._input_activation == nn_config_data.input_activation.get_class()
+        assert mock_neural_network_member._hidden_activation == nn_config_data.hidden_activation.get_class()
+        assert mock_neural_network_member._output_activation == nn_config_data.output_activation.get_class()
 
-        assert member._num_inputs == nn_config_data.num_inputs
-        assert member._num_outputs == nn_config_data.num_outputs
-        assert member._hidden_layer_sizes == nn_config_data.hidden_layer_sizes
-        assert member._weights_range == (nn_config_data.weights_min, nn_config_data.weights_max)
-        assert member._bias_range == (nn_config_data.bias_min, nn_config_data.bias_max)
-        assert member._input_activation == nn_config_data.input_activation.get_class()
-        assert member._hidden_activation == nn_config_data.hidden_activation.get_class()
-        assert member._output_activation == nn_config_data.output_activation.get_class()
-
-    def test_nn_layers_property(self, nn_config_data: NeuralNetworkConfigData) -> None:
+    def test_nn_layers_property(
+        self, mock_neural_network_member: NeuralNetworkMember, nn_config_data: NeuralNetworkConfigData
+    ) -> None:
         """Test the nn_layers property."""
-        member = NeuralNetworkMember.from_config_data(nn_config_data)
-
-        layers = member.nn_layers
+        layers = mock_neural_network_member.nn_layers
         assert len(layers) == len(nn_config_data.hidden_layer_sizes) + 2
         assert isinstance(layers[0], InputLayer)
         assert all(isinstance(layer, HiddenLayer) for layer in layers[1:-1])
         assert isinstance(layers[-1], OutputLayer)
 
-    def test_chromosome_property(self, nn_config_data: NeuralNetworkConfigData) -> None:
+    def test_chromosome_property(
+        self, mock_neural_network_member: NeuralNetworkMember, nn_config_data: NeuralNetworkConfigData
+    ) -> None:
         """Test the chromosome property."""
-        member = NeuralNetworkMember.from_config_data(nn_config_data)
-
-        weights, bias = member.chromosome
+        weights, bias = mock_neural_network_member.chromosome
         assert len(weights) == len(nn_config_data.hidden_layer_sizes) + 2
         assert len(bias) == len(nn_config_data.hidden_layer_sizes) + 2
 
@@ -43,32 +43,29 @@ class TestNeuralNetworkMember:
         for bias_matrix in bias:
             assert isinstance(bias_matrix, Matrix)
 
-    def test_chromosome_setter(self, nn_config_data: NeuralNetworkConfigData) -> None:
+    def test_chromosome_setter(
+        self, mock_neural_network_member: NeuralNetworkMember, nn_config_data: NeuralNetworkConfigData
+    ) -> None:
         """Test the chromosome setter."""
-        member = NeuralNetworkMember.from_config_data(nn_config_data)
         other_member = NeuralNetworkMember.from_config_data(nn_config_data)
 
-        member.chromosome = (other_member.chromosome[0], other_member.chromosome[1])
+        mock_neural_network_member.chromosome = (other_member.chromosome[0], other_member.chromosome[1])
 
-        assert member._nn.weights == other_member.chromosome[0]
-        assert member._nn.bias == other_member.chromosome[1]
+        assert mock_neural_network_member._nn.weights == other_member.chromosome[0]
+        assert mock_neural_network_member._nn.bias == other_member.chromosome[1]
 
-    def test_fitness_property(self, nn_config_data: NeuralNetworkConfigData) -> None:
+    def test_fitness_property(self, mock_neural_network_member: NeuralNetworkMember) -> None:
         """Test the fitness property."""
-        member = NeuralNetworkMember.from_config_data(nn_config_data)
-
         # Initially, the score is 0, so fitness should be 0
-        assert member.fitness == 0
+        assert mock_neural_network_member.fitness == 0
 
         # Set a score and check fitness
         score = 5
-        member.fitness = score
-        assert member.fitness == score
+        mock_neural_network_member.fitness = score
+        assert mock_neural_network_member.fitness == score
 
-    def test_crossover_genes(self, nn_config_data: NeuralNetworkConfigData) -> None:
+    def test_crossover_genes(self, mock_neural_network_member: NeuralNetworkMember) -> None:
         """Test the crossover_genes method."""
-        member = NeuralNetworkMember.from_config_data(nn_config_data)
-
         element = 0.5
         other_element = 0.8
         mutation_rate = 0.2
@@ -76,12 +73,12 @@ class TestNeuralNetworkMember:
 
         # Test without mutation
         roll = 0.3
-        result = member.crossover_genes(element, other_element, roll, mutation_rate, random_range)
+        result = mock_neural_network_member.crossover_genes(element, other_element, roll, mutation_rate, random_range)
         assert result in (element, other_element)
 
         # Test with mutation
         roll = 0.1
-        result = member.crossover_genes(element, other_element, roll, mutation_rate, random_range)
+        result = mock_neural_network_member.crossover_genes(element, other_element, roll, mutation_rate, random_range)
         assert result not in (element, other_element)
 
     def test_crossover(self, nn_config_data: NeuralNetworkConfigData) -> None:
