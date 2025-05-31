@@ -1,3 +1,5 @@
+import numpy as np
+
 from nn_websocket.ga.nn_ga import NeuralNetworkGA
 from nn_websocket.ga.nn_member import NeuralNetworkMember
 from nn_websocket.protobuf.proto_types import GeneticAlgorithmConfigData, NeuralNetworkConfigData
@@ -65,3 +67,13 @@ class TestNeuralNetworkGA:
     ) -> None:
         """Test the population_size property."""
         assert mock_neural_network_ga.population_size == ga_config_data.population_size
+
+    def test_set_population_fitness(
+        self, mock_neural_network_ga: NeuralNetworkGA, ga_config_data: GeneticAlgorithmConfigData
+    ) -> None:
+        """Test setting population fitness."""
+        fitness_scores = np.arange(ga_config_data.population_size).tolist()
+        mock_neural_network_ga.set_population_fitness(fitness_scores)
+
+        for member, score in zip(mock_neural_network_ga.nn_members, fitness_scores, strict=False):
+            assert member.fitness == score

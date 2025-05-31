@@ -65,3 +65,13 @@ class NeuralNetworkGA(GeneticAlgorithm):
             int: Size of the population
         """
         return self._population.size
+
+    def set_population_fitness(self, fitness_scores: list[float]) -> None:
+        """
+        Set the fitness scores for the population.
+
+        Parameters:
+            fitness_scores (list[float]): List of fitness scores for each member in the population
+        """
+        for member, score in zip(self.nn_members, fitness_scores, strict=False):
+            member.fitness = score
