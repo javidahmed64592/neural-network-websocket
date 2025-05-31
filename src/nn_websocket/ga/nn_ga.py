@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import cast
+
 from genetic_algorithm.ga import GeneticAlgorithm
 
 from nn_websocket.ga.nn_member import NeuralNetworkMember
@@ -54,7 +56,7 @@ class NeuralNetworkGA(GeneticAlgorithm):
         Returns:
             list[NeuralNetworkMember]: List of neural network members
         """
-        return self._population._members
+        return cast(list[NeuralNetworkMember], self._population._members)
 
     @property
     def population_size(self) -> int:
