@@ -39,7 +39,7 @@ class ConfigurationData:
         )
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> ConfigurationData | None:
+    def from_bytes(cls, data: bytes) -> ConfigurationData:
         """Creates a ConfigurationData instance from Protobuf bytes."""
         config = Configuration()
         config.ParseFromString(data)
@@ -76,7 +76,7 @@ class GeneticAlgorithmConfigData:
         )
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> GeneticAlgorithmConfigData | None:
+    def from_bytes(cls, data: bytes) -> GeneticAlgorithmConfigData:
         """Creates a GeneticAlgorithmConfigData instance from Protobuf bytes."""
         config = GeneticAlgorithmConfig()
         config.ParseFromString(data)
@@ -137,7 +137,7 @@ class NeuralNetworkConfigData:
         )
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> NeuralNetworkConfigData | None:
+    def from_bytes(cls, data: bytes) -> NeuralNetworkConfigData:
         """Creates a NeuralNetworkConfigData instance from Protobuf bytes."""
         config = NeuralNetworkConfig()
         config.ParseFromString(data)
@@ -184,14 +184,13 @@ class FrameRequestData:
     observation: ObservationData | None = None
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> FrameRequestData | None:
+    def from_bytes(cls, data: bytes) -> FrameRequestData:
         """Creates a FrameRequestData instance from Protobuf bytes."""
         frame_request = FrameRequest()
         frame_request.ParseFromString(data)
 
         result = cls()
 
-        # Check which oneof field is set
         which_oneof = frame_request.WhichOneof("msg")
         if which_oneof == "population_fitness":
             result.population_fitness = PopulationFitnessData.from_protobuf(frame_request.population_fitness)
@@ -232,7 +231,7 @@ class PopulationFitnessData:
         return PopulationFitness(fitness=population_fitness_data.fitness)
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> PopulationFitnessData | None:
+    def from_bytes(cls, data: bytes) -> PopulationFitnessData:
         """Creates a PopulationFitnessData instance from Protobuf bytes."""
         population_fitness = PopulationFitness()
         population_fitness.ParseFromString(data)
@@ -262,7 +261,7 @@ class ObservationData:
         return Observation(inputs=observation_data.inputs)
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> ObservationData | None:
+    def from_bytes(cls, data: bytes) -> ObservationData:
         """Creates an ObservationData instance from Protobuf bytes."""
         observation = Observation()
         observation.ParseFromString(data)
@@ -292,7 +291,7 @@ class ActionData:
         return Action(outputs=action_data.outputs)
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> ActionData | None:
+    def from_bytes(cls, data: bytes) -> ActionData:
         """Creates an ActionData instance from Protobuf bytes."""
         action = Action()
         action.ParseFromString(data)
