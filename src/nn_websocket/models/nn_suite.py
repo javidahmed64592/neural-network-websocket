@@ -1,13 +1,15 @@
+from __future__ import annotations
+
 from typing import cast
 
 import numpy as np
-from neural_network.layer import HiddenLayer, InputLayer, OutputLayer
 from neural_network.neural_network import NeuralNetwork
 from numpy.typing import NDArray
 
+from nn_websocket.ga.nn_ga import NeuralNetworkGA
 from nn_websocket.protobuf.proto_types import (
     ActionData,
-    NeuralNetworkConfigData,
+    ConfigurationData,
     ObservationData,
 )
 
@@ -15,44 +17,45 @@ from nn_websocket.protobuf.proto_types import (
 class NeuralNetworkSuite:
     """A suite of neural networks for handling multiple configurations."""
 
-    def __init__(self) -> None:
+    def __init__(self, nn_ga: NeuralNetworkGA) -> None:
         """Initialize the suite with a configuration."""
-        self.networks: list[NeuralNetwork] = []
+        self.nn_ga = nn_ga
 
-    def set_networks(self, config_data: NeuralNetworkConfigData) -> None:
-        """Set the neural networks based on the provided configuration data."""
-        self.networks.clear()
+    @property
+    def networks(self) -> list[NeuralNetwork]:
+        """Get the list of neural networks."""
+        return [member._nn for member in self.nn_ga.nn_members]
 
-        input_layer = InputLayer(
-            size=config_data.num_inputs,
-            activation=config_data.input_activation.get_class(),
-        )
+    @classmethod
+    def from_config_data(cls, config_data: ConfigurationData) -> NeuralNetworkSuite:
+        """
+        Create a NeuralNetworkSuite from the provided configuration data.
 
-        hidden_layers = [
-            HiddenLayer(
-                size=size,
-                activation=config_data.hidden_activation.get_class(),
-                weights_range=(config_data.weights_min, config_data.weights_max),
-                bias_range=(config_data.bias_min, config_data.bias_max),
-            )
-            for size in config_data.hidden_layer_sizes
-        ]
+        Parameters:
+            config_data (ConfigurationData): Configuration data for the neural networks
 
-        output_layer = OutputLayer(
-            size=config_data.num_outputs,
-            activation=config_data.output_activation.get_class(),
-            weights_range=(config_data.weights_min, config_data.weights_max),
-            bias_range=(config_data.bias_min, config_data.bias_max),
-        )
+        Returns:
+            NeuralNetworkSuite: An instance of NeuralNetworkSuite
+        """
+        nn_config_data = config_data.neural_network
+        ga_config_data = config_data.genetic_algorithm
 
-        for _ in range(config_data.num_networks):
-            network = NeuralNetwork.from_layers(layers=[input_layer, *hidden_layers, output_layer])
-            self.networks.append(network)
+        nn_ga = NeuralNetworkGA.from_config_data(nn_config_data, ga_config_data)
+        return cls(nn_ga)
 
-    def set_networks_from_bytes(self, config_data_bytes: bytes) -> None:
-        """Set the neural networks from a bytes representation of the configuration data."""
-        config_data = NeuralNetworkConfigData.from_bytes(config_data_bytes)
-        self.set_networks(config_data)
+    @classmethod
+    def from_bytes(cls, config_data_bytes: bytes) -> NeuralNetworkSuite:
+        """
+        Create a NeuralNetworkSuite from a bytes representation of the configuration data.
+
+        Parameters:
+            config_data_bytes (bytes): Bytes representation of the configuration data
+
+        Returns:
+            NeuralNetworkSuite: An instance of NeuralNetworkSuite
+        """
+        config_data = ConfigurationData.from_bytes(config_data_bytes)
+        return cls.from_config_data(config_data)
 
     @staticmethod
     def feedforward_through_network(nn: NeuralNetwork, observation: NDArray) -> list[float]:

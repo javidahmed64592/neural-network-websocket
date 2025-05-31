@@ -1,71 +1,42 @@
 import numpy as np
+import pytest
 
 from nn_websocket.models.nn_suite import NeuralNetworkSuite
-from nn_websocket.protobuf.proto_types import NeuralNetworkConfigData, ObservationData
+from nn_websocket.protobuf.proto_types import GeneticAlgorithmConfigData, NeuralNetworkConfigData, ObservationData
 
 rng = np.random.default_rng()
 
 
 class TestNeuralNetworkSuite:
-    def test_set_networks(self, nn_config_data: NeuralNetworkConfigData) -> None:
-        suite = NeuralNetworkSuite()
-        suite.set_networks(nn_config_data)
+    def test_from_bytes(
+        self,
+        mock_neural_network_suite: NeuralNetworkSuite,
+        ga_config_data: GeneticAlgorithmConfigData,
+    ) -> None:
+        assert len(mock_neural_network_suite.nn_ga.nn_members) == ga_config_data.population_size
+        assert mock_neural_network_suite.nn_ga._mutation_rate == pytest.approx(ga_config_data.mutation_rate)
 
-        assert len(suite.networks) == nn_config_data.num_networks
-        for network in suite.networks:
-            assert len(network.layers) == len(nn_config_data.hidden_layer_sizes) + 2
-            assert network._num_inputs == nn_config_data.num_inputs
-            assert network._input_layer._activation == nn_config_data.input_activation.get_class()
+    def test_networks_property(
+        self,
+        mock_neural_network_suite: NeuralNetworkSuite,
+        ga_config_data: GeneticAlgorithmConfigData,
+        nn_config_data: NeuralNetworkConfigData,
+    ) -> None:
+        suite = mock_neural_network_suite
+        networks = suite.networks
 
+        assert len(networks) == ga_config_data.population_size
+        for network in networks:
+            assert network._input_layer.size == nn_config_data.num_inputs
+            assert network._output_layer.size == nn_config_data.num_outputs
             assert all(
-                layer._size == size
-                for layer, size in zip(network._hidden_layers, nn_config_data.hidden_layer_sizes, strict=False)
-            )
-            assert all(
-                layer._activation == nn_config_data.hidden_activation.get_class() for layer in network._hidden_layers
-            )
-
-            assert network._num_outputs == nn_config_data.num_outputs
-            assert network._output_layer._activation == nn_config_data.output_activation.get_class()
-
-            assert all(
-                layer._weights_range == (nn_config_data.weights_min, nn_config_data.weights_max)
-                and layer._bias_range == (nn_config_data.bias_min, nn_config_data.bias_max)
-                for layer in network.layers[1:]
+                layer.size == nn_config_data.hidden_layer_sizes[i] for i, layer in enumerate(network._hidden_layers)
             )
 
-    def test_set_networks_from_bytes(self, nn_config_data: NeuralNetworkConfigData) -> None:
-        suite = NeuralNetworkSuite()
-        config_data_bytes = NeuralNetworkConfigData.to_bytes(nn_config_data)
-        suite.set_networks_from_bytes(config_data_bytes)
-
-        assert len(suite.networks) == nn_config_data.num_networks
-        for network in suite.networks:
-            assert len(network.layers) == len(nn_config_data.hidden_layer_sizes) + 2
-            assert network._num_inputs == nn_config_data.num_inputs
-            assert network._input_layer._activation == nn_config_data.input_activation.get_class()
-
-            assert all(
-                layer._size == size
-                for layer, size in zip(network._hidden_layers, nn_config_data.hidden_layer_sizes, strict=False)
-            )
-            assert all(
-                layer._activation == nn_config_data.hidden_activation.get_class() for layer in network._hidden_layers
-            )
-
-            assert network._num_outputs == nn_config_data.num_outputs
-            assert network._output_layer._activation == nn_config_data.output_activation.get_class()
-
-            assert all(
-                layer._weights_range == (nn_config_data.weights_min, nn_config_data.weights_max)
-                and layer._bias_range == (nn_config_data.bias_min, nn_config_data.bias_max)
-                for layer in network.layers[1:]
-            )
-
-    def test_feedforward_through_network(self, nn_config_data: NeuralNetworkConfigData) -> None:
-        suite = NeuralNetworkSuite()
-        suite.set_networks(nn_config_data)
-
+    def test_feedforward_through_network(
+        self, mock_neural_network_suite: NeuralNetworkSuite, nn_config_data: NeuralNetworkConfigData
+    ) -> None:
+        suite = mock_neural_network_suite
         observation_data = rng.random(nn_config_data.num_inputs)
 
         for network in suite.networks:
@@ -73,22 +44,25 @@ class TestNeuralNetworkSuite:
             assert len(action_data) == nn_config_data.num_outputs
 
     def test_feedforward_through_networks(
-        self, nn_config_data: NeuralNetworkConfigData, observation_data: ObservationData
+        self,
+        mock_neural_network_suite: NeuralNetworkSuite,
+        ga_config_data: GeneticAlgorithmConfigData,
+        nn_config_data: NeuralNetworkConfigData,
+        observation_data: ObservationData,
     ) -> None:
-        suite = NeuralNetworkSuite()
-        suite.set_networks(nn_config_data)
-
+        suite = mock_neural_network_suite
         action_data_list = suite.feedforward_through_networks(observation_data)
 
-        assert len(action_data_list.outputs) == nn_config_data.num_networks * nn_config_data.num_outputs
+        assert len(action_data_list.outputs) == ga_config_data.population_size * nn_config_data.num_outputs
 
     def test_feedforward_through_networks_from_bytes(
-        self, nn_config_data: NeuralNetworkConfigData, observation_data: ObservationData
+        self,
+        mock_neural_network_suite: NeuralNetworkSuite,
+        ga_config_data: GeneticAlgorithmConfigData,
+        nn_config_data: NeuralNetworkConfigData,
+        observation_data: ObservationData,
     ) -> None:
-        suite = NeuralNetworkSuite()
-        suite.set_networks(nn_config_data)
-
         observation_data_bytes = ObservationData.to_bytes(observation_data)
-        action_data_list = suite.feedforward_through_networks_from_bytes(observation_data_bytes)
+        action_data_list = mock_neural_network_suite.feedforward_through_networks_from_bytes(observation_data_bytes)
 
-        assert len(action_data_list.outputs) == nn_config_data.num_networks * nn_config_data.num_outputs
+        assert len(action_data_list.outputs) == ga_config_data.population_size * nn_config_data.num_outputs
