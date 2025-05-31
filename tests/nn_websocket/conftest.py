@@ -12,6 +12,7 @@ from nn_websocket.protobuf.proto_types import (
     ActionData,
     ActivationFunctionEnum,
     ConfigurationData,
+    FrameRequestData,
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     ObservationData,
@@ -92,6 +93,26 @@ def action_data() -> ActionData:
     """Fixture for ActionData."""
     return ActionData(
         outputs=np.arange(MOCK_NUM_OUTPUTS * MOCK_NUM_AGENTS, dtype=np.float32).tolist(),
+    )
+
+
+@pytest.fixture
+def frame_request_data_population(
+    population_fitness_data: PopulationFitnessData,
+) -> FrameRequestData:
+    """Fixture for FrameRequestData."""
+    return FrameRequestData(
+        population_fitness=population_fitness_data,
+    )
+
+
+@pytest.fixture
+def frame_request_data_observation(
+    observation_data: ObservationData,
+) -> FrameRequestData:
+    """Fixture for FrameRequestData with observation data."""
+    return FrameRequestData(
+        observation=observation_data,
     )
 
 

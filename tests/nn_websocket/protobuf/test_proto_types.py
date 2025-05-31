@@ -6,6 +6,7 @@ from nn_websocket.protobuf.proto_types import (
     ActionData,
     ActivationFunctionEnum,
     ConfigurationData,
+    FrameRequestData,
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     ObservationData,
@@ -84,6 +85,36 @@ class TestActivationFunctionEnum:
 
 
 # frame_data.proto
+class TestFrameRequestData:
+    def test_to_bytes_with_population_fitness(self, frame_request_data_population: FrameRequestData) -> None:
+        """Test serializing a FrameRequestData with population fitness data."""
+        assert isinstance(FrameRequestData.to_bytes(frame_request_data_population), bytes)
+
+    def test_to_bytes_with_observation(self, frame_request_data_observation: FrameRequestData) -> None:
+        """Test serializing a FrameRequestData with observation data."""
+        assert isinstance(FrameRequestData.to_bytes(frame_request_data_observation), bytes)
+
+    def test_from_bytes_with_population_fitness(self, frame_request_data_population: FrameRequestData) -> None:
+        """Test deserializing a FrameRequestData with population fitness data."""
+        msg_bytes = FrameRequestData.to_bytes(frame_request_data_population)
+        result = FrameRequestData.from_bytes(msg_bytes)
+
+        assert result.population_fitness is not None
+        assert result.observation is None
+        assert result.population_fitness.fitness == pytest.approx(
+            frame_request_data_population.population_fitness.fitness
+        )
+
+    def test_from_bytes_with_observation(self, frame_request_data_observation: FrameRequestData) -> None:
+        """Test deserializing a FrameRequestData with observation data."""
+        msg_bytes = FrameRequestData.to_bytes(frame_request_data_observation)
+        result = FrameRequestData.from_bytes(msg_bytes)
+
+        assert result.observation is not None
+        assert result.population_fitness is None
+        assert result.observation.inputs == pytest.approx(frame_request_data_observation.observation.inputs)
+
+
 class TestPopulationFitnessData:
     def test_to_bytes(self, population_fitness_data: PopulationFitnessData) -> None:
         assert isinstance(PopulationFitnessData.to_bytes(population_fitness_data), bytes)

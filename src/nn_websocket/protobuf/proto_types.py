@@ -6,7 +6,7 @@ from typing import cast
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation
 from pydantic.dataclasses import dataclass
 
-from nn_websocket.protobuf.compiled.FrameData_pb2 import Action, Observation, PopulationFitness
+from nn_websocket.protobuf.compiled.FrameData_pb2 import Action, FrameRequest, Observation, PopulationFitness
 from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
     ActivationFunction,
     Configuration,
@@ -177,6 +177,43 @@ class ActivationFunctionEnum(IntEnum):
 
 
 # frame_data.proto
+@dataclass
+class FrameRequestData:
+    """Data class to hold frame request data."""
+
+    population_fitness: PopulationFitnessData | None = None
+    observation: ObservationData | None = None
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> FrameRequestData | None:
+        """Creates a FrameRequestData instance from Protobuf bytes."""
+        frame_request = FrameRequest()
+        frame_request.ParseFromString(data)
+
+        result = cls()
+
+        # Check which oneof field is set
+        which_oneof = frame_request.WhichOneof("msg")
+        if which_oneof == "population_fitness":
+            result.population_fitness = PopulationFitnessData(fitness=list(frame_request.population_fitness.fitness))
+        elif which_oneof == "observation":
+            result.observation = ObservationData(inputs=list(frame_request.observation.inputs))
+
+        return result
+
+    @staticmethod
+    def to_bytes(frame_request_data: FrameRequestData) -> bytes:
+        """Converts FrameRequestData to Protobuf bytes."""
+        frame_request = FrameRequest()
+
+        if frame_request_data.population_fitness is not None:
+            frame_request.population_fitness.fitness.extend(frame_request_data.population_fitness.fitness)
+        elif frame_request_data.observation is not None:
+            frame_request.observation.inputs.extend(frame_request_data.observation.inputs)
+
+        return cast(bytes, frame_request.SerializeToString())
+
+
 @dataclass
 class PopulationFitnessData:
     """Data class to hold population fitness data."""
