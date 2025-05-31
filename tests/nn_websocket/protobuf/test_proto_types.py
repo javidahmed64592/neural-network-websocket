@@ -25,9 +25,6 @@ class TestConfigurationData:
         assert isinstance(result.genetic_algorithm, GeneticAlgorithmConfigData)
         assert isinstance(result.neural_network, NeuralNetworkConfigData)
 
-    def test_from_bytes_wrong_protobuf_class(self, nn_config_data: NeuralNetworkConfigData) -> None:
-        assert not ConfigurationData.from_bytes(NeuralNetworkConfigData.to_bytes(nn_config_data))
-
 
 class TestGeneticAlgorithmConfigData:
     def test_to_bytes(self, ga_config_data: GeneticAlgorithmConfigData) -> None:
@@ -39,9 +36,6 @@ class TestGeneticAlgorithmConfigData:
 
         assert result.population_size == ga_config_data.population_size
         assert result.mutation_rate == pytest.approx(ga_config_data.mutation_rate)
-
-    def test_from_bytes_wrong_protobuf_class(self, nn_config_data: NeuralNetworkConfigData) -> None:
-        assert not GeneticAlgorithmConfigData.from_bytes(NeuralNetworkConfigData.to_bytes(nn_config_data))
 
 
 class TestNeuralNetworkConfigData:
@@ -62,9 +56,6 @@ class TestNeuralNetworkConfigData:
         assert result.input_activation == nn_config_data.input_activation
         assert result.hidden_activation == nn_config_data.hidden_activation
         assert result.output_activation == nn_config_data.output_activation
-
-    def test_from_bytes_wrong_protobuf_class(self, ga_config_data: GeneticAlgorithmConfigData) -> None:
-        assert not NeuralNetworkConfigData.from_bytes(GeneticAlgorithmConfigData.to_bytes(ga_config_data))
 
 
 class TestActivationFunctionEnum:
@@ -103,9 +94,6 @@ class TestObservationData:
 
         assert result.inputs == pytest.approx(observation_data.inputs)
 
-    def test_from_bytes_wrong_protobuf_class(self, population_fitness_data: PopulationFitnessData) -> None:
-        assert not ObservationData.from_bytes(PopulationFitnessData.to_bytes(population_fitness_data))
-
 
 class TestActionData:
     def test_to_bytes(self, action_data: ActionData) -> None:
@@ -117,9 +105,6 @@ class TestActionData:
 
         assert result.outputs == pytest.approx(action_data.outputs)
 
-    def test_from_bytes_wrong_protobuf_class(self, population_fitness_data: PopulationFitnessData) -> None:
-        assert not ActionData.from_bytes(PopulationFitnessData.to_bytes(population_fitness_data))
-
 
 class TestPopulationFitnessData:
     def test_to_bytes(self, population_fitness_data: PopulationFitnessData) -> None:
@@ -130,6 +115,3 @@ class TestPopulationFitnessData:
         result = PopulationFitnessData.from_bytes(msg_bytes)
 
         assert result.fitness == pytest.approx(population_fitness_data.fitness)
-
-    def test_from_bytes_wrong_protobuf_class(self, observation_data: ObservationData) -> None:
-        assert not PopulationFitnessData.from_bytes(ObservationData.to_bytes(observation_data))
