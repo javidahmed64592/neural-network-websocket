@@ -3,97 +3,74 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from nn_websocket.main import (
-    configure_neural_networks,
-    handle_connection,
-    main,
-    process_observations,
-    run,
-)
+from nn_websocket.main import NeuralNetworkWebsocketServer, run
 from nn_websocket.models.config import Config
-from nn_websocket.protobuf.proto_types import ActionData, NeuralNetworkConfigData, ObservationData
+from nn_websocket.models.nn_suite import NeuralNetworkSuite
+from nn_websocket.protobuf.proto_types import (
+    ActionData,
+    FrameRequestData,
+    NeuralNetworkConfigData,
+    ObservationData,
+    PopulationFitnessData,
+)
 
 
-class TestConfigureNeuralNetworks:
+class TestNeuralNetworkWebsocketServer:
+    def test_init(
+        self, mock_neural_network_websocket_server: NeuralNetworkWebsocketServer, mock_config: Config
+    ) -> None:
+        assert mock_neural_network_websocket_server.config == mock_config
+
     def test_configure_neural_networks(self, nn_config_data: NeuralNetworkConfigData) -> None:
         """Test that the neural networks are configured correctly."""
-        config_bytes = NeuralNetworkConfigData.to_bytes(nn_config_data)
+        nn_suite = NeuralNetworkWebsocketServer.configure_neural_networks(
+            NeuralNetworkConfigData.to_bytes(nn_config_data)
+        )
+        assert isinstance(nn_suite, NeuralNetworkSuite)
 
-        with patch("nn_websocket.main.neural_network_suite") as mock_suite:
-            configure_neural_networks(config_bytes)
-            mock_suite.set_networks_from_bytes.assert_called_once_with(config_bytes)
+    def test_crossover_neural_networks(
+        self, mock_neural_network_suite: NeuralNetworkSuite, population_fitness_data: PopulationFitnessData
+    ) -> None:
+        """Test that the crossover of neural networks works correctly."""
+        with patch.object(mock_neural_network_suite, "crossover_networks", autospec=True) as mock_crossover:
+            NeuralNetworkWebsocketServer.crossover_neural_networks(mock_neural_network_suite, population_fitness_data)
+            assert mock_crossover.called
 
+    def test_process_observations(
+        self, mock_neural_network_suite: NeuralNetworkSuite, observation_data: ObservationData
+    ) -> None:
+        """Test that the processing of observations works correctly."""
+        action_data = NeuralNetworkWebsocketServer.process_observations(mock_neural_network_suite, observation_data)
+        assert isinstance(action_data, ActionData)
 
-class TestProcessObservations:
     @pytest.mark.asyncio
-    async def test_process_observations(self, observation_data: ObservationData, action_data: ActionData) -> None:
-        """Test that observations are processed correctly and actions are sent back."""
-        observation_bytes = ObservationData.to_bytes(observation_data)
-
-        mock_websocket = AsyncMock()
-
-        with patch("nn_websocket.main.neural_network_suite") as mock_suite:
-            mock_suite.feedforward_through_networks_from_bytes.return_value = action_data
-
-            await process_observations(mock_websocket, observation_bytes)
-
-            mock_suite.feedforward_through_networks_from_bytes.assert_called_once_with(observation_bytes)
-            mock_websocket.send.assert_awaited_once()
-            # Check the argument is bytes (can't directly compare the actual bytes due to message wrapping)
-            assert isinstance(mock_websocket.send.call_args[0][0], bytes)
-
-
-class TestHandleConnection:
-    @pytest.mark.asyncio
-    async def test_handle_connection_first_message(self, nn_config_data: NeuralNetworkConfigData) -> None:
+    async def test_handle_connection(
+        self,
+        mock_websocket: AsyncMock,
+        nn_config_data: NeuralNetworkConfigData,
+        frame_request_data_observation: FrameRequestData,
+        frame_request_data_population: FrameRequestData,
+        mock_configure_neural_networks: MagicMock,
+        mock_crossover_neural_networks: MagicMock,
+        mock_process_observations: MagicMock,
+    ) -> None:
         """Test that the first message configures the neural networks."""
         config_bytes = NeuralNetworkConfigData.to_bytes(nn_config_data)
 
-        mock_websocket = AsyncMock()
-        mock_websocket.__aiter__.return_value = [config_bytes]
-
-        with patch("nn_websocket.main.configure_neural_networks") as mock_configure:
-            with patch("nn_websocket.main.process_observations"):
-                await handle_connection(mock_websocket)
-
-                mock_configure.assert_called_once_with(config_bytes)
+        await NeuralNetworkWebsocketServer.handle_connection(mock_websocket)
+        mock_configure_neural_networks.assert_called_once_with(config_bytes)
+        mock_process_observations.assert_called_once_with(
+            mock_configure_neural_networks.return_value, frame_request_data_observation.observation
+        )
+        mock_crossover_neural_networks.assert_called_once_with(
+            mock_configure_neural_networks.return_value, frame_request_data_population.population_fitness
+        )
 
     @pytest.mark.asyncio
-    async def test_handle_connection_subsequent_messages(
-        self, nn_config_data: NeuralNetworkConfigData, observation_data: ObservationData
+    async def test_start(
+        self, mock_neural_network_websocket_server: NeuralNetworkWebsocketServer, mock_config: Config
     ) -> None:
-        """Test that subsequent messages process observations."""
-        config_bytes = NeuralNetworkConfigData.to_bytes(nn_config_data)
-        observation_bytes = ObservationData.to_bytes(observation_data)
-
-        mock_websocket = AsyncMock()
-        mock_websocket.__aiter__.return_value = [config_bytes, observation_bytes]
-
-        with patch("nn_websocket.main.configure_neural_networks"):
-            with patch("nn_websocket.main.process_observations") as mock_process:
-                await handle_connection(mock_websocket)
-
-                mock_process.assert_called_once_with(mock_websocket, observation_bytes)
-
-    @pytest.mark.asyncio
-    async def test_handle_connection_string_message(self) -> None:
-        """Test that string messages are properly encoded to bytes."""
-        string_message = "test_message"
-
-        mock_websocket = AsyncMock()
-        mock_websocket.__aiter__.return_value = [string_message]
-
-        with patch("nn_websocket.main.configure_neural_networks") as mock_configure:
-            with patch("nn_websocket.main.process_observations"):
-                await handle_connection(mock_websocket)
-
-                mock_configure.assert_called_once_with(string_message.encode("utf-8"))
-
-
-class TestMain:
-    @pytest.mark.asyncio
-    async def test_main(self, mock_config: Config, mock_load_config: MagicMock) -> None:
-        """Test that the main function sets up the websocket server correctly."""
+        """Test that the websocket server starts correctly."""
         with patch("websockets.serve") as mock_serve:
             mock_serve.return_value.__aenter__.return_value = None
             mock_serve.return_value.__aexit__.return_value = None
@@ -102,27 +79,29 @@ class TestMain:
             future.set_result(None)
 
             with patch("asyncio.Future", return_value=future):
-                await main()
+                await mock_neural_network_websocket_server.start()
 
-                mock_serve.assert_called_once_with(handle_connection, mock_config.host, mock_config.port)
+                mock_serve.assert_called_once_with(
+                    NeuralNetworkWebsocketServer.handle_connection, mock_config.host, mock_config.port
+                )
 
-    def test_run(self) -> None:
-        """Test that the run function properly calls asyncio.run with main."""
+    def test_run(self, mock_neural_network_websocket_server: NeuralNetworkWebsocketServer) -> None:
+        """Test that the run method calls asyncio.run with start."""
         with patch("asyncio.run") as mock_run:
-            with patch("nn_websocket.main.main"):
-                run()
+            with patch.object(mock_neural_network_websocket_server, "start", new_callable=AsyncMock) as mock_start:
+                mock_neural_network_websocket_server.run()
 
-                # Check that asyncio.run was called once
                 mock_run.assert_called_once()
+                mock_start.assert_called_once()
 
+
+class TestRunFunction:
     def test_run_keyboard_interrupt(self) -> None:
         """Test that KeyboardInterrupt is properly handled."""
         with patch("asyncio.run", side_effect=KeyboardInterrupt):
-            # Should not raise an exception
             run()
 
     def test_run_system_exit(self) -> None:
         """Test that SystemExit is properly handled."""
         with patch("asyncio.run", side_effect=SystemExit):
-            # Should not raise an exception
             run()
