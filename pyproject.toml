@@ -24,6 +24,7 @@ dependencies = [
     "pydantic",
     "websockets",
     "neural-network@git+https://github.com/javidahmed64592/neural-network",
+    "genetic-algorithm@git+https://github.com/javidahmed64592/genetic-algorithm",
 ]
 
 [project.optional-dependencies]
@@ -149,6 +150,7 @@ pretty = true
 module = [
     "google.*",
     "numpy.*",
-    "neural_network.*"
+    "neural_network.*",
+    "genetic_algorithm.*",
 ]
 ignore_missing_imports = true
