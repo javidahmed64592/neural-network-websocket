@@ -9,3 +9,7 @@ message Observation {
 message Action {
     repeated float outputs = 2;
 }
+
+message PopulationFitness {
+    repeated float fitness = 1;
+}
