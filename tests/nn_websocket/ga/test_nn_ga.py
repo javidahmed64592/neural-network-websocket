@@ -72,7 +72,7 @@ class TestNeuralNetworkGA:
         self, mock_neural_network_ga: NeuralNetworkGA, ga_config_data: GeneticAlgorithmConfigData
     ) -> None:
         """Test setting population fitness."""
-        fitness_scores = np.arange(ga_config_data.population_size).tolist()
+        fitness_scores = np.arange(ga_config_data.population_size, dtype=float).tolist()
         mock_neural_network_ga.set_population_fitness(fitness_scores)
 
         for member, score in zip(mock_neural_network_ga.nn_members, fitness_scores, strict=False):
