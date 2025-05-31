@@ -9,12 +9,37 @@ from pydantic.dataclasses import dataclass
 from nn_websocket.protobuf.compiled.FrameData_pb2 import Action, Observation, PopulationFitness
 from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
     ActivationFunction,
+    Configuration,
     GeneticAlgorithmConfig,
     NeuralNetworkConfig,
 )
 
 
 # neural_network.proto
+@dataclass
+class ConfigurationData:
+    """Data class to hold configuration data."""
+
+    genetic_algorithm: GeneticAlgorithmConfigData
+    neural_network: NeuralNetworkConfigData
+
+    @classmethod
+    def from_protobuf(cls, config: Configuration) -> ConfigurationData:
+        """Creates a ConfigurationData instance from Protobuf."""
+        return cls(
+            genetic_algorithm=GeneticAlgorithmConfigData.from_protobuf(config.genetic_algorithm),
+            neural_network=NeuralNetworkConfigData.from_protobuf(config.neural_network),
+        )
+
+    @classmethod
+    def to_protobuf(cls, config_data: ConfigurationData) -> Configuration:
+        """Converts ConfigurationData to Protobuf."""
+        return Configuration(
+            genetic_algorithm=GeneticAlgorithmConfigData.to_protobuf(config_data.genetic_algorithm),
+            neural_network=NeuralNetworkConfigData.to_protobuf(config_data.neural_network),
+        )
+
+
 @dataclass
 class GeneticAlgorithmConfigData:
     """Data class to hold genetic algorithm configuration."""

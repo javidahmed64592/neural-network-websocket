@@ -10,6 +10,7 @@ from nn_websocket.models.config import Config
 from nn_websocket.protobuf.proto_types import (
     ActionData,
     ActivationFunctionEnum,
+    ConfigurationData,
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     ObservationData,
@@ -70,6 +71,17 @@ def nn_config_data() -> NeuralNetworkConfigData:
         input_activation=MOCK_INPUT_ACTIVATION,
         hidden_activation=MOCK_HIDDEN_ACTIVATION,
         output_activation=MOCK_OUTPUT_ACTIVATION,
+    )
+
+
+@pytest.fixture
+def configuration_data(
+    ga_config_data: GeneticAlgorithmConfigData, nn_config_data: NeuralNetworkConfigData
+) -> ConfigurationData:
+    """Fixture for ConfigurationData."""
+    return ConfigurationData(
+        genetic_algorithm=ga_config_data,
+        neural_network=nn_config_data,
     )
 
 
