@@ -6,52 +6,65 @@ import websockets
 
 from nn_websocket.models.config import Config
 from nn_websocket.models.nn_suite import NeuralNetworkSuite
-
-CONFIG_FILEPATH = Path("config") / "websocket_config.json"
+from nn_websocket.protobuf.proto_types import ActionData, FrameRequestData, ObservationData, PopulationFitnessData
 
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-neural_network_suite = NeuralNetworkSuite()
+
+CONFIG_FILEPATH = Path("config") / "websocket_config.json"
 
 
-async def handle_connection(websocket: websockets.ServerConnection) -> None:
-    num_messages = 0
-    async for message in websocket:
-        logger.info("Received message of length: %s", len(message))
-        if isinstance(message, str):
-            logger.info("Message is a string, encoding to bytes.")
-            message_bytes = message.encode("utf-8")
-        else:
-            message_bytes = message
-        if num_messages == 0:
-            logger.info("Configuring neural networks with the first message.")
-            configure_neural_networks(message_bytes)
-        else:
-            await process_observations(websocket, message_bytes)
-        num_messages += 1
+class NeuralNetworkWebsocketServer:
+    def __init__(self, config_filepath: Path = CONFIG_FILEPATH) -> None:
+        self.config_filepath = config_filepath
+        self.config = Config.load_config(self.config_filepath)
 
+    @staticmethod
+    def configure_neural_networks(config: bytes) -> NeuralNetworkSuite:
+        logger.info("Configuring neural networks...")
+        return NeuralNetworkSuite.from_bytes(config)
 
-def configure_neural_networks(config: bytes) -> None:
-    neural_network_suite.set_networks_from_bytes(config)
-    logger.info("Configured %s neural networks with shared settings.", len(neural_network_suite.networks))
+    @staticmethod
+    def crossover_neural_networks(
+        neural_network_suite: NeuralNetworkSuite, population_fitness: PopulationFitnessData
+    ) -> None:
+        logger.info("Crossover neural networks...")
+        neural_network_suite.crossover_networks(population_fitness)
 
+    @staticmethod
+    def process_observations(neural_network_suite: NeuralNetworkSuite, observation: ObservationData) -> ActionData:
+        return neural_network_suite.feedforward_through_networks(observation)
 
-async def process_observations(websocket: websockets.ServerConnection, message: bytes) -> None:
-    actions = neural_network_suite.feedforward_through_networks_from_bytes(message)
-    logger.info("Calculated actions: %s", actions.outputs)
-    await websocket.send(actions.to_bytes(actions))
+    @staticmethod
+    async def handle_connection(websocket: websockets.ServerConnection) -> None:
+        neural_network_suite: NeuralNetworkSuite | None = None
+        async for message in websocket:
+            if isinstance(message, str):
+                message_bytes = message.encode("utf-8")
+            else:
+                message_bytes = message
+            if neural_network_suite is None:
+                neural_network_suite = NeuralNetworkWebsocketServer.configure_neural_networks(message_bytes)
+            else:
+                message_data = FrameRequestData.from_bytes(message_bytes)
+                if population_fitness := message_data.population_fitness:
+                    NeuralNetworkWebsocketServer.crossover_neural_networks(neural_network_suite, population_fitness)
+                elif observation := message_data.observation:
+                    actions = NeuralNetworkWebsocketServer.process_observations(neural_network_suite, observation)
+                    await websocket.send(actions.to_bytes(actions))
 
+    async def start(self) -> None:
+        async with websockets.serve(NeuralNetworkWebsocketServer.handle_connection, self.config.host, self.config.port):
+            logger.info("Neural network websocket server running on %s:%s", self.config.host, self.config.port)
+            await asyncio.Future()
 
-async def main() -> None:
-    config = Config.load_config(CONFIG_FILEPATH)
-
-    async with websockets.serve(handle_connection, config.host, config.port):
-        logger.info("Neural network websocket server running on %s:%s", config.host, config.port)
-        await asyncio.Future()
+    def run(self) -> None:
+        asyncio.run(self.start())
 
 
 def run() -> None:
     try:
-        asyncio.run(main())
+        server = NeuralNetworkWebsocketServer()
+        server.run()
     except (SystemExit, KeyboardInterrupt):
         logger.info("Shutting down the neural network websocket server.")

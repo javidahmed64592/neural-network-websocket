@@ -2,10 +2,21 @@ syntax = "proto3";
 option optimize_for = LITE_RUNTIME;
 package NNWebsocket;
 
+message FrameRequest {
+    oneof msg {
+        PopulationFitness population_fitness = 2;
+        Observation observation = 3;
+    }
+}
+
+message PopulationFitness {
+    repeated float fitness = 1;
+}
+
 message Observation {
-    repeated float inputs = 2;
+    repeated float inputs = 1;
 }
 
 message Action {
-    repeated float outputs = 2;
+    repeated float outputs = 1;
 }

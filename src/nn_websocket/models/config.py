@@ -10,7 +10,7 @@ from pydantic.dataclasses import dataclass
 @dataclass
 class Config:
     """
-    Configuration for the WebSocket server.
+    Configuration for the Websocket server.
     """
 
     host: str
