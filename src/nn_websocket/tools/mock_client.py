@@ -66,48 +66,50 @@ config_data = ConfigurationData(
 )
 
 
-def get_random_observation() -> FrameRequestData:
-    """Generate a random observation for testing."""
-    inputs = rng.uniform(low=-1, high=1, size=NUM_INPUTS * NUM_AGENTS).astype(np.float32).tolist()
-    observation = ObservationData(inputs=inputs)
-    return FrameRequestData(observation=observation)
+class MockClient:
+    @staticmethod
+    def get_random_observation() -> FrameRequestData:
+        """Generate a random observation for testing."""
+        inputs = rng.uniform(low=-1, high=1, size=NUM_INPUTS * NUM_AGENTS).astype(np.float32).tolist()
+        observation = ObservationData(inputs=inputs)
+        return FrameRequestData(observation=observation)
 
+    @staticmethod
+    def get_random_population_fitness() -> FrameRequestData:
+        """Generate a random population fitness for testing."""
+        fitness = rng.uniform(low=0, high=1, size=NUM_AGENTS).astype(np.float32).tolist()
+        population_fitness = PopulationFitnessData(fitness=fitness)
+        return FrameRequestData(population_fitness=population_fitness)
 
-def get_random_population_fitness() -> FrameRequestData:
-    """Generate a random population fitness for testing."""
-    fitness = rng.uniform(low=0, high=1, size=NUM_AGENTS).astype(np.float32).tolist()
-    population_fitness = PopulationFitnessData(fitness=fitness)
-    return FrameRequestData(population_fitness=population_fitness)
+    @staticmethod
+    async def start() -> None:
+        num_observations = 0
 
-
-async def mock_client() -> None:
-    num_observations = 0
-
-    async with websockets.connect(SERVER_URI) as ws:
-        # Send ConfigurationData as bytes
-        logger.info("Sending ConfigurationData to server.")
-        await ws.send(ConfigurationData.to_bytes(config_data))
-        await asyncio.sleep(5)
-
-        # Send observations and population fitness data
-        while True:
-            logger.info("Sending ObservationData to server.")
-            await ws.send(FrameRequestData.to_bytes(get_random_observation()))
-            num_observations += 1
-
-            if num_observations % EPISODE_LENGTH == 0:
-                logger.info("Sending PopulationFitnessData to server.")
-                await ws.send(FrameRequestData.to_bytes(get_random_population_fitness()))
-            try:
-                response = await asyncio.wait_for(ws.recv(), timeout=2)
-                logger.info("Received response of length: %d", len(response))
-            except TimeoutError:
-                logger.warning("No response received from server.")
+        async with websockets.connect(SERVER_URI) as ws:
+            # Send configuration data to the server
+            logger.info("Sending ConfigurationData to server.")
+            await ws.send(ConfigurationData.to_bytes(config_data))
             await asyncio.sleep(5)
+
+            # Send observations and population fitness data
+            while True:
+                logger.info("Sending ObservationData to server.")
+                await ws.send(FrameRequestData.to_bytes(MockClient.get_random_observation()))
+                num_observations += 1
+
+                if num_observations % EPISODE_LENGTH == 0:
+                    logger.info("Sending PopulationFitnessData to server.")
+                    await ws.send(FrameRequestData.to_bytes(MockClient.get_random_population_fitness()))
+                try:
+                    response = await asyncio.wait_for(ws.recv(), timeout=2)
+                    logger.info("Received response of length: %d", len(response))
+                except TimeoutError:
+                    logger.warning("No response received from server.")
+                await asyncio.sleep(5)
 
 
 def run() -> None:
     try:
-        asyncio.run(mock_client())
+        asyncio.run(MockClient.start())
     except (SystemExit, KeyboardInterrupt):
         logger.info("Shutting down the mock client.")
