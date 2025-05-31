@@ -15,7 +15,6 @@ from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import ActivationFunction,
 class NeuralNetworkConfigData:
     """Data class to hold neural network configuration."""
 
-    num_networks: int
     num_inputs: int
     num_outputs: int
     hidden_layer_sizes: list[int]
@@ -34,7 +33,6 @@ class NeuralNetworkConfigData:
         config.ParseFromString(data)
 
         return cls(
-            num_networks=config.num_networks,
             num_inputs=config.num_inputs,
             num_outputs=config.num_outputs,
             hidden_layer_sizes=list(config.hidden_layer_sizes),
@@ -51,7 +49,6 @@ class NeuralNetworkConfigData:
     def to_bytes(config_data: NeuralNetworkConfigData) -> bytes:
         """Converts NeuralNetworkConfigData to Protobuf bytes."""
         config = NeuralNetworkConfig(
-            num_networks=config_data.num_networks,
             num_inputs=config_data.num_inputs,
             num_outputs=config_data.num_outputs,
             hidden_layer_sizes=config_data.hidden_layer_sizes,

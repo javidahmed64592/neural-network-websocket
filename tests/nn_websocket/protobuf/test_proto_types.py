@@ -20,7 +20,6 @@ class TestNeuralNetworkConfigData:
         msg_bytes = NeuralNetworkConfigData.to_bytes(nn_config_data)
         result = NeuralNetworkConfigData.from_bytes(msg_bytes)
 
-        assert result.num_networks == nn_config_data.num_networks
         assert result.num_inputs == nn_config_data.num_inputs
         assert result.num_outputs == nn_config_data.num_outputs
         assert result.hidden_layer_sizes == nn_config_data.hidden_layer_sizes

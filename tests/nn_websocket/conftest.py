@@ -47,7 +47,6 @@ MOCK_OUTPUT_ACTIVATION = ActivationFunctionEnum.SIGMOID
 def nn_config_data() -> NeuralNetworkConfigData:
     """Fixture for NeuralNetworkConfigData."""
     return NeuralNetworkConfigData(
-        num_networks=MOCK_NUM_AGENTS,
         num_inputs=MOCK_NUM_INPUTS,
         num_outputs=MOCK_NUM_OUTPUTS,
         hidden_layer_sizes=MOCK_HIDDEN_LAYER_SIZES,
