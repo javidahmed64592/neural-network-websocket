@@ -39,6 +39,19 @@ class ConfigurationData:
             neural_network=NeuralNetworkConfigData.to_protobuf(config_data.neural_network),
         )
 
+    @classmethod
+    def from_bytes(cls, data: bytes) -> ConfigurationData:
+        """Creates a ConfigurationData instance from Protobuf bytes."""
+        config = Configuration()
+        config.ParseFromString(data)
+        return cls.from_protobuf(config)
+
+    @staticmethod
+    def to_bytes(config_data: ConfigurationData) -> bytes:
+        """Converts ConfigurationData to Protobuf bytes."""
+        config = ConfigurationData.to_protobuf(config_data)
+        return cast(bytes, config.SerializeToString())
+
 
 @dataclass
 class GeneticAlgorithmConfigData:
@@ -55,8 +68,8 @@ class GeneticAlgorithmConfigData:
             mutation_rate=config.mutation_rate,
         )
 
-    @classmethod
-    def to_protobuf(cls, config_data: GeneticAlgorithmConfigData) -> GeneticAlgorithmConfig:
+    @staticmethod
+    def to_protobuf(config_data: GeneticAlgorithmConfigData) -> GeneticAlgorithmConfig:
         """Converts GeneticAlgorithmConfigData to Protobuf."""
         return GeneticAlgorithmConfig(
             population_size=config_data.population_size,
@@ -108,8 +121,8 @@ class NeuralNetworkConfigData:
             output_activation=ActivationFunctionEnum.from_protobuf(config.output_activation),
         )
 
-    @classmethod
-    def to_protobuf(cls, config_data: NeuralNetworkConfigData) -> NeuralNetworkConfig:
+    @staticmethod
+    def to_protobuf(config_data: NeuralNetworkConfigData) -> NeuralNetworkConfig:
         """Converts NeuralNetworkConfigData to Protobuf."""
         return NeuralNetworkConfig(
             num_inputs=config_data.num_inputs,
@@ -152,10 +165,10 @@ class ActivationFunctionEnum(IntEnum):
         }
         return _map[self]
 
-    @staticmethod
-    def from_protobuf(proto_enum_value: ActivationFunction) -> ActivationFunctionEnum:
+    @classmethod
+    def from_protobuf(cls, proto_enum_value: ActivationFunction) -> ActivationFunctionEnum:
         """Maps a Protobuf ActivationFunction value to ActivationFunctionEnum."""
-        return ActivationFunctionEnum(proto_enum_value)
+        return cls(proto_enum_value)
 
     @staticmethod
     def to_protobuf(enum_value: ActivationFunctionEnum) -> ActivationFunction:
