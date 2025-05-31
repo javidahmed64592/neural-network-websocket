@@ -8,6 +8,7 @@ from nn_websocket.models.config import Config
 from nn_websocket.protobuf.proto_types import (
     ActionData,
     ActivationFunctionEnum,
+    GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     ObservationData,
     PopulationFitnessData,
@@ -32,6 +33,7 @@ def mock_load_config(mock_config: Config) -> Generator[MagicMock, None, None]:
 # Protobuf fixtures
 # As an example, we will assume 10 agents with 5 inputs and 2 outputs each.
 MOCK_NUM_AGENTS = 10
+MOCK_MUTATION_RATE = 0.1
 MOCK_NUM_INPUTS = 5
 MOCK_NUM_OUTPUTS = 2
 MOCK_HIDDEN_LAYER_SIZES = [4, 4]
@@ -42,6 +44,15 @@ MOCK_BIAS_MAX = 1.0
 MOCK_INPUT_ACTIVATION = ActivationFunctionEnum.LINEAR
 MOCK_HIDDEN_ACTIVATION = ActivationFunctionEnum.RELU
 MOCK_OUTPUT_ACTIVATION = ActivationFunctionEnum.SIGMOID
+
+
+@pytest.fixture
+def ga_config_data() -> GeneticAlgorithmConfigData:
+    """Fixture for GeneticAlgorithmConfigData."""
+    return GeneticAlgorithmConfigData(
+        population_size=MOCK_NUM_AGENTS,
+        mutation_rate=MOCK_MUTATION_RATE,
+    )
 
 
 @pytest.fixture

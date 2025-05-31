@@ -16,6 +16,34 @@ from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
 
 # neural_network.proto
 @dataclass
+class GeneticAlgorithmConfigData:
+    """Data class to hold genetic algorithm configuration."""
+
+    population_size: int
+    mutation_rate: float
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> GeneticAlgorithmConfigData:
+        """Creates a GeneticAlgorithmConfigData instance from Protobuf bytes."""
+        config = GeneticAlgorithmConfig()
+        config.ParseFromString(data)
+
+        return cls(
+            population_size=config.population_size,
+            mutation_rate=config.mutation_rate,
+        )
+
+    @staticmethod
+    def to_bytes(config_data: GeneticAlgorithmConfigData) -> bytes:
+        """Converts GeneticAlgorithmConfigData to Protobuf bytes."""
+        config = GeneticAlgorithmConfig(
+            population_size=config_data.population_size,
+            mutation_rate=config_data.mutation_rate,
+        )
+        return cast(bytes, config.SerializeToString())
+
+
+@dataclass
 class NeuralNetworkConfigData:
     """Data class to hold neural network configuration."""
 

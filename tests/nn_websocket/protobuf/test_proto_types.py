@@ -6,6 +6,7 @@ from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import ActivationFunction
 from nn_websocket.protobuf.proto_types import (
     ActionData,
     ActivationFunctionEnum,
+    GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     ObservationData,
     PopulationFitnessData,
@@ -13,6 +14,22 @@ from nn_websocket.protobuf.proto_types import (
 
 
 # neural_network.proto
+class TestGeneticAlgorithmConfigData:
+    def test_to_bytes(self, ga_config_data: GeneticAlgorithmConfigData) -> None:
+        assert isinstance(GeneticAlgorithmConfigData.to_bytes(ga_config_data), bytes)
+
+    def test_from_protobuf(self, ga_config_data: GeneticAlgorithmConfigData) -> None:
+        msg_bytes = GeneticAlgorithmConfigData.to_bytes(ga_config_data)
+        result = GeneticAlgorithmConfigData.from_bytes(msg_bytes)
+
+        assert result.population_size == ga_config_data.population_size
+        assert result.mutation_rate == pytest.approx(ga_config_data.mutation_rate)
+
+    def test_from_bytes_invalid(self) -> None:
+        with pytest.raises(DecodeError):
+            GeneticAlgorithmConfigData.from_bytes(b"invalid data")
+
+
 class TestNeuralNetworkConfigData:
     def test_to_bytes(self, nn_config_data: NeuralNetworkConfigData) -> None:
         assert isinstance(NeuralNetworkConfigData.to_bytes(nn_config_data), bytes)
