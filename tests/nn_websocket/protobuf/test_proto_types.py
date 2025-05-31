@@ -96,6 +96,8 @@ class TestFrameRequestData:
 
     def test_from_bytes_with_population_fitness(self, frame_request_data_population: FrameRequestData) -> None:
         """Test deserializing a FrameRequestData with population fitness data."""
+        assert frame_request_data_population.population_fitness is not None
+
         msg_bytes = FrameRequestData.to_bytes(frame_request_data_population)
         result = FrameRequestData.from_bytes(msg_bytes)
 
@@ -106,6 +108,8 @@ class TestFrameRequestData:
 
     def test_from_bytes_with_observation(self, frame_request_data_observation: FrameRequestData) -> None:
         """Test deserializing a FrameRequestData with observation data."""
+        assert frame_request_data_observation.observation is not None
+
         msg_bytes = FrameRequestData.to_bytes(frame_request_data_observation)
         result = FrameRequestData.from_bytes(msg_bytes)
 
