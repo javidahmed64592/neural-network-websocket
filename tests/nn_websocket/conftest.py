@@ -72,6 +72,14 @@ def configuration_data(
 
 
 @pytest.fixture
+def population_fitness_data() -> PopulationFitnessData:
+    """Fixture for PopulationFitnessData."""
+    return PopulationFitnessData(
+        fitness=np.arange(MOCK_NUM_AGENTS).tolist(),
+    )
+
+
+@pytest.fixture
 def observation_data() -> ObservationData:
     """Fixture for ObservationData."""
     return ObservationData(
@@ -84,14 +92,6 @@ def action_data() -> ActionData:
     """Fixture for ActionData."""
     return ActionData(
         outputs=np.arange(MOCK_NUM_OUTPUTS * MOCK_NUM_AGENTS, dtype=np.float32).tolist(),
-    )
-
-
-@pytest.fixture
-def population_fitness_data() -> PopulationFitnessData:
-    """Fixture for PopulationFitnessData."""
-    return PopulationFitnessData(
-        fitness=np.arange(MOCK_NUM_AGENTS).tolist(),
     )
 
 

@@ -84,6 +84,17 @@ class TestActivationFunctionEnum:
 
 
 # frame_data.proto
+class TestPopulationFitnessData:
+    def test_to_bytes(self, population_fitness_data: PopulationFitnessData) -> None:
+        assert isinstance(PopulationFitnessData.to_bytes(population_fitness_data), bytes)
+
+    def test_from_bytes(self, population_fitness_data: PopulationFitnessData) -> None:
+        msg_bytes = PopulationFitnessData.to_bytes(population_fitness_data)
+        result = PopulationFitnessData.from_bytes(msg_bytes)
+
+        assert result.fitness == pytest.approx(population_fitness_data.fitness)
+
+
 class TestObservationData:
     def test_to_bytes(self, observation_data: ObservationData) -> None:
         assert isinstance(ObservationData.to_bytes(observation_data), bytes)
@@ -104,14 +115,3 @@ class TestActionData:
         result = ActionData.from_bytes(msg_bytes)
 
         assert result.outputs == pytest.approx(action_data.outputs)
-
-
-class TestPopulationFitnessData:
-    def test_to_bytes(self, population_fitness_data: PopulationFitnessData) -> None:
-        assert isinstance(PopulationFitnessData.to_bytes(population_fitness_data), bytes)
-
-    def test_from_bytes(self, population_fitness_data: PopulationFitnessData) -> None:
-        msg_bytes = PopulationFitnessData.to_bytes(population_fitness_data)
-        result = PopulationFitnessData.from_bytes(msg_bytes)
-
-        assert result.fitness == pytest.approx(population_fitness_data.fitness)

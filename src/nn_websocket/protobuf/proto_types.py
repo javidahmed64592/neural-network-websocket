@@ -178,6 +178,26 @@ class ActivationFunctionEnum(IntEnum):
 
 # frame_data.proto
 @dataclass
+class PopulationFitnessData:
+    """Data class to hold population fitness data."""
+
+    fitness: list[float]
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> PopulationFitnessData | None:
+        """Creates a PopulationFitnessData instance from Protobuf bytes."""
+        population_fitness = PopulationFitness()
+        population_fitness.ParseFromString(data)
+        return cls(fitness=list(population_fitness.fitness))
+
+    @staticmethod
+    def to_bytes(population_fitness_data: PopulationFitnessData) -> bytes:
+        """Converts PopulationFitnessData to Protobuf bytes."""
+        population_fitness = PopulationFitness(fitness=population_fitness_data.fitness)
+        return cast(bytes, population_fitness.SerializeToString())
+
+
+@dataclass
 class ObservationData:
     """Data class to hold observation data."""
 
@@ -215,23 +235,3 @@ class ActionData:
         """Converts ActionData to Protobuf bytes."""
         action = Action(outputs=action_data.outputs)
         return cast(bytes, action.SerializeToString())
-
-
-@dataclass
-class PopulationFitnessData:
-    """Data class to hold population fitness data."""
-
-    fitness: list[float]
-
-    @classmethod
-    def from_bytes(cls, data: bytes) -> PopulationFitnessData | None:
-        """Creates a PopulationFitnessData instance from Protobuf bytes."""
-        population_fitness = PopulationFitness()
-        population_fitness.ParseFromString(data)
-        return cls(fitness=list(population_fitness.fitness))
-
-    @staticmethod
-    def to_bytes(population_fitness_data: PopulationFitnessData) -> bytes:
-        """Converts PopulationFitnessData to Protobuf bytes."""
-        population_fitness = PopulationFitness(fitness=population_fitness_data.fitness)
-        return cast(bytes, population_fitness.SerializeToString())
