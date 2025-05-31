@@ -8,10 +8,10 @@ from nn_websocket.models.config import Config
 from nn_websocket.models.nn_suite import NeuralNetworkSuite
 from nn_websocket.protobuf.proto_types import ActionData, FrameRequestData, ObservationData, PopulationFitnessData
 
-CONFIG_FILEPATH = Path("config") / "websocket_config.json"
-
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+CONFIG_FILEPATH = Path("config") / "websocket_config.json"
 
 
 class NeuralNetworkWebsocketServer:
