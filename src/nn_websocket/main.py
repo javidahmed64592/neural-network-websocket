@@ -41,8 +41,7 @@ def crossover_neural_networks(
     neural_network_suite: NeuralNetworkSuite, population_fitness: PopulationFitnessData
 ) -> None:
     logger.info("Crossover neural networks...")
-    # TODO: Implement the crossover logic for neural networks based on fitness data
-    pass
+    neural_network_suite.crossover_networks(population_fitness)
 
 
 def process_observations(neural_network_suite: NeuralNetworkSuite, observation: ObservationData) -> ActionData:
