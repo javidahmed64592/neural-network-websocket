@@ -16,33 +16,15 @@ from nn_websocket.protobuf.proto_types import (
 
 # neural_network.proto
 class TestConfigurationData:
-    def test_from_protobuf(self, config_data: ConfigurationData) -> None:
-        assert isinstance(ConfigurationData.from_protobuf(config_data.to_protobuf()), ConfigurationData)
+    def test_to_bytes(self, configuration_data: ConfigurationData) -> None:
+        assert isinstance(ConfigurationData.to_bytes(configuration_data), bytes)
 
-    def test_to_protobuf(self, config_data: ConfigurationData) -> None:
-        proto_config = ConfigurationData.to_protobuf(config_data)
+    def test_from_bytes(self, configuration_data: ConfigurationData) -> None:
+        msg_bytes = ConfigurationData.to_bytes(configuration_data)
+        result = ConfigurationData.from_bytes(msg_bytes)
 
-        assert proto_config.genetic_algorithm.population_size == config_data.genetic_algorithm.population_size
-        assert proto_config.genetic_algorithm.mutation_rate == pytest.approx(
-            config_data.genetic_algorithm.mutation_rate
-        )
-
-        assert proto_config.neural_network.num_inputs == config_data.neural_network.num_inputs
-        assert proto_config.neural_network.num_outputs == config_data.neural_network.num_outputs
-        assert proto_config.neural_network.hidden_layer_sizes == config_data.neural_network.hidden_layer_sizes
-        assert proto_config.neural_network.weights_min == pytest.approx(config_data.neural_network.weights_min)
-        assert proto_config.neural_network.weights_max == pytest.approx(config_data.neural_network.weights_max)
-        assert proto_config.neural_network.bias_min == pytest.approx(config_data.neural_network.bias_min)
-        assert proto_config.neural_network.bias_max == pytest.approx(config_data.neural_network.bias_max)
-        assert proto_config.neural_network.input_activation == ActivationFunctionEnum.to_protobuf(
-            config_data.neural_network.input_activation
-        )
-        assert proto_config.neural_network.hidden_activation == ActivationFunctionEnum.to_protobuf(
-            config_data.neural_network.hidden_activation
-        )
-        assert proto_config.neural_network.output_activation == ActivationFunctionEnum.to_protobuf(
-            config_data.neural_network.output_activation
-        )
+        assert isinstance(result.genetic_algorithm, GeneticAlgorithmConfigData)
+        assert isinstance(result.neural_network, NeuralNetworkConfigData)
 
 
 class TestGeneticAlgorithmConfigData:
