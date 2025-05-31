@@ -195,9 +195,9 @@ class FrameRequestData:
         # Check which oneof field is set
         which_oneof = frame_request.WhichOneof("msg")
         if which_oneof == "population_fitness":
-            result.population_fitness = PopulationFitnessData(fitness=list(frame_request.population_fitness.fitness))
+            result.population_fitness = PopulationFitnessData.from_protobuf(frame_request.population_fitness)
         elif which_oneof == "observation":
-            result.observation = ObservationData(inputs=list(frame_request.observation.inputs))
+            result.observation = ObservationData.from_protobuf(frame_request.observation)
 
         return result
 
@@ -207,9 +207,11 @@ class FrameRequestData:
         frame_request = FrameRequest()
 
         if frame_request_data.population_fitness is not None:
-            frame_request.population_fitness.fitness.extend(frame_request_data.population_fitness.fitness)
+            frame_request.population_fitness.CopyFrom(
+                PopulationFitnessData.to_protobuf(frame_request_data.population_fitness)
+            )
         elif frame_request_data.observation is not None:
-            frame_request.observation.inputs.extend(frame_request_data.observation.inputs)
+            frame_request.observation.CopyFrom(ObservationData.to_protobuf(frame_request_data.observation))
 
         return cast(bytes, frame_request.SerializeToString())
 
@@ -221,16 +223,26 @@ class PopulationFitnessData:
     fitness: list[float]
 
     @classmethod
+    def from_protobuf(cls, population_fitness: PopulationFitness) -> PopulationFitnessData:
+        """Creates a PopulationFitnessData instance from Protobuf."""
+        return cls(fitness=list(population_fitness.fitness))
+
+    @staticmethod
+    def to_protobuf(population_fitness_data: PopulationFitnessData) -> PopulationFitness:
+        """Converts PopulationFitnessData to Protobuf."""
+        return PopulationFitness(fitness=population_fitness_data.fitness)
+
+    @classmethod
     def from_bytes(cls, data: bytes) -> PopulationFitnessData | None:
         """Creates a PopulationFitnessData instance from Protobuf bytes."""
         population_fitness = PopulationFitness()
         population_fitness.ParseFromString(data)
-        return cls(fitness=list(population_fitness.fitness))
+        return cls.from_protobuf(population_fitness)
 
     @staticmethod
     def to_bytes(population_fitness_data: PopulationFitnessData) -> bytes:
         """Converts PopulationFitnessData to Protobuf bytes."""
-        population_fitness = PopulationFitness(fitness=population_fitness_data.fitness)
+        population_fitness = PopulationFitnessData.to_protobuf(population_fitness_data)
         return cast(bytes, population_fitness.SerializeToString())
 
 
@@ -241,16 +253,26 @@ class ObservationData:
     inputs: list[float]
 
     @classmethod
+    def from_protobuf(cls, observation: Observation) -> ObservationData:
+        """Creates an ObservationData instance from Protobuf."""
+        return cls(inputs=list(observation.inputs))
+
+    @staticmethod
+    def to_protobuf(observation_data: ObservationData) -> Observation:
+        """Converts ObservationData to Protobuf."""
+        return Observation(inputs=observation_data.inputs)
+
+    @classmethod
     def from_bytes(cls, data: bytes) -> ObservationData | None:
         """Creates an ObservationData instance from Protobuf bytes."""
         observation = Observation()
         observation.ParseFromString(data)
-        return cls(inputs=list(observation.inputs))
+        return cls.from_protobuf(observation)
 
     @staticmethod
     def to_bytes(observation_data: ObservationData) -> bytes:
         """Converts ObservationData to Protobuf bytes."""
-        observation = Observation(inputs=observation_data.inputs)
+        observation = ObservationData.to_protobuf(observation_data)
         return cast(bytes, observation.SerializeToString())
 
 
@@ -261,14 +283,24 @@ class ActionData:
     outputs: list[float]
 
     @classmethod
+    def from_protobuf(cls, action: Action) -> ActionData:
+        """Creates an ActionData instance from Protobuf."""
+        return cls(outputs=list(action.outputs))
+
+    @staticmethod
+    def to_protobuf(action_data: ActionData) -> Action:
+        """Converts ActionData to Protobuf."""
+        return Action(outputs=action_data.outputs)
+
+    @classmethod
     def from_bytes(cls, data: bytes) -> ActionData | None:
         """Creates an ActionData instance from Protobuf bytes."""
         action = Action()
         action.ParseFromString(data)
-        return cls(outputs=list(action.outputs))
+        return cls.from_protobuf(action)
 
     @staticmethod
     def to_bytes(action_data: ActionData) -> bytes:
         """Converts ActionData to Protobuf bytes."""
-        action = Action(outputs=action_data.outputs)
+        action = ActionData.to_protobuf(action_data)
         return cast(bytes, action.SerializeToString())
