@@ -148,8 +148,6 @@ pretty = true
 
 [[tool.mypy.overrides]]
 module = [
-    "google.*",
-    "numpy.*",
     "neural_network.*",
     "genetic_algorithm.*",
 ]
