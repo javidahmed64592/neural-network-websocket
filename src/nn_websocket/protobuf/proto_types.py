@@ -40,10 +40,12 @@ class ConfigurationData:
         )
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> ConfigurationData:
+    def from_bytes(cls, data: bytes) -> ConfigurationData | None:
         """Creates a ConfigurationData instance from Protobuf bytes."""
         config = Configuration()
         config.ParseFromString(data)
+        if not config.HasField("genetic_algorithm") or not config.HasField("neural_network"):
+            return None
         return cls.from_protobuf(config)
 
     @staticmethod
@@ -77,10 +79,12 @@ class GeneticAlgorithmConfigData:
         )
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> GeneticAlgorithmConfigData:
+    def from_bytes(cls, data: bytes) -> GeneticAlgorithmConfigData | None:
         """Creates a GeneticAlgorithmConfigData instance from Protobuf bytes."""
         config = GeneticAlgorithmConfig()
         config.ParseFromString(data)
+        if not config.population_size or not config.mutation_rate:
+            return None
         return cls.from_protobuf(config)
 
     @staticmethod
@@ -138,10 +142,12 @@ class NeuralNetworkConfigData:
         )
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> NeuralNetworkConfigData:
+    def from_bytes(cls, data: bytes) -> NeuralNetworkConfigData | None:
         """Creates a NeuralNetworkConfigData instance from Protobuf bytes."""
         config = NeuralNetworkConfig()
         config.ParseFromString(data)
+        if not config.num_inputs or not config.num_outputs:
+            return None
         return cls.from_protobuf(config)
 
     @staticmethod
@@ -184,11 +190,12 @@ class ObservationData:
     inputs: list[float]
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> ObservationData:
+    def from_bytes(cls, data: bytes) -> ObservationData | None:
         """Creates an ObservationData instance from Protobuf bytes."""
         observation = Observation()
         observation.ParseFromString(data)
-
+        if not observation.inputs:
+            return None
         return cls(inputs=list(observation.inputs))
 
     @staticmethod
@@ -205,11 +212,12 @@ class ActionData:
     outputs: list[float]
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> ActionData:
+    def from_bytes(cls, data: bytes) -> ActionData | None:
         """Creates an ActionData instance from Protobuf bytes."""
         action = Action()
         action.ParseFromString(data)
-
+        if not action.outputs:
+            return None
         return cls(outputs=list(action.outputs))
 
     @staticmethod
@@ -226,11 +234,12 @@ class PopulationFitnessData:
     fitness: list[float]
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> PopulationFitnessData:
+    def from_bytes(cls, data: bytes) -> PopulationFitnessData | None:
         """Creates a PopulationFitnessData instance from Protobuf bytes."""
         population_fitness = PopulationFitness()
         population_fitness.ParseFromString(data)
-
+        if not population_fitness.fitness:
+            return None
         return cls(fitness=list(population_fitness.fitness))
 
     @staticmethod
