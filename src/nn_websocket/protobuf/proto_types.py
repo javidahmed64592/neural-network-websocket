@@ -48,23 +48,32 @@ class GeneticAlgorithmConfigData:
     mutation_rate: float
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> GeneticAlgorithmConfigData:
-        """Creates a GeneticAlgorithmConfigData instance from Protobuf bytes."""
-        config = GeneticAlgorithmConfig()
-        config.ParseFromString(data)
-
+    def from_protobuf(cls, config: GeneticAlgorithmConfig) -> GeneticAlgorithmConfigData:
+        """Creates a GeneticAlgorithmConfigData instance from Protobuf."""
         return cls(
             population_size=config.population_size,
             mutation_rate=config.mutation_rate,
         )
 
-    @staticmethod
-    def to_bytes(config_data: GeneticAlgorithmConfigData) -> bytes:
-        """Converts GeneticAlgorithmConfigData to Protobuf bytes."""
-        config = GeneticAlgorithmConfig(
+    @classmethod
+    def to_protobuf(cls, config_data: GeneticAlgorithmConfigData) -> GeneticAlgorithmConfig:
+        """Converts GeneticAlgorithmConfigData to Protobuf."""
+        return GeneticAlgorithmConfig(
             population_size=config_data.population_size,
             mutation_rate=config_data.mutation_rate,
         )
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> GeneticAlgorithmConfigData:
+        """Creates a GeneticAlgorithmConfigData instance from Protobuf bytes."""
+        config = GeneticAlgorithmConfig()
+        config.ParseFromString(data)
+        return cls.from_protobuf(config)
+
+    @staticmethod
+    def to_bytes(config_data: GeneticAlgorithmConfigData) -> bytes:
+        """Converts GeneticAlgorithmConfigData to Protobuf bytes."""
+        config = GeneticAlgorithmConfigData.to_protobuf(config_data)
         return cast(bytes, config.SerializeToString())
 
 
@@ -84,11 +93,8 @@ class NeuralNetworkConfigData:
     output_activation: ActivationFunctionEnum
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> NeuralNetworkConfigData:
-        """Creates a NeuralNetworkConfigData instance from Protobuf bytes."""
-        config = NeuralNetworkConfig()
-        config.ParseFromString(data)
-
+    def from_protobuf(cls, config: NeuralNetworkConfig) -> NeuralNetworkConfigData:
+        """Creates a NeuralNetworkConfigData instance from Protobuf."""
         return cls(
             num_inputs=config.num_inputs,
             num_outputs=config.num_outputs,
@@ -102,10 +108,10 @@ class NeuralNetworkConfigData:
             output_activation=ActivationFunctionEnum.from_protobuf(config.output_activation),
         )
 
-    @staticmethod
-    def to_bytes(config_data: NeuralNetworkConfigData) -> bytes:
-        """Converts NeuralNetworkConfigData to Protobuf bytes."""
-        config = NeuralNetworkConfig(
+    @classmethod
+    def to_protobuf(cls, config_data: NeuralNetworkConfigData) -> NeuralNetworkConfig:
+        """Converts NeuralNetworkConfigData to Protobuf."""
+        return NeuralNetworkConfig(
             num_inputs=config_data.num_inputs,
             num_outputs=config_data.num_outputs,
             hidden_layer_sizes=config_data.hidden_layer_sizes,
@@ -117,6 +123,18 @@ class NeuralNetworkConfigData:
             hidden_activation=ActivationFunctionEnum.to_protobuf(config_data.hidden_activation),
             output_activation=ActivationFunctionEnum.to_protobuf(config_data.output_activation),
         )
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> NeuralNetworkConfigData:
+        """Creates a NeuralNetworkConfigData instance from Protobuf bytes."""
+        config = NeuralNetworkConfig()
+        config.ParseFromString(data)
+        return cls.from_protobuf(config)
+
+    @staticmethod
+    def to_bytes(config_data: NeuralNetworkConfigData) -> bytes:
+        """Converts NeuralNetworkConfigData to Protobuf bytes."""
+        config = NeuralNetworkConfigData.to_protobuf(config_data)
         return cast(bytes, config.SerializeToString())
 
 
