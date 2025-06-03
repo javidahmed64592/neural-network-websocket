@@ -11,6 +11,7 @@ from nn_websocket.protobuf.proto_types import (
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     ObservationData,
+    TrainRequestData,
 )
 
 
@@ -115,6 +116,23 @@ class TestFrameRequestData:
         assert result.population_fitness.values == pytest.approx(
             frame_request_data_population.population_fitness.values
         )
+
+
+class TestTrainRequestData:
+    def test_to_bytes(self, train_request_data: TrainRequestData) -> None:
+        assert isinstance(TrainRequestData.to_bytes(train_request_data), bytes)
+
+    def test_from_bytes(self, train_request_data: TrainRequestData) -> None:
+        msg_bytes = TrainRequestData.to_bytes(train_request_data)
+        result = TrainRequestData.from_bytes(msg_bytes)
+
+        assert isinstance(result.observation, ObservationData)
+        assert isinstance(result.action, ActionData)
+        assert isinstance(result.fitness, FitnessData)
+
+        assert result.observation.inputs == pytest.approx(train_request_data.observation.inputs)
+        assert result.action.outputs == pytest.approx(train_request_data.action.outputs)
+        assert result.fitness.values == pytest.approx(train_request_data.fitness.values)
 
 
 class TestObservationData:

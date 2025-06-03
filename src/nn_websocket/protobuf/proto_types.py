@@ -5,7 +5,7 @@ from enum import IntEnum
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation
 from pydantic.dataclasses import dataclass
 
-from nn_websocket.protobuf.compiled.FrameData_pb2 import Action, Fitness, FrameRequest, Observation
+from nn_websocket.protobuf.compiled.FrameData_pb2 import Action, Fitness, FrameRequest, Observation, TrainRequest
 from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
     ActivationFunction,
     Configuration,
@@ -182,6 +182,7 @@ class FrameRequestData:
 
     observation: ObservationData | None = None
     population_fitness: FitnessData | None = None
+    train_request: TrainRequestData | None = None
 
     @classmethod
     def from_bytes(cls, data: bytes) -> FrameRequestData:
@@ -198,7 +199,7 @@ class FrameRequestData:
             case "population_fitness":
                 result.population_fitness = FitnessData.from_protobuf(frame_request.population_fitness)
             case "train_request":
-                result.train_request = None  # TODO: Add this
+                result.train_request = TrainRequestData.from_protobuf(frame_request.train_request)
             case _:
                 pass
 
@@ -215,6 +216,46 @@ class FrameRequestData:
             frame_request.observation.CopyFrom(ObservationData.to_protobuf(frame_request_data.observation))
 
         return frame_request.SerializeToString()
+
+
+@dataclass
+class TrainRequestData:
+    """Data class to hold training request data."""
+
+    observation: ObservationData
+    action: ActionData
+    fitness: FitnessData
+
+    @classmethod
+    def from_protobuf(cls, train_request: TrainRequest) -> TrainRequestData:
+        """Creates a TrainRequestData instance from Protobuf."""
+        return cls(
+            observation=ObservationData.from_protobuf(train_request.observation),
+            action=ActionData.from_protobuf(train_request.action),
+            fitness=FitnessData.from_protobuf(train_request.fitness),
+        )
+
+    @classmethod
+    def to_protobuf(cls, train_request: TrainRequestData) -> TrainRequest:
+        """Converts TrainRequestData to Protobuf."""
+        return TrainRequest(
+            observation=ObservationData.to_protobuf(train_request.observation),
+            action=ActionData.to_protobuf(train_request.action),
+            fitness=FitnessData.to_protobuf(train_request.fitness),
+        )
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> TrainRequestData:
+        """Creates a TrainRequestData instance from Protobuf bytes."""
+        train_request = TrainRequest()
+        train_request.ParseFromString(data)
+        return cls.from_protobuf(train_request)
+
+    @staticmethod
+    def to_bytes(train_request: TrainRequestData) -> bytes:
+        """Converts TrainRequestData to Protobuf bytes."""
+        train_request_proto = TrainRequestData.to_protobuf(train_request)
+        return train_request_proto.SerializeToString()
 
 
 @dataclass

@@ -19,6 +19,7 @@ from nn_websocket.protobuf.proto_types import (
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     ObservationData,
+    TrainRequestData,
 )
 
 # As an example, we will assume 10 agents with 5 inputs and 2 outputs each.
@@ -76,22 +77,46 @@ def ga_config_data() -> GeneticAlgorithmConfigData:
 
 
 @pytest.fixture
-def frame_request_data_population(
-    population_fitness_data: FitnessData,
-) -> FrameRequestData:
-    """Fixture for FrameRequestData."""
-    return FrameRequestData(
-        population_fitness=population_fitness_data,
-    )
-
-
-@pytest.fixture
 def frame_request_data_observation(
     observation_data: ObservationData,
 ) -> FrameRequestData:
     """Fixture for FrameRequestData with observation data."""
     return FrameRequestData(
         observation=observation_data,
+    )
+
+
+@pytest.fixture
+def frame_request_data_population(
+    fitness_data: FitnessData,
+) -> FrameRequestData:
+    """Fixture for FrameRequestData."""
+    return FrameRequestData(
+        population_fitness=fitness_data,
+    )
+
+
+@pytest.fixture
+def frame_request_data_train(
+    train_request_data: TrainRequestData,
+) -> FrameRequestData:
+    """Fixture for FrameRequestData with training data."""
+    return FrameRequestData(
+        train=train_request_data,
+    )
+
+
+@pytest.fixture
+def train_request_data(
+    observation_data: ObservationData,
+    action_data: ActionData,
+    fitness_data: FitnessData,
+) -> TrainRequestData:
+    """Fixture for TrainRequestData."""
+    return TrainRequestData(
+        observation=observation_data,
+        action=action_data,
+        fitness=fitness_data,
     )
 
 
