@@ -41,12 +41,12 @@ class TestNeuralNetworkSuite:
     def test_crossover_networks(
         self,
         mock_neural_network_suite: NeuralNetworkSuite,
-        population_fitness_data: FitnessData,
+        fitness_data: FitnessData,
     ) -> None:
         suite = mock_neural_network_suite
-        suite.crossover_networks(population_fitness_data)
+        suite.crossover_networks(fitness_data)
         for index, member in enumerate(suite.nn_ga.nn_members):
-            assert member.fitness == population_fitness_data.values[index]
+            assert member.fitness == fitness_data.values[index]
 
     def test_feedforward_through_network(
         self, mock_neural_network_suite: NeuralNetworkSuite, nn_config_data: NeuralNetworkConfigData

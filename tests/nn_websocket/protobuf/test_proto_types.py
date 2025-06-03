@@ -140,11 +140,11 @@ class TestActionData:
 
 
 class TestFitnessData:
-    def test_to_bytes(self, population_fitness_data: FitnessData) -> None:
-        assert isinstance(FitnessData.to_bytes(population_fitness_data), bytes)
+    def test_to_bytes(self, fitness_data: FitnessData) -> None:
+        assert isinstance(FitnessData.to_bytes(fitness_data), bytes)
 
-    def test_from_bytes(self, population_fitness_data: FitnessData) -> None:
-        msg_bytes = FitnessData.to_bytes(population_fitness_data)
+    def test_from_bytes(self, fitness_data: FitnessData) -> None:
+        msg_bytes = FitnessData.to_bytes(fitness_data)
         result = FitnessData.from_bytes(msg_bytes)
 
-        assert result.values == pytest.approx(population_fitness_data.values)
+        assert result.values == pytest.approx(fitness_data.values)

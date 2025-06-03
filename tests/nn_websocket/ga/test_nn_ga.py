@@ -81,15 +81,15 @@ class TestNeuralNetworkGA:
     def test_evolve(
         self,
         mock_neural_network_ga: NeuralNetworkGA,
-        population_fitness_data: FitnessData,
+        fitness_data: FitnessData,
     ) -> None:
         """Test evolution of the neural network population."""
         initial_chromosomes = [member.chromosome for member in mock_neural_network_ga.nn_members]
-        mock_neural_network_ga.evolve(population_fitness_data)
+        mock_neural_network_ga.evolve(fitness_data)
         new_chromosomes = [member.chromosome for member in mock_neural_network_ga.nn_members]
 
         for index, member in enumerate(mock_neural_network_ga.nn_members):
-            assert member.fitness == population_fitness_data.values[index]
+            assert member.fitness == fitness_data.values[index]
 
-        assert all(mock_neural_network_ga._population._population_fitness == population_fitness_data.values)
+        assert all(mock_neural_network_ga._population._population_fitness == fitness_data.values)
         assert initial_chromosomes != new_chromosomes

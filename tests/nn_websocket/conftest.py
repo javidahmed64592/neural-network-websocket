@@ -112,7 +112,7 @@ def action_data() -> ActionData:
 
 
 @pytest.fixture
-def population_fitness_data() -> FitnessData:
+def fitness_data() -> FitnessData:
     """Fixture for FitnessData."""
     return FitnessData(
         values=np.arange(MOCK_NUM_AGENTS, dtype=float).tolist(),

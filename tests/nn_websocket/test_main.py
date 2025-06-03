@@ -29,11 +29,11 @@ class TestNeuralNetworkWebsocketServer:
         assert isinstance(nn_suite, NeuralNetworkSuite)
 
     def test_crossover_neural_networks(
-        self, mock_neural_network_suite: NeuralNetworkSuite, population_fitness_data: FitnessData
+        self, mock_neural_network_suite: NeuralNetworkSuite, fitness_data: FitnessData
     ) -> None:
         """Test that the crossover of neural networks works correctly."""
         with patch.object(mock_neural_network_suite, "crossover_networks", autospec=True) as mock_crossover:
-            NeuralNetworkWebsocketServer.crossover_neural_networks(mock_neural_network_suite, population_fitness_data)
+            NeuralNetworkWebsocketServer.crossover_neural_networks(mock_neural_network_suite, fitness_data)
             assert mock_crossover.called
 
     def test_process_observations(
