@@ -95,6 +95,10 @@ class TestFrameRequestData:
         """Test serializing a FrameRequestData with population fitness data."""
         assert isinstance(FrameRequestData.to_bytes(frame_request_data_population), bytes)
 
+    def test_to_bytes_with_train_request_data(self, train_request_data: TrainRequestData) -> None:
+        """Test serializing a FrameRequestData with training data."""
+        assert isinstance(FrameRequestData.to_bytes(train_request_data), bytes)
+
     def test_from_bytes_with_observation(self, frame_request_data_observation: FrameRequestData) -> None:
         """Test deserializing a FrameRequestData with observation data."""
         assert frame_request_data_observation.observation is not None
@@ -115,6 +119,27 @@ class TestFrameRequestData:
         assert isinstance(result.population_fitness, FitnessData)
         assert result.population_fitness.values == pytest.approx(
             frame_request_data_population.population_fitness.values
+        )
+
+    def test_from_bytes_with_train_request_data(self, frame_request_data_train: FrameRequestData) -> None:
+        """Test deserializing a FrameRequestData with training data."""
+        assert frame_request_data_train.train_request is not None
+
+        msg_bytes = FrameRequestData.to_bytes(frame_request_data_train)
+        result = FrameRequestData.from_bytes(msg_bytes)
+
+        assert isinstance(result.train_request.observation, ObservationData)
+        assert isinstance(result.train_request.action, ActionData)
+        assert isinstance(result.train_request.fitness, FitnessData)
+
+        assert result.train_request.observation.inputs == pytest.approx(
+            frame_request_data_train.train_request.observation.inputs
+        )
+        assert result.train_request.action.outputs == pytest.approx(
+            frame_request_data_train.train_request.action.outputs
+        )
+        assert result.train_request.fitness.values == pytest.approx(
+            frame_request_data_train.train_request.fitness.values
         )
 
 

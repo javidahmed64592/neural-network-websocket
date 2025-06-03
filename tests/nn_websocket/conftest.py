@@ -102,7 +102,7 @@ def frame_request_data_train(
 ) -> FrameRequestData:
     """Fixture for FrameRequestData with training data."""
     return FrameRequestData(
-        train=train_request_data,
+        train_request=train_request_data,
     )
 
 

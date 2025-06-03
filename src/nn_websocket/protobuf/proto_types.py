@@ -210,10 +210,12 @@ class FrameRequestData:
         """Converts FrameRequestData to Protobuf bytes."""
         frame_request = FrameRequest()
 
-        if frame_request_data.population_fitness is not None:
-            frame_request.population_fitness.CopyFrom(FitnessData.to_protobuf(frame_request_data.population_fitness))
-        elif frame_request_data.observation is not None:
+        if frame_request_data.observation is not None:
             frame_request.observation.CopyFrom(ObservationData.to_protobuf(frame_request_data.observation))
+        elif frame_request_data.population_fitness is not None:
+            frame_request.population_fitness.CopyFrom(FitnessData.to_protobuf(frame_request_data.population_fitness))
+        elif frame_request_data.train_request is not None:
+            frame_request.train_request.CopyFrom(TrainRequestData.to_protobuf(frame_request_data.train_request))
 
         return frame_request.SerializeToString()
 
