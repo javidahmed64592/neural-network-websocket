@@ -5,7 +5,7 @@ package NNWebsocket;
 message FrameRequest {
     oneof msg {
         Observation observation = 1;
-        Fitness population_fitness = 2;
+        Fitness fitness = 2;
         TrainRequest train_request = 3;
     }
 }

@@ -181,7 +181,7 @@ class FrameRequestData:
     """Data class to hold frame request data."""
 
     observation: ObservationData | None = None
-    population_fitness: FitnessData | None = None
+    fitness: FitnessData | None = None
     train_request: TrainRequestData | None = None
 
     @classmethod
@@ -196,8 +196,8 @@ class FrameRequestData:
         match which_oneof:
             case "observation":
                 result.observation = ObservationData.from_protobuf(frame_request.observation)
-            case "population_fitness":
-                result.population_fitness = FitnessData.from_protobuf(frame_request.population_fitness)
+            case "fitness":
+                result.fitness = FitnessData.from_protobuf(frame_request.fitness)
             case "train_request":
                 result.train_request = TrainRequestData.from_protobuf(frame_request.train_request)
             case _:
@@ -212,8 +212,8 @@ class FrameRequestData:
 
         if frame_request_data.observation is not None:
             frame_request.observation.CopyFrom(ObservationData.to_protobuf(frame_request_data.observation))
-        elif frame_request_data.population_fitness is not None:
-            frame_request.population_fitness.CopyFrom(FitnessData.to_protobuf(frame_request_data.population_fitness))
+        elif frame_request_data.fitness is not None:
+            frame_request.fitness.CopyFrom(FitnessData.to_protobuf(frame_request_data.fitness))
         elif frame_request_data.train_request is not None:
             frame_request.train_request.CopyFrom(TrainRequestData.to_protobuf(frame_request_data.train_request))
 

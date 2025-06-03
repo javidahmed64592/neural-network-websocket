@@ -78,8 +78,8 @@ class MockClient:
     def get_random_population_fitness() -> FrameRequestData:
         """Generate a random population fitness for testing."""
         fitness = rng.uniform(low=0, high=1, size=NUM_AGENTS).astype(np.float32).tolist()
-        population_fitness = FitnessData(values=fitness)
-        return FrameRequestData(population_fitness=population_fitness)
+        fitness_data = FitnessData(values=fitness)
+        return FrameRequestData(fitness=fitness_data)
 
     @staticmethod
     async def start() -> None:

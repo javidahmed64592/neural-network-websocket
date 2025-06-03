@@ -17,8 +17,8 @@ class TestMockClient:
 
     def test_get_random_population_fitness(self) -> None:
         """Test that get_random_population_fitness generates valid population fitness data."""
-        population_fitness = MockClient.get_random_population_fitness()
-        assert isinstance(population_fitness.population_fitness, FitnessData)
+        fitness = MockClient.get_random_population_fitness()
+        assert isinstance(fitness.fitness, FitnessData)
 
     # Unit test for start method
     @pytest.mark.asyncio

@@ -92,7 +92,7 @@ def frame_request_data_population(
 ) -> FrameRequestData:
     """Fixture for FrameRequestData."""
     return FrameRequestData(
-        population_fitness=fitness_data,
+        fitness=fitness_data,
     )
 
 

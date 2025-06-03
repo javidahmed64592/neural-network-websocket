@@ -78,13 +78,13 @@ class NeuralNetworkGA(GeneticAlgorithm):
         for member, score in zip(self.nn_members, fitness_scores, strict=False):
             member.fitness = score
 
-    def evolve(self, population_fitness: FitnessData) -> None:
+    def evolve(self, fitness_data: FitnessData) -> None:
         """
         Evolve the population based on the provided fitness data.
 
         Parameters:
-            population_fitness (FitnessData): Population fitness data containing fitness scores
+            fitness_data (FitnessData): Population fitness data containing fitness scores
         """
-        self.set_population_fitness(population_fitness.values)
+        self.set_population_fitness(fitness_data.values)
         self._population.evaluate()
         self._evolve()

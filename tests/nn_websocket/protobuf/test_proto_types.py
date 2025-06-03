@@ -91,7 +91,7 @@ class TestFrameRequestData:
         """Test serializing a FrameRequestData with observation data."""
         assert isinstance(FrameRequestData.to_bytes(frame_request_data_observation), bytes)
 
-    def test_to_bytes_with_population_fitness(self, frame_request_data_population: FrameRequestData) -> None:
+    def test_to_bytes_with_fitness(self, frame_request_data_population: FrameRequestData) -> None:
         """Test serializing a FrameRequestData with population fitness data."""
         assert isinstance(FrameRequestData.to_bytes(frame_request_data_population), bytes)
 
@@ -109,17 +109,15 @@ class TestFrameRequestData:
         assert isinstance(result.observation, ObservationData)
         assert result.observation.inputs == pytest.approx(frame_request_data_observation.observation.inputs)
 
-    def test_from_bytes_with_population_fitness(self, frame_request_data_population: FrameRequestData) -> None:
+    def test_from_bytes_with_fitness(self, frame_request_data_population: FrameRequestData) -> None:
         """Test deserializing a FrameRequestData with population fitness data."""
-        assert frame_request_data_population.population_fitness is not None
+        assert frame_request_data_population.fitness is not None
 
         msg_bytes = FrameRequestData.to_bytes(frame_request_data_population)
         result = FrameRequestData.from_bytes(msg_bytes)
 
-        assert isinstance(result.population_fitness, FitnessData)
-        assert result.population_fitness.values == pytest.approx(
-            frame_request_data_population.population_fitness.values
-        )
+        assert isinstance(result.fitness, FitnessData)
+        assert result.fitness.values == pytest.approx(frame_request_data_population.fitness.values)
 
     def test_from_bytes_with_train_request_data(self, frame_request_data_train: FrameRequestData) -> None:
         """Test deserializing a FrameRequestData with training data."""

@@ -25,9 +25,9 @@ class NeuralNetworkWebsocketServer:
         return NeuralNetworkSuite.from_bytes(config)
 
     @staticmethod
-    def crossover_neural_networks(neural_network_suite: NeuralNetworkSuite, population_fitness: FitnessData) -> None:
+    def crossover_neural_networks(neural_network_suite: NeuralNetworkSuite, fitness_data: FitnessData) -> None:
         logger.info("Crossover neural networks...")
-        neural_network_suite.crossover_networks(population_fitness)
+        neural_network_suite.crossover_networks(fitness_data)
 
     @staticmethod
     def process_observations(neural_network_suite: NeuralNetworkSuite, observation: ObservationData) -> ActionData:
@@ -45,8 +45,8 @@ class NeuralNetworkWebsocketServer:
                 neural_network_suite = NeuralNetworkWebsocketServer.configure_neural_networks(message_bytes)
             else:
                 message_data = FrameRequestData.from_bytes(message_bytes)
-                if population_fitness := message_data.population_fitness:
-                    NeuralNetworkWebsocketServer.crossover_neural_networks(neural_network_suite, population_fitness)
+                if fitness := message_data.fitness:
+                    NeuralNetworkWebsocketServer.crossover_neural_networks(neural_network_suite, fitness)
                 elif observation := message_data.observation:
                     actions = NeuralNetworkWebsocketServer.process_observations(neural_network_suite, observation)
                     await websocket.send(actions.to_bytes(actions))

@@ -7,14 +7,14 @@ from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class FrameRequest(_message.Message):
-    __slots__ = ("observation", "population_fitness", "train_request")
+    __slots__ = ("observation", "fitness", "train_request")
     OBSERVATION_FIELD_NUMBER: _ClassVar[int]
-    POPULATION_FITNESS_FIELD_NUMBER: _ClassVar[int]
+    FITNESS_FIELD_NUMBER: _ClassVar[int]
     TRAIN_REQUEST_FIELD_NUMBER: _ClassVar[int]
     observation: Observation
-    population_fitness: Fitness
+    fitness: Fitness
     train_request: TrainRequest
-    def __init__(self, observation: _Optional[_Union[Observation, _Mapping]] = ..., population_fitness: _Optional[_Union[Fitness, _Mapping]] = ..., train_request: _Optional[_Union[TrainRequest, _Mapping]] = ...) -> None: ...
+    def __init__(self, observation: _Optional[_Union[Observation, _Mapping]] = ..., fitness: _Optional[_Union[Fitness, _Mapping]] = ..., train_request: _Optional[_Union[TrainRequest, _Mapping]] = ...) -> None: ...
 
 class TrainRequest(_message.Message):
     __slots__ = ("observation", "action", "fitness")

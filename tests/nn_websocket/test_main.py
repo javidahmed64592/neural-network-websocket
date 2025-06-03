@@ -63,7 +63,7 @@ class TestNeuralNetworkWebsocketServer:
             mock_configure_neural_networks.return_value, frame_request_data_observation.observation
         )
         mock_crossover_neural_networks.assert_called_once_with(
-            mock_configure_neural_networks.return_value, frame_request_data_population.population_fitness
+            mock_configure_neural_networks.return_value, frame_request_data_population.fitness
         )
 
     @pytest.mark.asyncio
