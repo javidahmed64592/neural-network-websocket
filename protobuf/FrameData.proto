@@ -4,13 +4,16 @@ package NNWebsocket;
 
 message FrameRequest {
     oneof msg {
-        PopulationFitness population_fitness = 2;
-        Observation observation = 3;
+        Observation observation = 1;
+        Fitness population_fitness = 2;
+        TrainRequest train_request = 3;
     }
 }
 
-message PopulationFitness {
-    repeated float fitness = 1;
+message TrainRequest {
+    Observation observation = 1;
+    Action action = 2;
+    Fitness fitness = 3;
 }
 
 message Observation {
@@ -19,4 +22,8 @@ message Observation {
 
 message Action {
     repeated float outputs = 1;
+}
+
+message Fitness {
+    repeated float values = 1;
 }

@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13NeuralNetwork.proto\x12\x0bNNWebsocket\"\x89\x01\n\rConfiguration\x12>\n\x11genetic_algorithm\x18\x01 \x01(\x0b\x32#.NNWebsocket.GeneticAlgorithmConfig\x12\x38\n\x0eneural_network\x18\x02 \x01(\x0b\x32 .NNWebsocket.NeuralNetworkConfig\"H\n\x16GeneticAlgorithmConfig\x12\x17\n\x0fpopulation_size\x18\x01 \x01(\x05\x12\x15\n\rmutation_rate\x18\x02 \x01(\x02\"\xdb\x02\n\x13NeuralNetworkConfig\x12\x12\n\nnum_inputs\x18\x01 \x01(\x05\x12\x13\n\x0bnum_outputs\x18\x02 \x01(\x05\x12\x1a\n\x12hidden_layer_sizes\x18\x03 \x03(\x05\x12\x13\n\x0bweights_min\x18\x04 \x01(\x02\x12\x13\n\x0bweights_max\x18\x05 \x01(\x02\x12\x10\n\x08\x62ias_min\x18\x06 \x01(\x02\x12\x10\n\x08\x62ias_max\x18\x07 \x01(\x02\x12\x39\n\x10input_activation\x18\x08 \x01(\x0e\x32\x1f.NNWebsocket.ActivationFunction\x12:\n\x11hidden_activation\x18\t \x01(\x0e\x32\x1f.NNWebsocket.ActivationFunction\x12:\n\x11output_activation\x18\n \x01(\x0e\x32\x1f.NNWebsocket.ActivationFunction*7\n\x12\x41\x63tivationFunction\x12\n\n\x06LINEAR\x10\x00\x12\x08\n\x04RELU\x10\x01\x12\x0b\n\x07SIGMOID\x10\x02\x42\x02H\x03\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x13NeuralNetwork.proto\x12\x0bNNWebsocket\"\xa4\x01\n\rConfiguration\x12\x38\n\x0eneural_network\x18\x01 \x01(\x0b\x32 .NNWebsocket.NeuralNetworkConfig\x12\x43\n\x11genetic_algorithm\x18\x02 \x01(\x0b\x32#.NNWebsocket.GeneticAlgorithmConfigH\x00\x88\x01\x01\x42\x14\n\x12_genetic_algorithm\"\xdb\x02\n\x13NeuralNetworkConfig\x12\x12\n\nnum_inputs\x18\x01 \x01(\x05\x12\x13\n\x0bnum_outputs\x18\x02 \x01(\x05\x12\x1a\n\x12hidden_layer_sizes\x18\x03 \x03(\x05\x12\x13\n\x0bweights_min\x18\x04 \x01(\x02\x12\x13\n\x0bweights_max\x18\x05 \x01(\x02\x12\x10\n\x08\x62ias_min\x18\x06 \x01(\x02\x12\x10\n\x08\x62ias_max\x18\x07 \x01(\x02\x12\x39\n\x10input_activation\x18\x08 \x01(\x0e\x32\x1f.NNWebsocket.ActivationFunction\x12:\n\x11hidden_activation\x18\t \x01(\x0e\x32\x1f.NNWebsocket.ActivationFunction\x12:\n\x11output_activation\x18\n \x01(\x0e\x32\x1f.NNWebsocket.ActivationFunction\"H\n\x16GeneticAlgorithmConfig\x12\x17\n\x0fpopulation_size\x18\x01 \x01(\x05\x12\x15\n\rmutation_rate\x18\x02 \x01(\x02*7\n\x12\x41\x63tivationFunction\x12\n\n\x06LINEAR\x10\x00\x12\x08\n\x04RELU\x10\x01\x12\x0b\n\x07SIGMOID\x10\x02\x42\x02H\x03\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,12 +32,12 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'NeuralNetwork_pb2', _global
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'H\003'
-  _globals['_ACTIVATIONFUNCTION']._serialized_start=600
-  _globals['_ACTIVATIONFUNCTION']._serialized_end=655
+  _globals['_ACTIVATIONFUNCTION']._serialized_start=627
+  _globals['_ACTIVATIONFUNCTION']._serialized_end=682
   _globals['_CONFIGURATION']._serialized_start=37
-  _globals['_CONFIGURATION']._serialized_end=174
-  _globals['_GENETICALGORITHMCONFIG']._serialized_start=176
-  _globals['_GENETICALGORITHMCONFIG']._serialized_end=248
-  _globals['_NEURALNETWORKCONFIG']._serialized_start=251
-  _globals['_NEURALNETWORKCONFIG']._serialized_end=598
+  _globals['_CONFIGURATION']._serialized_end=201
+  _globals['_NEURALNETWORKCONFIG']._serialized_start=204
+  _globals['_NEURALNETWORKCONFIG']._serialized_end=551
+  _globals['_GENETICALGORITHMCONFIG']._serialized_start=553
+  _globals['_GENETICALGORITHMCONFIG']._serialized_end=625
 # @@protoc_insertion_point(module_scope)

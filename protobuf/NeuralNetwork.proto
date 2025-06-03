@@ -3,13 +3,8 @@ option optimize_for = LITE_RUNTIME;
 package NNWebsocket;
 
 message Configuration {
-    GeneticAlgorithmConfig genetic_algorithm = 1;
-    NeuralNetworkConfig neural_network = 2;
-}
-
-message GeneticAlgorithmConfig {
-    int32 population_size = 1;
-    float mutation_rate = 2;
+    NeuralNetworkConfig neural_network = 1;
+    optional GeneticAlgorithmConfig genetic_algorithm = 2;
 }
 
 message NeuralNetworkConfig {
@@ -29,4 +24,9 @@ enum ActivationFunction {
     LINEAR = 0;
     RELU = 1;
     SIGMOID = 2;
+}
+
+message GeneticAlgorithmConfig {
+    int32 population_size = 1;
+    float mutation_rate = 2;
 }
