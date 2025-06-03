@@ -6,11 +6,11 @@ from nn_websocket.protobuf.proto_types import (
     ActionData,
     ActivationFunctionEnum,
     ConfigurationData,
+    FitnessData,
     FrameRequestData,
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     ObservationData,
-    PopulationFitnessData,
 )
 
 
@@ -23,20 +23,8 @@ class TestConfigurationData:
         msg_bytes = ConfigurationData.to_bytes(configuration_data)
         result = ConfigurationData.from_bytes(msg_bytes)
 
-        assert isinstance(result.genetic_algorithm, GeneticAlgorithmConfigData)
         assert isinstance(result.neural_network, NeuralNetworkConfigData)
-
-
-class TestGeneticAlgorithmConfigData:
-    def test_to_bytes(self, ga_config_data: GeneticAlgorithmConfigData) -> None:
-        assert isinstance(GeneticAlgorithmConfigData.to_bytes(ga_config_data), bytes)
-
-    def test_from_bytes(self, ga_config_data: GeneticAlgorithmConfigData) -> None:
-        msg_bytes = GeneticAlgorithmConfigData.to_bytes(ga_config_data)
-        result = GeneticAlgorithmConfigData.from_bytes(msg_bytes)
-
-        assert result.population_size == ga_config_data.population_size
-        assert result.mutation_rate == pytest.approx(ga_config_data.mutation_rate)
+        assert isinstance(result.genetic_algorithm, GeneticAlgorithmConfigData)
 
 
 class TestNeuralNetworkConfigData:
@@ -84,27 +72,27 @@ class TestActivationFunctionEnum:
             assert converted_enum.get_class() == enum_value.get_class()
 
 
+class TestGeneticAlgorithmConfigData:
+    def test_to_bytes(self, ga_config_data: GeneticAlgorithmConfigData) -> None:
+        assert isinstance(GeneticAlgorithmConfigData.to_bytes(ga_config_data), bytes)
+
+    def test_from_bytes(self, ga_config_data: GeneticAlgorithmConfigData) -> None:
+        msg_bytes = GeneticAlgorithmConfigData.to_bytes(ga_config_data)
+        result = GeneticAlgorithmConfigData.from_bytes(msg_bytes)
+
+        assert result.population_size == ga_config_data.population_size
+        assert result.mutation_rate == pytest.approx(ga_config_data.mutation_rate)
+
+
 # frame_data.proto
 class TestFrameRequestData:
-    def test_to_bytes_with_population_fitness(self, frame_request_data_population: FrameRequestData) -> None:
-        """Test serializing a FrameRequestData with population fitness data."""
-        assert isinstance(FrameRequestData.to_bytes(frame_request_data_population), bytes)
-
     def test_to_bytes_with_observation(self, frame_request_data_observation: FrameRequestData) -> None:
         """Test serializing a FrameRequestData with observation data."""
         assert isinstance(FrameRequestData.to_bytes(frame_request_data_observation), bytes)
 
-    def test_from_bytes_with_population_fitness(self, frame_request_data_population: FrameRequestData) -> None:
-        """Test deserializing a FrameRequestData with population fitness data."""
-        assert frame_request_data_population.population_fitness is not None
-
-        msg_bytes = FrameRequestData.to_bytes(frame_request_data_population)
-        result = FrameRequestData.from_bytes(msg_bytes)
-
-        assert isinstance(result.population_fitness, PopulationFitnessData)
-        assert result.population_fitness.fitness == pytest.approx(
-            frame_request_data_population.population_fitness.fitness
-        )
+    def test_to_bytes_with_population_fitness(self, frame_request_data_population: FrameRequestData) -> None:
+        """Test serializing a FrameRequestData with population fitness data."""
+        assert isinstance(FrameRequestData.to_bytes(frame_request_data_population), bytes)
 
     def test_from_bytes_with_observation(self, frame_request_data_observation: FrameRequestData) -> None:
         """Test deserializing a FrameRequestData with observation data."""
@@ -116,16 +104,17 @@ class TestFrameRequestData:
         assert isinstance(result.observation, ObservationData)
         assert result.observation.inputs == pytest.approx(frame_request_data_observation.observation.inputs)
 
+    def test_from_bytes_with_population_fitness(self, frame_request_data_population: FrameRequestData) -> None:
+        """Test deserializing a FrameRequestData with population fitness data."""
+        assert frame_request_data_population.population_fitness is not None
 
-class TestPopulationFitnessData:
-    def test_to_bytes(self, population_fitness_data: PopulationFitnessData) -> None:
-        assert isinstance(PopulationFitnessData.to_bytes(population_fitness_data), bytes)
+        msg_bytes = FrameRequestData.to_bytes(frame_request_data_population)
+        result = FrameRequestData.from_bytes(msg_bytes)
 
-    def test_from_bytes(self, population_fitness_data: PopulationFitnessData) -> None:
-        msg_bytes = PopulationFitnessData.to_bytes(population_fitness_data)
-        result = PopulationFitnessData.from_bytes(msg_bytes)
-
-        assert result.fitness == pytest.approx(population_fitness_data.fitness)
+        assert isinstance(result.population_fitness, FitnessData)
+        assert result.population_fitness.values == pytest.approx(
+            frame_request_data_population.population_fitness.values
+        )
 
 
 class TestObservationData:
@@ -148,3 +137,14 @@ class TestActionData:
         result = ActionData.from_bytes(msg_bytes)
 
         assert result.outputs == pytest.approx(action_data.outputs)
+
+
+class TestFitnessData:
+    def test_to_bytes(self, population_fitness_data: FitnessData) -> None:
+        assert isinstance(FitnessData.to_bytes(population_fitness_data), bytes)
+
+    def test_from_bytes(self, population_fitness_data: FitnessData) -> None:
+        msg_bytes = FitnessData.to_bytes(population_fitness_data)
+        result = FitnessData.from_bytes(msg_bytes)
+
+        assert result.values == pytest.approx(population_fitness_data.values)

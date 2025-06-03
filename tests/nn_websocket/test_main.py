@@ -8,10 +8,10 @@ from nn_websocket.models.config import Config
 from nn_websocket.models.nn_suite import NeuralNetworkSuite
 from nn_websocket.protobuf.proto_types import (
     ActionData,
+    FitnessData,
     FrameRequestData,
     NeuralNetworkConfigData,
     ObservationData,
-    PopulationFitnessData,
 )
 
 
@@ -29,7 +29,7 @@ class TestNeuralNetworkWebsocketServer:
         assert isinstance(nn_suite, NeuralNetworkSuite)
 
     def test_crossover_neural_networks(
-        self, mock_neural_network_suite: NeuralNetworkSuite, population_fitness_data: PopulationFitnessData
+        self, mock_neural_network_suite: NeuralNetworkSuite, population_fitness_data: FitnessData
     ) -> None:
         """Test that the crossover of neural networks works correctly."""
         with patch.object(mock_neural_network_suite, "crossover_networks", autospec=True) as mock_crossover:

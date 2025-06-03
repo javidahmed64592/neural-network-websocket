@@ -9,11 +9,11 @@ from nn_websocket.models.config import Config
 from nn_websocket.protobuf.proto_types import (
     ActivationFunctionEnum,
     ConfigurationData,
+    FitnessData,
     FrameRequestData,
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     ObservationData,
-    PopulationFitnessData,
 )
 
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
@@ -78,7 +78,7 @@ class MockClient:
     def get_random_population_fitness() -> FrameRequestData:
         """Generate a random population fitness for testing."""
         fitness = rng.uniform(low=0, high=1, size=NUM_AGENTS).astype(np.float32).tolist()
-        population_fitness = PopulationFitnessData(fitness=fitness)
+        population_fitness = FitnessData(values=fitness)
         return FrameRequestData(population_fitness=population_fitness)
 
     @staticmethod
@@ -98,7 +98,7 @@ class MockClient:
                 num_observations += 1
 
                 if num_observations % EPISODE_LENGTH == 0:
-                    logger.info("Sending PopulationFitnessData to server.")
+                    logger.info("Sending FitnessData to server.")
                     await ws.send(FrameRequestData.to_bytes(MockClient.get_random_population_fitness()))
                 try:
                     response = await asyncio.wait_for(ws.recv(), timeout=2)

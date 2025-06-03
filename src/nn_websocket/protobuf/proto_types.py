@@ -5,7 +5,7 @@ from enum import IntEnum
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation
 from pydantic.dataclasses import dataclass
 
-from nn_websocket.protobuf.compiled.FrameData_pb2 import Action, FrameRequest, Observation, PopulationFitness
+from nn_websocket.protobuf.compiled.FrameData_pb2 import Action, Fitness, FrameRequest, Observation
 from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
     ActivationFunction,
     Configuration,
@@ -19,23 +19,23 @@ from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
 class ConfigurationData:
     """Data class to hold configuration data."""
 
-    genetic_algorithm: GeneticAlgorithmConfigData
     neural_network: NeuralNetworkConfigData
+    genetic_algorithm: GeneticAlgorithmConfigData | None = None
 
     @classmethod
     def from_protobuf(cls, config: Configuration) -> ConfigurationData:
         """Creates a ConfigurationData instance from Protobuf."""
         return cls(
-            genetic_algorithm=GeneticAlgorithmConfigData.from_protobuf(config.genetic_algorithm),
             neural_network=NeuralNetworkConfigData.from_protobuf(config.neural_network),
+            genetic_algorithm=GeneticAlgorithmConfigData.from_protobuf(config.genetic_algorithm),
         )
 
     @classmethod
     def to_protobuf(cls, config_data: ConfigurationData) -> Configuration:
         """Converts ConfigurationData to Protobuf."""
         return Configuration(
-            genetic_algorithm=GeneticAlgorithmConfigData.to_protobuf(config_data.genetic_algorithm),
             neural_network=NeuralNetworkConfigData.to_protobuf(config_data.neural_network),
+            genetic_algorithm=GeneticAlgorithmConfigData.to_protobuf(config_data.genetic_algorithm),
         )
 
     @classmethod
@@ -49,43 +49,6 @@ class ConfigurationData:
     def to_bytes(config_data: ConfigurationData) -> bytes:
         """Converts ConfigurationData to Protobuf bytes."""
         config = ConfigurationData.to_protobuf(config_data)
-        return config.SerializeToString()
-
-
-@dataclass
-class GeneticAlgorithmConfigData:
-    """Data class to hold genetic algorithm configuration."""
-
-    population_size: int
-    mutation_rate: float
-
-    @classmethod
-    def from_protobuf(cls, config: GeneticAlgorithmConfig) -> GeneticAlgorithmConfigData:
-        """Creates a GeneticAlgorithmConfigData instance from Protobuf."""
-        return cls(
-            population_size=config.population_size,
-            mutation_rate=config.mutation_rate,
-        )
-
-    @staticmethod
-    def to_protobuf(config_data: GeneticAlgorithmConfigData) -> GeneticAlgorithmConfig:
-        """Converts GeneticAlgorithmConfigData to Protobuf."""
-        return GeneticAlgorithmConfig(
-            population_size=config_data.population_size,
-            mutation_rate=config_data.mutation_rate,
-        )
-
-    @classmethod
-    def from_bytes(cls, data: bytes) -> GeneticAlgorithmConfigData:
-        """Creates a GeneticAlgorithmConfigData instance from Protobuf bytes."""
-        config = GeneticAlgorithmConfig()
-        config.ParseFromString(data)
-        return cls.from_protobuf(config)
-
-    @staticmethod
-    def to_bytes(config_data: GeneticAlgorithmConfigData) -> bytes:
-        """Converts GeneticAlgorithmConfigData to Protobuf bytes."""
-        config = GeneticAlgorithmConfigData.to_protobuf(config_data)
         return config.SerializeToString()
 
 
@@ -175,13 +138,50 @@ class ActivationFunctionEnum(IntEnum):
         return ActivationFunction.Value(enum_value.name)  # type: ignore
 
 
+@dataclass
+class GeneticAlgorithmConfigData:
+    """Data class to hold genetic algorithm configuration."""
+
+    population_size: int
+    mutation_rate: float
+
+    @classmethod
+    def from_protobuf(cls, config: GeneticAlgorithmConfig) -> GeneticAlgorithmConfigData:
+        """Creates a GeneticAlgorithmConfigData instance from Protobuf."""
+        return cls(
+            population_size=config.population_size,
+            mutation_rate=config.mutation_rate,
+        )
+
+    @staticmethod
+    def to_protobuf(config_data: GeneticAlgorithmConfigData) -> GeneticAlgorithmConfig:
+        """Converts GeneticAlgorithmConfigData to Protobuf."""
+        return GeneticAlgorithmConfig(
+            population_size=config_data.population_size,
+            mutation_rate=config_data.mutation_rate,
+        )
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> GeneticAlgorithmConfigData:
+        """Creates a GeneticAlgorithmConfigData instance from Protobuf bytes."""
+        config = GeneticAlgorithmConfig()
+        config.ParseFromString(data)
+        return cls.from_protobuf(config)
+
+    @staticmethod
+    def to_bytes(config_data: GeneticAlgorithmConfigData) -> bytes:
+        """Converts GeneticAlgorithmConfigData to Protobuf bytes."""
+        config = GeneticAlgorithmConfigData.to_protobuf(config_data)
+        return config.SerializeToString()
+
+
 # frame_data.proto
 @dataclass
 class FrameRequestData:
     """Data class to hold frame request data."""
 
-    population_fitness: PopulationFitnessData | None = None
     observation: ObservationData | None = None
+    population_fitness: FitnessData | None = None
 
     @classmethod
     def from_bytes(cls, data: bytes) -> FrameRequestData:
@@ -192,10 +192,15 @@ class FrameRequestData:
         result = cls()
 
         which_oneof = frame_request.WhichOneof("msg")
-        if which_oneof == "population_fitness":
-            result.population_fitness = PopulationFitnessData.from_protobuf(frame_request.population_fitness)
-        elif which_oneof == "observation":
-            result.observation = ObservationData.from_protobuf(frame_request.observation)
+        match which_oneof:
+            case "observation":
+                result.observation = ObservationData.from_protobuf(frame_request.observation)
+            case "population_fitness":
+                result.population_fitness = FitnessData.from_protobuf(frame_request.population_fitness)
+            case "train_request":
+                result.train_request = None  # TODO: Add this
+            case _:
+                pass
 
         return result
 
@@ -205,43 +210,11 @@ class FrameRequestData:
         frame_request = FrameRequest()
 
         if frame_request_data.population_fitness is not None:
-            frame_request.population_fitness.CopyFrom(
-                PopulationFitnessData.to_protobuf(frame_request_data.population_fitness)
-            )
+            frame_request.population_fitness.CopyFrom(FitnessData.to_protobuf(frame_request_data.population_fitness))
         elif frame_request_data.observation is not None:
             frame_request.observation.CopyFrom(ObservationData.to_protobuf(frame_request_data.observation))
 
         return frame_request.SerializeToString()
-
-
-@dataclass
-class PopulationFitnessData:
-    """Data class to hold population fitness data."""
-
-    fitness: list[float]
-
-    @classmethod
-    def from_protobuf(cls, population_fitness: PopulationFitness) -> PopulationFitnessData:
-        """Creates a PopulationFitnessData instance from Protobuf."""
-        return cls(fitness=list(population_fitness.fitness))
-
-    @staticmethod
-    def to_protobuf(population_fitness_data: PopulationFitnessData) -> PopulationFitness:
-        """Converts PopulationFitnessData to Protobuf."""
-        return PopulationFitness(fitness=population_fitness_data.fitness)
-
-    @classmethod
-    def from_bytes(cls, data: bytes) -> PopulationFitnessData:
-        """Creates a PopulationFitnessData instance from Protobuf bytes."""
-        population_fitness = PopulationFitness()
-        population_fitness.ParseFromString(data)
-        return cls.from_protobuf(population_fitness)
-
-    @staticmethod
-    def to_bytes(population_fitness_data: PopulationFitnessData) -> bytes:
-        """Converts PopulationFitnessData to Protobuf bytes."""
-        population_fitness = PopulationFitnessData.to_protobuf(population_fitness_data)
-        return population_fitness.SerializeToString()
 
 
 @dataclass
@@ -302,3 +275,33 @@ class ActionData:
         """Converts ActionData to Protobuf bytes."""
         action = ActionData.to_protobuf(action_data)
         return action.SerializeToString()
+
+
+@dataclass
+class FitnessData:
+    """Data class to hold population fitness data."""
+
+    values: list[float]
+
+    @classmethod
+    def from_protobuf(cls, fitness: Fitness) -> FitnessData:
+        """Creates a FitnessData instance from Protobuf."""
+        return cls(values=list(fitness.values))
+
+    @staticmethod
+    def to_protobuf(fitness_data: FitnessData) -> Fitness:
+        """Converts FitnessData to Protobuf."""
+        return Fitness(values=fitness_data.values)
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> FitnessData:
+        """Creates a FitnessData instance from Protobuf bytes."""
+        fitness = Fitness()
+        fitness.ParseFromString(data)
+        return cls.from_protobuf(fitness)
+
+    @staticmethod
+    def to_bytes(fitness_data: FitnessData) -> bytes:
+        """Converts FitnessData to Protobuf bytes."""
+        fitness = FitnessData.to_protobuf(fitness_data)
+        return fitness.SerializeToString()

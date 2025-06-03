@@ -6,7 +6,7 @@ import websockets
 
 from nn_websocket.models.config import Config
 from nn_websocket.models.nn_suite import NeuralNetworkSuite
-from nn_websocket.protobuf.proto_types import ActionData, FrameRequestData, ObservationData, PopulationFitnessData
+from nn_websocket.protobuf.proto_types import ActionData, FitnessData, FrameRequestData, ObservationData
 
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -25,9 +25,7 @@ class NeuralNetworkWebsocketServer:
         return NeuralNetworkSuite.from_bytes(config)
 
     @staticmethod
-    def crossover_neural_networks(
-        neural_network_suite: NeuralNetworkSuite, population_fitness: PopulationFitnessData
-    ) -> None:
+    def crossover_neural_networks(neural_network_suite: NeuralNetworkSuite, population_fitness: FitnessData) -> None:
         logger.info("Crossover neural networks...")
         neural_network_suite.crossover_networks(population_fitness)
 

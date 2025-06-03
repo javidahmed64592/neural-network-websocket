@@ -5,7 +5,7 @@ from typing import cast
 from genetic_algorithm.ga import GeneticAlgorithm
 
 from nn_websocket.ga.nn_member import NeuralNetworkMember
-from nn_websocket.protobuf.proto_types import GeneticAlgorithmConfigData, NeuralNetworkConfigData, PopulationFitnessData
+from nn_websocket.protobuf.proto_types import FitnessData, GeneticAlgorithmConfigData, NeuralNetworkConfigData
 
 
 class NeuralNetworkGA(GeneticAlgorithm):
@@ -30,21 +30,21 @@ class NeuralNetworkGA(GeneticAlgorithm):
     @classmethod
     def from_config_data(
         cls,
-        config_data: NeuralNetworkConfigData,
+        nn_config_data: NeuralNetworkConfigData,
         ga_config_data: GeneticAlgorithmConfigData,
     ) -> NeuralNetworkGA:
         """
         Create a NeuralNetworkGA from the provided configuration data.
 
         Parameters:
-            config_data (NeuralNetworkConfigData): Configuration data for the neural network
+            nn_config_data (NeuralNetworkConfigData): Configuration data for the neural network
             ga_config_data (GeneticAlgorithmConfigData): Configuration data for the genetic algorithm
 
         Returns:
             neural_network_ga (NeuralNetworkGA): Neural Network Genetic Algorithm
         """
         return cls(
-            [NeuralNetworkMember.from_config_data(config_data) for _ in range(ga_config_data.population_size)],
+            [NeuralNetworkMember.from_config_data(nn_config_data) for _ in range(ga_config_data.population_size)],
             ga_config_data.mutation_rate,
         )
 
@@ -78,13 +78,13 @@ class NeuralNetworkGA(GeneticAlgorithm):
         for member, score in zip(self.nn_members, fitness_scores, strict=False):
             member.fitness = score
 
-    def evolve(self, population_fitness: PopulationFitnessData) -> None:
+    def evolve(self, population_fitness: FitnessData) -> None:
         """
         Evolve the population based on the provided fitness data.
 
         Parameters:
-            population_fitness (PopulationFitnessData): Population fitness data containing fitness scores
+            population_fitness (FitnessData): Population fitness data containing fitness scores
         """
-        self.set_population_fitness(population_fitness.fitness)
+        self.set_population_fitness(population_fitness.values)
         self._population.evaluate()
         self._evolve()

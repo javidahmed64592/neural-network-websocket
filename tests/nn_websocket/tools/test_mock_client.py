@@ -3,8 +3,8 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from nn_websocket.protobuf.proto_types import (
+    FitnessData,
     ObservationData,
-    PopulationFitnessData,
 )
 from nn_websocket.tools.mock_client import SERVER_URI, MockClient, run
 
@@ -18,7 +18,7 @@ class TestMockClient:
     def test_get_random_population_fitness(self) -> None:
         """Test that get_random_population_fitness generates valid population fitness data."""
         population_fitness = MockClient.get_random_population_fitness()
-        assert isinstance(population_fitness.population_fitness, PopulationFitnessData)
+        assert isinstance(population_fitness.population_fitness, FitnessData)
 
     # Unit test for start method
     @pytest.mark.asyncio

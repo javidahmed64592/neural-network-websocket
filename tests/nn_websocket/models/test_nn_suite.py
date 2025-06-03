@@ -3,10 +3,10 @@ import pytest
 
 from nn_websocket.models.nn_suite import NeuralNetworkSuite
 from nn_websocket.protobuf.proto_types import (
+    FitnessData,
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     ObservationData,
-    PopulationFitnessData,
 )
 
 rng = np.random.default_rng()
@@ -41,12 +41,12 @@ class TestNeuralNetworkSuite:
     def test_crossover_networks(
         self,
         mock_neural_network_suite: NeuralNetworkSuite,
-        population_fitness_data: PopulationFitnessData,
+        population_fitness_data: FitnessData,
     ) -> None:
         suite = mock_neural_network_suite
         suite.crossover_networks(population_fitness_data)
         for index, member in enumerate(suite.nn_ga.nn_members):
-            assert member.fitness == population_fitness_data.fitness[index]
+            assert member.fitness == population_fitness_data.values[index]
 
     def test_feedforward_through_network(
         self, mock_neural_network_suite: NeuralNetworkSuite, nn_config_data: NeuralNetworkConfigData

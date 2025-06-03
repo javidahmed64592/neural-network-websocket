@@ -14,17 +14,15 @@ from nn_websocket.protobuf.proto_types import (
     ActionData,
     ActivationFunctionEnum,
     ConfigurationData,
+    FitnessData,
     FrameRequestData,
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     ObservationData,
-    PopulationFitnessData,
 )
 
 # As an example, we will assume 10 agents with 5 inputs and 2 outputs each.
 MOCK_CONFIG_FILEPATH = Path("path/to/websocket_config.json")
-MOCK_NUM_AGENTS = 10
-MOCK_MUTATION_RATE = 0.1
 MOCK_NUM_INPUTS = 5
 MOCK_NUM_OUTPUTS = 2
 MOCK_HIDDEN_LAYER_SIZES = [4, 4]
@@ -35,15 +33,19 @@ MOCK_BIAS_MAX = 1.0
 MOCK_INPUT_ACTIVATION = ActivationFunctionEnum.LINEAR
 MOCK_HIDDEN_ACTIVATION = ActivationFunctionEnum.RELU
 MOCK_OUTPUT_ACTIVATION = ActivationFunctionEnum.SIGMOID
+MOCK_NUM_AGENTS = 10
+MOCK_MUTATION_RATE = 0.1
 
 
 # Protobuf fixtures
 @pytest.fixture
-def ga_config_data() -> GeneticAlgorithmConfigData:
-    """Fixture for GeneticAlgorithmConfigData."""
-    return GeneticAlgorithmConfigData(
-        population_size=MOCK_NUM_AGENTS,
-        mutation_rate=MOCK_MUTATION_RATE,
+def configuration_data(
+    nn_config_data: NeuralNetworkConfigData, ga_config_data: GeneticAlgorithmConfigData
+) -> ConfigurationData:
+    """Fixture for ConfigurationData."""
+    return ConfigurationData(
+        neural_network=nn_config_data,
+        genetic_algorithm=ga_config_data,
     )
 
 
@@ -65,21 +67,31 @@ def nn_config_data() -> NeuralNetworkConfigData:
 
 
 @pytest.fixture
-def configuration_data(
-    ga_config_data: GeneticAlgorithmConfigData, nn_config_data: NeuralNetworkConfigData
-) -> ConfigurationData:
-    """Fixture for ConfigurationData."""
-    return ConfigurationData(
-        genetic_algorithm=ga_config_data,
-        neural_network=nn_config_data,
+def ga_config_data() -> GeneticAlgorithmConfigData:
+    """Fixture for GeneticAlgorithmConfigData."""
+    return GeneticAlgorithmConfigData(
+        population_size=MOCK_NUM_AGENTS,
+        mutation_rate=MOCK_MUTATION_RATE,
     )
 
 
 @pytest.fixture
-def population_fitness_data() -> PopulationFitnessData:
-    """Fixture for PopulationFitnessData."""
-    return PopulationFitnessData(
-        fitness=np.arange(MOCK_NUM_AGENTS, dtype=float).tolist(),
+def frame_request_data_population(
+    population_fitness_data: FitnessData,
+) -> FrameRequestData:
+    """Fixture for FrameRequestData."""
+    return FrameRequestData(
+        population_fitness=population_fitness_data,
+    )
+
+
+@pytest.fixture
+def frame_request_data_observation(
+    observation_data: ObservationData,
+) -> FrameRequestData:
+    """Fixture for FrameRequestData with observation data."""
+    return FrameRequestData(
+        observation=observation_data,
     )
 
 
@@ -100,22 +112,10 @@ def action_data() -> ActionData:
 
 
 @pytest.fixture
-def frame_request_data_population(
-    population_fitness_data: PopulationFitnessData,
-) -> FrameRequestData:
-    """Fixture for FrameRequestData."""
-    return FrameRequestData(
-        population_fitness=population_fitness_data,
-    )
-
-
-@pytest.fixture
-def frame_request_data_observation(
-    observation_data: ObservationData,
-) -> FrameRequestData:
-    """Fixture for FrameRequestData with observation data."""
-    return FrameRequestData(
-        observation=observation_data,
+def population_fitness_data() -> FitnessData:
+    """Fixture for FitnessData."""
+    return FitnessData(
+        values=np.arange(MOCK_NUM_AGENTS, dtype=float).tolist(),
     )
 
 
@@ -197,8 +197,8 @@ def mock_process_observations() -> Generator[MagicMock, None, None]:
 @pytest.fixture
 def mock_websocket(
     nn_config_data: NeuralNetworkConfigData,
-    frame_request_data_population: FrameRequestData,
     frame_request_data_observation: FrameRequestData,
+    frame_request_data_population: FrameRequestData,
 ) -> AsyncMock:
     """Fixture for a mock websocket connection."""
     mock_websocket = AsyncMock()
