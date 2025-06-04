@@ -95,9 +95,9 @@ class TestFrameRequestData:
         """Test serializing a FrameRequestData with population fitness data."""
         assert isinstance(FrameRequestData.to_bytes(frame_request_data_population), bytes)
 
-    def test_to_bytes_with_train_request_data(self, train_request_data: TrainRequestData) -> None:
+    def test_to_bytes_with_train_request_data(self, frame_request_data_train: FrameRequestData) -> None:
         """Test serializing a FrameRequestData with training data."""
-        assert isinstance(FrameRequestData.to_bytes(train_request_data), bytes)
+        assert isinstance(FrameRequestData.to_bytes(frame_request_data_train), bytes)
 
     def test_from_bytes_with_observation(self, frame_request_data_observation: FrameRequestData) -> None:
         """Test deserializing a FrameRequestData with observation data."""
@@ -126,6 +126,7 @@ class TestFrameRequestData:
         msg_bytes = FrameRequestData.to_bytes(frame_request_data_train)
         result = FrameRequestData.from_bytes(msg_bytes)
 
+        assert isinstance(result.train_request, TrainRequestData)
         assert isinstance(result.train_request.observation, ObservationData)
         assert isinstance(result.train_request.action, ActionData)
         assert isinstance(result.train_request.fitness, FitnessData)

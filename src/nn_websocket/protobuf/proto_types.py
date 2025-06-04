@@ -33,9 +33,11 @@ class ConfigurationData:
     @classmethod
     def to_protobuf(cls, config_data: ConfigurationData) -> Configuration:
         """Converts ConfigurationData to Protobuf."""
+        neural_network = config_data.neural_network
+        genetic_algorithm = config_data.genetic_algorithm or None
         return Configuration(
-            neural_network=NeuralNetworkConfigData.to_protobuf(config_data.neural_network),
-            genetic_algorithm=GeneticAlgorithmConfigData.to_protobuf(config_data.genetic_algorithm),
+            neural_network=NeuralNetworkConfigData.to_protobuf(neural_network),
+            genetic_algorithm=GeneticAlgorithmConfigData.to_protobuf(genetic_algorithm) if genetic_algorithm else None,
         )
 
     @classmethod
