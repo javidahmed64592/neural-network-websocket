@@ -69,15 +69,3 @@ class TestNeuralNetworkSuite:
         action_data_list = suite.feedforward_through_networks(observation_data)
 
         assert len(action_data_list.outputs) == ga_config_data.population_size * nn_config_data.num_outputs
-
-    def test_feedforward_through_networks_from_bytes(
-        self,
-        mock_neural_network_suite: NeuralNetworkSuite,
-        ga_config_data: GeneticAlgorithmConfigData,
-        nn_config_data: NeuralNetworkConfigData,
-        observation_data: ObservationData,
-    ) -> None:
-        observation_data_bytes = ObservationData.to_bytes(observation_data)
-        action_data_list = mock_neural_network_suite.feedforward_through_networks_from_bytes(observation_data_bytes)
-
-        assert len(action_data_list.outputs) == ga_config_data.population_size * nn_config_data.num_outputs

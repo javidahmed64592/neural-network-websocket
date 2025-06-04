@@ -61,10 +61,6 @@ class NeuralNetworkSuite:
         config_data = ConfigurationData.from_bytes(config_data_bytes)
         return cls.from_config_data(config_data)
 
-    def crossover_networks(self, fitness_data: FitnessData) -> None:
-        """Perform crossover on the neural networks based on population fitness."""
-        self.nn_ga.evolve(fitness_data)
-
     @staticmethod
     def feedforward_through_network(nn: NeuralNetwork, observation: NDArray) -> list[float]:
         """Feedforward through the neural network and return the action data."""
@@ -85,7 +81,6 @@ class NeuralNetworkSuite:
         )
         return ActionData(outputs=actions.flatten().tolist())
 
-    def feedforward_through_networks_from_bytes(self, observation_data_bytes: bytes) -> ActionData:
-        """Feedforward through all networks from bytes representation of observation data."""
-        observation_data = ObservationData.from_bytes(observation_data_bytes)
-        return self.feedforward_through_networks(observation_data)
+    def crossover_networks(self, fitness_data: FitnessData) -> None:
+        """Perform crossover on the neural networks based on population fitness."""
+        self.nn_ga.evolve(fitness_data)
