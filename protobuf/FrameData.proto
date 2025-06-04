@@ -11,9 +11,9 @@ message FrameRequest {
 }
 
 message TrainRequest {
-    Observation observation = 1;
-    Action action = 2;
-    Fitness fitness = 3;
+    repeated Observation observation = 1;
+    repeated Action action = 2;
+    repeated Fitness fitness = 3;
 }
 
 message Observation {
