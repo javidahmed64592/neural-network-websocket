@@ -114,9 +114,9 @@ def train_request_data(
 ) -> TrainRequestData:
     """Fixture for TrainRequestData."""
     return TrainRequestData(
-        observation=observation_data,
-        action=action_data,
-        fitness=fitness_data,
+        observation=[observation_data],
+        action=[action_data],
+        fitness=[fitness_data],
     )
 
 

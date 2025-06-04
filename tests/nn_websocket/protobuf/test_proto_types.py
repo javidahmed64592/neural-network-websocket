@@ -127,18 +127,26 @@ class TestFrameRequestData:
         result = FrameRequestData.from_bytes(msg_bytes)
 
         assert isinstance(result.train_request, TrainRequestData)
-        assert isinstance(result.train_request.observation, ObservationData)
-        assert isinstance(result.train_request.action, ActionData)
-        assert isinstance(result.train_request.fitness, FitnessData)
+        assert isinstance(result.train_request.observation, list)
+        assert isinstance(result.train_request.action, list)
+        assert isinstance(result.train_request.fitness, list)
 
-        assert result.train_request.observation.inputs == pytest.approx(
-            frame_request_data_train.train_request.observation.inputs
+        assert len(result.train_request.observation) == len(frame_request_data_train.train_request.observation)
+        assert len(result.train_request.action) == len(frame_request_data_train.train_request.action)
+        assert len(result.train_request.fitness) == len(frame_request_data_train.train_request.fitness)
+
+        assert isinstance(result.train_request.observation[0], ObservationData)
+        assert isinstance(result.train_request.action[0], ActionData)
+        assert isinstance(result.train_request.fitness[0], FitnessData)
+
+        assert result.train_request.observation[0].inputs == pytest.approx(
+            frame_request_data_train.train_request.observation[0].inputs
         )
-        assert result.train_request.action.outputs == pytest.approx(
-            frame_request_data_train.train_request.action.outputs
+        assert result.train_request.action[0].outputs == pytest.approx(
+            frame_request_data_train.train_request.action[0].outputs
         )
-        assert result.train_request.fitness.values == pytest.approx(
-            frame_request_data_train.train_request.fitness.values
+        assert result.train_request.fitness[0].values == pytest.approx(
+            frame_request_data_train.train_request.fitness[0].values
         )
 
 
@@ -150,13 +158,21 @@ class TestTrainRequestData:
         msg_bytes = TrainRequestData.to_bytes(train_request_data)
         result = TrainRequestData.from_bytes(msg_bytes)
 
-        assert isinstance(result.observation, ObservationData)
-        assert isinstance(result.action, ActionData)
-        assert isinstance(result.fitness, FitnessData)
+        assert isinstance(result.observation, list)
+        assert isinstance(result.action, list)
+        assert isinstance(result.fitness, list)
 
-        assert result.observation.inputs == pytest.approx(train_request_data.observation.inputs)
-        assert result.action.outputs == pytest.approx(train_request_data.action.outputs)
-        assert result.fitness.values == pytest.approx(train_request_data.fitness.values)
+        assert len(result.observation) == len(train_request_data.observation)
+        assert len(result.action) == len(train_request_data.action)
+        assert len(result.fitness) == len(train_request_data.fitness)
+
+        assert isinstance(result.observation[0], ObservationData)
+        assert isinstance(result.action[0], ActionData)
+        assert isinstance(result.fitness[0], FitnessData)
+
+        assert result.observation[0].inputs == pytest.approx(train_request_data.observation[0].inputs)
+        assert result.action[0].outputs == pytest.approx(train_request_data.action[0].outputs)
+        assert result.fitness[0].values == pytest.approx(train_request_data.fitness[0].values)
 
 
 class TestObservationData:

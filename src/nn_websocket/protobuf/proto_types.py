@@ -226,26 +226,26 @@ class FrameRequestData:
 class TrainRequestData:
     """Data class to hold training request data."""
 
-    observation: ObservationData
-    action: ActionData
-    fitness: FitnessData
+    observation: list[ObservationData]
+    action: list[ActionData]
+    fitness: list[FitnessData]
 
     @classmethod
     def from_protobuf(cls, train_request: TrainRequest) -> TrainRequestData:
         """Creates a TrainRequestData instance from Protobuf."""
         return cls(
-            observation=ObservationData.from_protobuf(train_request.observation),
-            action=ActionData.from_protobuf(train_request.action),
-            fitness=FitnessData.from_protobuf(train_request.fitness),
+            observation=[ObservationData.from_protobuf(obs) for obs in train_request.observation],
+            action=[ActionData.from_protobuf(act) for act in train_request.action],
+            fitness=[FitnessData.from_protobuf(fit) for fit in train_request.fitness],
         )
 
     @classmethod
     def to_protobuf(cls, train_request: TrainRequestData) -> TrainRequest:
         """Converts TrainRequestData to Protobuf."""
         return TrainRequest(
-            observation=ObservationData.to_protobuf(train_request.observation),
-            action=ActionData.to_protobuf(train_request.action),
-            fitness=FitnessData.to_protobuf(train_request.fitness),
+            observation=[ObservationData.to_protobuf(observation) for observation in train_request.observation],
+            action=[ActionData.to_protobuf(action) for action in train_request.action],
+            fitness=[FitnessData.to_protobuf(fitness) for fitness in train_request.fitness],
         )
 
     @classmethod
