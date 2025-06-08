@@ -1,11 +1,14 @@
+import json
+from unittest.mock import mock_open, patch
+
 from nn_websocket.models.config import Config
 
 
 class TestConfig:
-    def test_custom_config(self) -> None:
-        """Test custom configuration values."""
-        custom_host = "custom_host"
-        custom_port = 1234
-        config = Config(host=custom_host, port=custom_port)
-        assert config.host == custom_host
-        assert config.port == custom_port
+    def test_load_config(self, mock_config: Config) -> None:
+        """Test loading configuration from a file."""
+        mock_data = json.dumps({"host": mock_config.host, "port": mock_config.port})
+        with patch("nn_websocket.models.config.Path.open", mock_open(read_data=mock_data)):
+            config = Config.load_config("dummy_path")
+            assert config.host == mock_config.host
+            assert config.port == mock_config.port

@@ -7,6 +7,9 @@ import pytest
 
 from nn_websocket.ga.nn_ga import NeuralNetworkGA
 from nn_websocket.ga.nn_member import NeuralNetworkMember
+
+# from nn_websocket.main import NeuralNetworkWebsocketServer
+from nn_websocket.models.config import Config
 from nn_websocket.protobuf.compiled.FrameRequestClasses_pb2 import (
     Action,
     Fitness,
@@ -37,8 +40,6 @@ from nn_websocket.protobuf.neural_network_types import (
     NeuroevolutionConfigData,
 )
 
-# from nn_websocket.main import NeuralNetworkWebsocketServer
-# from nn_websocket.models.config import Config
 # from nn_websocket.models.nn_suite import NeuralNetworkSuite
 
 rng = np.random.default_rng()
@@ -240,19 +241,19 @@ def mock_neural_network_ga(
     return NeuralNetworkGA.from_config_data(neural_network_config_data, genetic_algorithm_config_data)
 
 
-# # Model fixtures
-# @pytest.fixture
-# def mock_config() -> Config:
-#     """Fixture for Config object."""
-#     return Config(host="localhost", port=8765)
+# Model fixtures
+@pytest.fixture
+def mock_config() -> Config:
+    """Fixture for Config object."""
+    return Config(host="localhost", port=1111)
 
 
-# @pytest.fixture
-# def mock_load_config(mock_config: Config) -> Generator[MagicMock, None, None]:
-#     """Patch the load_config function to return the mock config."""
-#     with patch("nn_websocket.models.config.Config.load_config") as mock_load_config:
-#         mock_load_config.return_value = mock_config
-#         yield mock_load_config
+@pytest.fixture
+def mock_load_config(mock_config: Config) -> Generator[MagicMock, None, None]:
+    """Patch the load_config function to return the mock config."""
+    with patch("nn_websocket.models.config.Config.load_config") as mock_load_config:
+        mock_load_config.return_value = mock_config
+        yield mock_load_config
 
 
 # @pytest.fixture
