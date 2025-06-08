@@ -16,16 +16,6 @@ class FrameRequest(_message.Message):
     train_request: TrainRequest
     def __init__(self, observation: _Optional[_Union[Observation, _Mapping]] = ..., fitness: _Optional[_Union[Fitness, _Mapping]] = ..., train_request: _Optional[_Union[TrainRequest, _Mapping]] = ...) -> None: ...
 
-class TrainRequest(_message.Message):
-    __slots__ = ("observation", "action", "fitness")
-    OBSERVATION_FIELD_NUMBER: _ClassVar[int]
-    ACTION_FIELD_NUMBER: _ClassVar[int]
-    FITNESS_FIELD_NUMBER: _ClassVar[int]
-    observation: _containers.RepeatedCompositeFieldContainer[Observation]
-    action: _containers.RepeatedCompositeFieldContainer[Action]
-    fitness: _containers.RepeatedCompositeFieldContainer[Fitness]
-    def __init__(self, observation: _Optional[_Iterable[_Union[Observation, _Mapping]]] = ..., action: _Optional[_Iterable[_Union[Action, _Mapping]]] = ..., fitness: _Optional[_Iterable[_Union[Fitness, _Mapping]]] = ...) -> None: ...
-
 class Observation(_message.Message):
     __slots__ = ("inputs",)
     INPUTS_FIELD_NUMBER: _ClassVar[int]
@@ -43,3 +33,11 @@ class Fitness(_message.Message):
     VALUES_FIELD_NUMBER: _ClassVar[int]
     values: _containers.RepeatedScalarFieldContainer[float]
     def __init__(self, values: _Optional[_Iterable[float]] = ...) -> None: ...
+
+class TrainRequest(_message.Message):
+    __slots__ = ("observation", "fitness")
+    OBSERVATION_FIELD_NUMBER: _ClassVar[int]
+    FITNESS_FIELD_NUMBER: _ClassVar[int]
+    observation: _containers.RepeatedCompositeFieldContainer[Observation]
+    fitness: _containers.RepeatedCompositeFieldContainer[Fitness]
+    def __init__(self, observation: _Optional[_Iterable[_Union[Observation, _Mapping]]] = ..., fitness: _Optional[_Iterable[_Union[Fitness, _Mapping]]] = ...) -> None: ...

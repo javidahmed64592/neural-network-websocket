@@ -10,12 +10,6 @@ message FrameRequest {
     }
 }
 
-message TrainRequest {
-    repeated Observation observation = 1;
-    repeated Action action = 2;
-    repeated Fitness fitness = 3;
-}
-
 message Observation {
     repeated float inputs = 1;
 }
@@ -24,6 +18,13 @@ message Action {
     repeated float outputs = 1;
 }
 
+// Neuroevolution
 message Fitness {
     repeated float values = 1;
+}
+
+// Fitness approach
+message TrainRequest {
+    repeated Observation observation = 1;
+    repeated Fitness fitness = 2;
 }
