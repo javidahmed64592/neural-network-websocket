@@ -15,7 +15,6 @@ from nn_websocket.protobuf.compiled.FrameRequestClasses_pb2 import (
     TrainRequest,
 )
 from nn_websocket.protobuf.compiled.NNWebsocketClasses_pb2 import (
-    ActivationFunctionEnum,
     Configuration,
     FitnessApproachConfig,
     GeneticAlgorithmConfig,
@@ -42,6 +41,8 @@ from nn_websocket.protobuf.neural_network_types import (
 # from nn_websocket.models.config import Config
 # from nn_websocket.models.nn_suite import NeuralNetworkSuite
 
+rng = np.random.default_rng()
+
 # Constants
 MOCK_CONFIG_FILEPATH = Path("path/to/websocket_config.json")
 MOCK_NUM_INPUTS = 5
@@ -56,35 +57,25 @@ MOCK_HIDDEN_ACTIVATION = ActivationFunctionEnumData.RELU
 MOCK_OUTPUT_ACTIVATION = ActivationFunctionEnumData.SIGMOID
 MOCK_LEARNING_RATE = 0.01
 
-MOCK_POPULATIONS_SIZE = 10
+MOCK_POPULATION_SIZE = 10
 MOCK_MUTATION_RATE = 0.1
 
 
 # NeuralNetwork.proto
 @pytest.fixture
 def neural_network_config() -> NeuralNetworkConfig:
-    test_num_inputs = 2
-    test_num_outputs = 1
-    test_hidden_layer_sizes = [3]
-    test_weights_range = (-1, 1)
-    test_bias_range = (-1, 1)
-    test_input_activation = ActivationFunctionEnum.RELU
-    test_hidden_activation = ActivationFunctionEnum.SIGMOID
-    test_output_activation = ActivationFunctionEnum.LINEAR
-    test_learning_rate = 0.01
-
     return NeuralNetworkConfig(
-        num_inputs=test_num_inputs,
-        num_outputs=test_num_outputs,
-        hidden_layer_sizes=test_hidden_layer_sizes,
-        weights_min=test_weights_range[0],
-        weights_max=test_weights_range[1],
-        bias_min=test_bias_range[0],
-        bias_max=test_bias_range[1],
-        input_activation=test_input_activation,
-        hidden_activation=test_hidden_activation,
-        output_activation=test_output_activation,
-        learning_rate=test_learning_rate,
+        num_inputs=MOCK_NUM_INPUTS,
+        num_outputs=MOCK_NUM_OUTPUTS,
+        hidden_layer_sizes=MOCK_HIDDEN_LAYER_SIZES,
+        weights_min=MOCK_WEIGHTS_MIN,
+        weights_max=MOCK_WEIGHTS_MAX,
+        bias_min=MOCK_BIAS_MIN,
+        bias_max=MOCK_BIAS_MAX,
+        input_activation=MOCK_INPUT_ACTIVATION,
+        hidden_activation=MOCK_HIDDEN_ACTIVATION,
+        output_activation=MOCK_OUTPUT_ACTIVATION,
+        learning_rate=MOCK_LEARNING_RATE,
     )
 
 
@@ -98,9 +89,9 @@ def neural_network_config_data(neural_network_config: NeuralNetworkConfig) -> Ne
         weights_max=neural_network_config.weights_max,
         bias_min=neural_network_config.bias_min,
         bias_max=neural_network_config.bias_max,
-        input_activation=ActivationFunctionEnumData.from_protobuf(neural_network_config.input_activation),
-        hidden_activation=ActivationFunctionEnumData.from_protobuf(neural_network_config.hidden_activation),
-        output_activation=ActivationFunctionEnumData.from_protobuf(neural_network_config.output_activation),
+        input_activation=MOCK_INPUT_ACTIVATION,
+        hidden_activation=MOCK_HIDDEN_ACTIVATION,
+        output_activation=MOCK_OUTPUT_ACTIVATION,
         learning_rate=neural_network_config.learning_rate,
     )
 
@@ -128,8 +119,8 @@ def configuration_data_fitness(configuration_fitness: Configuration) -> Configur
 @pytest.fixture
 def genetic_algorithm_config() -> GeneticAlgorithmConfig:
     return GeneticAlgorithmConfig(
-        population_size=100,
-        mutation_rate=0.01,
+        population_size=MOCK_POPULATION_SIZE,
+        mutation_rate=MOCK_MUTATION_RATE,
     )
 
 
@@ -196,7 +187,7 @@ def frame_request_data_train(frame_request_train: FrameRequest) -> FrameRequestD
 
 @pytest.fixture
 def observation() -> Observation:
-    return Observation(inputs=[0.0, 1.0, 2.0])
+    return Observation(inputs=rng.uniform(0.0, 1.0, size=MOCK_NUM_INPUTS).tolist())
 
 
 @pytest.fixture
@@ -206,7 +197,7 @@ def observation_data(observation: Observation) -> ObservationData:
 
 @pytest.fixture
 def action() -> Action:
-    return Action(outputs=[0.0, 1.0, 2.0])
+    return Action(outputs=rng.uniform(0.0, 1.0, size=MOCK_NUM_OUTPUTS).tolist())
 
 
 @pytest.fixture
@@ -216,7 +207,7 @@ def action_data(action: Action) -> ActionData:
 
 @pytest.fixture
 def fitness() -> Fitness:
-    return Fitness(values=[0.0, 1.0, 2.0])
+    return Fitness(values=rng.uniform(0.0, 1.0, size=MOCK_POPULATION_SIZE).tolist())
 
 
 @pytest.fixture
@@ -225,8 +216,8 @@ def fitness_data(fitness: Fitness) -> FitnessData:
 
 
 @pytest.fixture
-def train_request() -> TrainRequest:
-    return TrainRequest(observation=[Observation(inputs=[0.0, 1.0, 2.0])], fitness=[Fitness(values=[0.0, 1.0, 2.0])])
+def train_request(observation: Observation, fitness: Fitness) -> TrainRequest:
+    return TrainRequest(observation=[observation], fitness=[fitness])
 
 
 @pytest.fixture
