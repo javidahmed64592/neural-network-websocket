@@ -39,6 +39,7 @@ dev = [
 ]
 
 [project.scripts]
+compile-websocket-protobuf = "nn_websocket.protobuf.compile_protobuf:main"
 run_websocket_server = "nn_websocket.main:run"
 run_mock_client = "nn_websocket.tools.mock_client:run"
 
