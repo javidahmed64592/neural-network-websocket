@@ -1,8 +1,22 @@
 import pytest
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation, TanhActivation
 
-from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import ActivationFunctionData, NeuralNetworkConfig
-from nn_websocket.protobuf.neural_network_types import ActivationFunctionEnum, NeuralNetworkConfigData
+from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
+    ActivationFunctionData,
+    Configuration,
+    FitnessApproachConfig,
+    GeneticAlgorithmConfig,
+    NeuralNetworkConfig,
+    NeuroevolutionConfig,
+)
+from nn_websocket.protobuf.neural_network_types import (
+    ActivationFunctionEnum,
+    ConfigurationData,
+    FitnessApproachConfigData,
+    GeneticAlgorithmConfigData,
+    NeuralNetworkConfigData,
+    NeuroevolutionConfigData,
+)
 
 
 class TestActivationFunctionEnum:
@@ -122,3 +136,216 @@ class TestNeuralNetworkDataType:
         assert result.bias_min == pytest.approx(neural_network_config_data.bias_min)
         assert result.bias_max == pytest.approx(neural_network_config_data.bias_max)
         assert result.learning_rate == neural_network_config_data.learning_rate
+
+
+# Training methods
+class TestConfigurationData:
+    @pytest.fixture
+    def neural_network_config(self) -> NeuralNetworkConfig:
+        return NeuralNetworkConfig(
+            num_inputs=2,
+            num_outputs=1,
+            hidden_layer_sizes=[3],
+            weights_min=-1.0,
+            weights_max=1.0,
+            bias_min=-1.0,
+            bias_max=1.0,
+            input_activation=ActivationFunctionData.RELU,
+            hidden_activation=ActivationFunctionData.SIGMOID,
+            output_activation=ActivationFunctionData.LINEAR,
+            learning_rate=0.01,
+        )
+
+    @pytest.fixture
+    def configuration_neuroevolution(self, neural_network_config: NeuralNetworkConfig) -> Configuration:
+        return Configuration(neuroevolution=NeuroevolutionConfig(neural_network=neural_network_config))
+
+    @pytest.fixture
+    def configuration_fitness(self, neural_network_config: NeuralNetworkConfig) -> Configuration:
+        return Configuration(fitness_approach=FitnessApproachConfig(neural_network=neural_network_config))
+
+    @pytest.fixture
+    def configuration_data_neuroevolution(self, configuration_neuroevolution: Configuration) -> ConfigurationData:
+        return ConfigurationData.from_protobuf(configuration_neuroevolution)
+
+    @pytest.fixture
+    def configuration_data_fitness(self, configuration_fitness: Configuration) -> ConfigurationData:
+        return ConfigurationData.from_protobuf(configuration_fitness)
+
+    def test_from_protobuf(
+        self, configuration_neuroevolution: Configuration, configuration_fitness: Configuration
+    ) -> None:
+        config_data_neuroevolution = ConfigurationData.from_protobuf(configuration_neuroevolution)
+        config_data_fitness = ConfigurationData.from_protobuf(configuration_fitness)
+
+        assert isinstance(config_data_neuroevolution.neuroevolution, NeuroevolutionConfigData)
+        assert isinstance(config_data_fitness.fitness_approach, FitnessApproachConfigData)
+
+    def test_to_protobuf(
+        self, configuration_data_neuroevolution: ConfigurationData, configuration_data_fitness: ConfigurationData
+    ) -> None:
+        protobuf_neuroevolution = ConfigurationData.to_protobuf(configuration_data_neuroevolution)
+        protobuf_fitness = ConfigurationData.to_protobuf(configuration_data_fitness)
+
+        assert isinstance(protobuf_neuroevolution.neuroevolution, NeuroevolutionConfig)
+        assert isinstance(protobuf_fitness.fitness_approach, FitnessApproachConfig)
+
+    def test_to_bytes(
+        self, configuration_data_neuroevolution: ConfigurationData, configuration_data_fitness: ConfigurationData
+    ) -> None:
+        assert isinstance(ConfigurationData.to_bytes(configuration_data_neuroevolution), bytes)
+        assert isinstance(ConfigurationData.to_bytes(configuration_data_fitness), bytes)
+
+    def test_from_bytes(
+        self, configuration_data_neuroevolution: ConfigurationData, configuration_data_fitness: ConfigurationData
+    ) -> None:
+        msg_bytes_neuroevolution = ConfigurationData.to_bytes(configuration_data_neuroevolution)
+        msg_bytes_fitness = ConfigurationData.to_bytes(configuration_data_fitness)
+
+        result_neuroevolution = ConfigurationData.from_bytes(msg_bytes_neuroevolution)
+        result_fitness = ConfigurationData.from_bytes(msg_bytes_fitness)
+
+        assert isinstance(result_neuroevolution.neuroevolution, NeuroevolutionConfigData)
+        assert isinstance(result_fitness.fitness_approach, FitnessApproachConfigData)
+
+
+class TestGeneticAlgorithmConfigData:
+    @pytest.fixture
+    def genetic_algorithm_config(self) -> GeneticAlgorithmConfig:
+        return GeneticAlgorithmConfig(
+            population_size=100,
+            mutation_rate=0.01,
+        )
+
+    @pytest.fixture
+    def genetic_algorithm_config_data(
+        self, genetic_algorithm_config: GeneticAlgorithmConfig
+    ) -> GeneticAlgorithmConfigData:
+        return GeneticAlgorithmConfigData.from_protobuf(genetic_algorithm_config)
+
+    def test_from_protobuf(self, genetic_algorithm_config: GeneticAlgorithmConfig) -> None:
+        ga_data = GeneticAlgorithmConfigData.from_protobuf(genetic_algorithm_config)
+
+        assert ga_data.population_size == genetic_algorithm_config.population_size
+        assert ga_data.mutation_rate == pytest.approx(genetic_algorithm_config.mutation_rate)
+
+    def test_to_protobuf(self, genetic_algorithm_config_data: GeneticAlgorithmConfigData) -> None:
+        protobuf_data = GeneticAlgorithmConfigData.to_protobuf(genetic_algorithm_config_data)
+
+        assert protobuf_data.population_size == genetic_algorithm_config_data.population_size
+        assert protobuf_data.mutation_rate == pytest.approx(genetic_algorithm_config_data.mutation_rate)
+
+    def test_to_bytes(self, genetic_algorithm_config_data: GeneticAlgorithmConfigData) -> None:
+        assert isinstance(GeneticAlgorithmConfigData.to_bytes(genetic_algorithm_config_data), bytes)
+
+    def test_from_bytes(self, genetic_algorithm_config_data: GeneticAlgorithmConfigData) -> None:
+        msg_bytes = GeneticAlgorithmConfigData.to_bytes(genetic_algorithm_config_data)
+        result = GeneticAlgorithmConfigData.from_bytes(msg_bytes)
+
+        assert result.population_size == genetic_algorithm_config_data.population_size
+        assert result.mutation_rate == pytest.approx(genetic_algorithm_config_data.mutation_rate)
+
+
+class TestNeuroevolutionConfigData:
+    @pytest.fixture
+    def neural_network_config(self) -> NeuralNetworkConfig:
+        return NeuralNetworkConfig(
+            num_inputs=2,
+            num_outputs=1,
+            hidden_layer_sizes=[3],
+            weights_min=-1.0,
+            weights_max=1.0,
+            bias_min=-1.0,
+            bias_max=1.0,
+            input_activation=ActivationFunctionData.RELU,
+            hidden_activation=ActivationFunctionData.SIGMOID,
+            output_activation=ActivationFunctionData.LINEAR,
+            learning_rate=0.01,
+        )
+
+    @pytest.fixture
+    def genetic_algorithm_config(self) -> GeneticAlgorithmConfig:
+        return GeneticAlgorithmConfig(
+            population_size=100,
+            mutation_rate=0.01,
+        )
+
+    @pytest.fixture
+    def neuroevolution_config(
+        self, neural_network_config: NeuralNetworkConfig, genetic_algorithm_config: GeneticAlgorithmConfig
+    ) -> NeuroevolutionConfig:
+        return NeuroevolutionConfig(
+            neural_network=neural_network_config,
+            genetic_algorithm=genetic_algorithm_config,
+        )
+
+    @pytest.fixture
+    def neuroevolution_config_data(self, neuroevolution_config: NeuroevolutionConfig) -> NeuroevolutionConfigData:
+        return NeuroevolutionConfigData.from_protobuf(neuroevolution_config)
+
+    def test_from_protobuf(self, neuroevolution_config: NeuroevolutionConfig) -> None:
+        config_data = NeuroevolutionConfigData.from_protobuf(neuroevolution_config)
+
+        assert isinstance(config_data.neural_network, NeuralNetworkConfigData)
+        assert isinstance(config_data.genetic_algorithm, GeneticAlgorithmConfigData)
+
+    def test_to_protobuf(self, neuroevolution_config_data: NeuroevolutionConfigData) -> None:
+        protobuf_data = NeuroevolutionConfigData.to_protobuf(neuroevolution_config_data)
+
+        assert isinstance(protobuf_data.neural_network, NeuralNetworkConfig)
+        assert isinstance(protobuf_data.genetic_algorithm, GeneticAlgorithmConfig)
+
+    def test_to_bytes(self, neuroevolution_config_data: NeuroevolutionConfigData) -> None:
+        assert isinstance(NeuroevolutionConfigData.to_bytes(neuroevolution_config_data), bytes)
+
+    def test_from_bytes(self, neuroevolution_config_data: NeuroevolutionConfigData) -> None:
+        msg_bytes = NeuroevolutionConfigData.to_bytes(neuroevolution_config_data)
+        result = NeuroevolutionConfigData.from_bytes(msg_bytes)
+
+        assert isinstance(result.neural_network, NeuralNetworkConfigData)
+        assert isinstance(result.genetic_algorithm, GeneticAlgorithmConfigData)
+
+
+class TestFitnessApproachConfigData:
+    @pytest.fixture
+    def neural_network_config(self) -> NeuralNetworkConfig:
+        return NeuralNetworkConfig(
+            num_inputs=2,
+            num_outputs=1,
+            hidden_layer_sizes=[3],
+            weights_min=-1.0,
+            weights_max=1.0,
+            bias_min=-1.0,
+            bias_max=1.0,
+            input_activation=ActivationFunctionData.RELU,
+            hidden_activation=ActivationFunctionData.SIGMOID,
+            output_activation=ActivationFunctionData.LINEAR,
+            learning_rate=0.01,
+        )
+
+    @pytest.fixture
+    def fitness_approach_config(self, neural_network_config: NeuralNetworkConfig) -> FitnessApproachConfig:
+        return FitnessApproachConfig(neural_network=neural_network_config)
+
+    @pytest.fixture
+    def fitness_approach_config_data(self, fitness_approach_config: FitnessApproachConfig) -> FitnessApproachConfigData:
+        return FitnessApproachConfigData.from_protobuf(fitness_approach_config)
+
+    def test_from_protobuf(self, fitness_approach_config: FitnessApproachConfig) -> None:
+        config_data = FitnessApproachConfigData.from_protobuf(fitness_approach_config)
+
+        assert isinstance(config_data.neural_network, NeuralNetworkConfigData)
+
+    def test_to_protobuf(self, fitness_approach_config_data: FitnessApproachConfigData) -> None:
+        protobuf_data = FitnessApproachConfigData.to_protobuf(fitness_approach_config_data)
+
+        assert isinstance(protobuf_data.neural_network, NeuralNetworkConfig)
+
+    def test_to_bytes(self, fitness_approach_config_data: FitnessApproachConfigData) -> None:
+        assert isinstance(FitnessApproachConfigData.to_bytes(fitness_approach_config_data), bytes)
+
+    def test_from_bytes(self, fitness_approach_config_data: FitnessApproachConfigData) -> None:
+        msg_bytes = FitnessApproachConfigData.to_bytes(fitness_approach_config_data)
+        result = FitnessApproachConfigData.from_bytes(msg_bytes)
+
+        assert isinstance(result.neural_network, NeuralNetworkConfigData)

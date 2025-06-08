@@ -22,3 +22,27 @@ message NeuralNetworkConfig {
     ActivationFunctionData output_activation = 10;
     float learning_rate = 11;
 }
+
+// Traning methods
+message Configuration {
+    oneof msg {
+        NeuroevolutionConfig neuroevolution = 1;
+        FitnessApproachConfig fitness_approach = 2;
+    }
+}
+
+// Neuroevolution
+message GeneticAlgorithmConfig {
+    int32 population_size = 1;
+    float mutation_rate = 2;
+}
+
+message NeuroevolutionConfig {
+    NeuralNetworkConfig neural_network = 1;
+    GeneticAlgorithmConfig genetic_algorithm = 2;
+}
+
+// Fitness approach
+message FitnessApproachConfig {
+    NeuralNetworkConfig neural_network = 1;
+}
