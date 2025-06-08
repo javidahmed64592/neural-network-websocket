@@ -2,9 +2,11 @@ syntax = "proto3";
 option optimize_for = LITE_RUNTIME;
 package NNWebsocket;
 
-message Configuration {
-    NeuralNetworkConfig neural_network = 1;
-    optional GeneticAlgorithmConfig genetic_algorithm = 2;
+enum ActivationFunctionData {
+    LINEAR = 0;
+    RELU = 1;
+    SIGMOID = 2;
+    TANH = 3;
 }
 
 message NeuralNetworkConfig {
@@ -15,18 +17,8 @@ message NeuralNetworkConfig {
     float weights_max = 5;
     float bias_min = 6;
     float bias_max = 7;
-    ActivationFunction input_activation = 8;
-    ActivationFunction hidden_activation = 9;
-    ActivationFunction output_activation = 10;
-}
-
-enum ActivationFunction {
-    LINEAR = 0;
-    RELU = 1;
-    SIGMOID = 2;
-}
-
-message GeneticAlgorithmConfig {
-    int32 population_size = 1;
-    float mutation_rate = 2;
+    ActivationFunctionData input_activation = 8;
+    ActivationFunctionData hidden_activation = 9;
+    ActivationFunctionData output_activation = 10;
+    float learning_rate = 11;
 }
