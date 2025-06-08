@@ -5,6 +5,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import numpy as np
 import pytest
 
+from nn_websocket.ga.nn_ga import NeuralNetworkGA
+from nn_websocket.ga.nn_member import NeuralNetworkMember
 from nn_websocket.protobuf.compiled.FrameData_pb2 import Action, Fitness, FrameRequest, Observation, TrainRequest
 from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
     ActivationFunctionEnum,
@@ -30,22 +32,9 @@ from nn_websocket.protobuf.neural_network_types import (
     NeuroevolutionConfigData,
 )
 
-# from nn_websocket.ga.nn_ga import NeuralNetworkGA
-# from nn_websocket.ga.nn_member import NeuralNetworkMember
 # from nn_websocket.main import NeuralNetworkWebsocketServer
 # from nn_websocket.models.config import Config
 # from nn_websocket.models.nn_suite import NeuralNetworkSuite
-# from nn_websocket.protobuf.proto_types import (
-#     ActionData,
-#     ActivationFunctionEnumData,
-#     ConfigurationData,
-#     FitnessData,
-#     FrameRequestData,
-#     GeneticAlgorithmConfigData,
-#     NeuralNetworkConfigData,
-#     ObservationData,
-#     TrainRequestData,
-# )
 
 # Constants
 MOCK_CONFIG_FILEPATH = Path("path/to/websocket_config.json")
@@ -169,8 +158,6 @@ def fitness_approach_config_data(fitness_approach_config: FitnessApproachConfig)
 
 
 # FrameData.proto
-
-
 @pytest.fixture
 def frame_request_observation(observation: Observation) -> FrameRequest:
     return FrameRequest(observation=observation)
@@ -241,19 +228,19 @@ def train_request_data(train_request: TrainRequest) -> TrainRequestData:
     return TrainRequestData.from_protobuf(train_request)
 
 
-# # Genetic Algorithm fixtures
-# @pytest.fixture
-# def mock_neural_network_member(nn_config_data: NeuralNetworkConfigData) -> NeuralNetworkMember:
-#     """Fixture for NeuralNetworkMember."""
-#     return NeuralNetworkMember.from_config_data(nn_config_data)
+# Genetic Algorithm fixtures
+@pytest.fixture
+def mock_neural_network_member(neural_network_config_data: NeuralNetworkConfigData) -> NeuralNetworkMember:
+    """Fixture for NeuralNetworkMember."""
+    return NeuralNetworkMember.from_config_data(neural_network_config_data)
 
 
-# @pytest.fixture
-# def mock_neural_network_ga(
-#     nn_config_data: NeuralNetworkConfigData, ga_config_data: GeneticAlgorithmConfigData
-# ) -> NeuralNetworkGA:
-#     """Fixture for NeuralNetworkGA."""
-#     return NeuralNetworkGA.from_config_data(nn_config_data, ga_config_data)
+@pytest.fixture
+def mock_neural_network_ga(
+    neural_network_config_data: NeuralNetworkConfigData, genetic_algorithm_config_data: GeneticAlgorithmConfigData
+) -> NeuralNetworkGA:
+    """Fixture for NeuralNetworkGA."""
+    return NeuralNetworkGA.from_config_data(neural_network_config_data, genetic_algorithm_config_data)
 
 
 # # Model fixtures

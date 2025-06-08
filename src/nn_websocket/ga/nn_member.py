@@ -7,7 +7,7 @@ from neural_network.math.activation_functions import ActivationFunction
 from neural_network.math.matrix import Matrix
 from neural_network.neural_network import NeuralNetwork
 
-from nn_websocket.protobuf.proto_types import NeuralNetworkConfigData
+from nn_websocket.protobuf.neural_network_types import NeuralNetworkConfigData
 
 rng = np.random.default_rng()
 

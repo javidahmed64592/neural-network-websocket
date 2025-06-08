@@ -2,7 +2,7 @@ from neural_network.layer import HiddenLayer, InputLayer, OutputLayer
 from neural_network.math.matrix import Matrix
 
 from nn_websocket.ga.nn_member import NeuralNetworkMember
-from nn_websocket.protobuf.proto_types import NeuralNetworkConfigData
+from nn_websocket.protobuf.neural_network_types import NeuralNetworkConfigData
 
 
 class TestNeuralNetworkMember:

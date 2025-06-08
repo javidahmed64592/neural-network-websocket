@@ -2,7 +2,8 @@ import numpy as np
 
 from nn_websocket.ga.nn_ga import NeuralNetworkGA
 from nn_websocket.ga.nn_member import NeuralNetworkMember
-from nn_websocket.protobuf.proto_types import FitnessData, GeneticAlgorithmConfigData, NeuralNetworkConfigData
+from nn_websocket.protobuf.frame_data_types import FitnessData
+from nn_websocket.protobuf.neural_network_types import GeneticAlgorithmConfigData, NeuralNetworkConfigData
 
 
 class TestNeuralNetworkGA:
