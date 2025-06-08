@@ -7,8 +7,14 @@ import pytest
 
 from nn_websocket.ga.nn_ga import NeuralNetworkGA
 from nn_websocket.ga.nn_member import NeuralNetworkMember
-from nn_websocket.protobuf.compiled.FrameData_pb2 import Action, Fitness, FrameRequest, Observation, TrainRequest
-from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
+from nn_websocket.protobuf.compiled.FrameRequestClasses_pb2 import (
+    Action,
+    Fitness,
+    FrameRequest,
+    Observation,
+    TrainRequest,
+)
+from nn_websocket.protobuf.compiled.NNWebsocketClasses_pb2 import (
     ActivationFunctionEnum,
     Configuration,
     FitnessApproachConfig,
@@ -157,7 +163,7 @@ def fitness_approach_config_data(fitness_approach_config: FitnessApproachConfig)
     return FitnessApproachConfigData.from_protobuf(fitness_approach_config)
 
 
-# FrameData.proto
+# FrameRequestClasses_pb2.proto
 @pytest.fixture
 def frame_request_observation(observation: Observation) -> FrameRequest:
     return FrameRequest(observation=observation)

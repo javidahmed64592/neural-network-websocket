@@ -5,7 +5,7 @@ from enum import IntEnum
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation, TanhActivation
 from pydantic.dataclasses import dataclass
 
-from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
+from nn_websocket.protobuf.compiled.NNWebsocketClasses_pb2 import (
     ActivationFunctionEnum,
     Configuration,
     FitnessApproachConfig,
