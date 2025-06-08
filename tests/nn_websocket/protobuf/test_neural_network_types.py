@@ -55,48 +55,6 @@ class TestActivationFunctionEnumData:
 
 
 class TestNeuralNetworkDataType:
-    @pytest.fixture
-    def neural_network_config(self) -> NeuralNetworkConfig:
-        test_num_inputs = 2
-        test_num_outputs = 1
-        test_hidden_layer_sizes = [3]
-        test_weights_range = (-1, 1)
-        test_bias_range = (-1, 1)
-        test_input_activation = ActivationFunctionEnum.RELU
-        test_hidden_activation = ActivationFunctionEnum.SIGMOID
-        test_output_activation = ActivationFunctionEnum.LINEAR
-        test_learning_rate = 0.01
-
-        return NeuralNetworkConfig(
-            num_inputs=test_num_inputs,
-            num_outputs=test_num_outputs,
-            hidden_layer_sizes=test_hidden_layer_sizes,
-            weights_min=test_weights_range[0],
-            weights_max=test_weights_range[1],
-            bias_min=test_bias_range[0],
-            bias_max=test_bias_range[1],
-            input_activation=test_input_activation,
-            hidden_activation=test_hidden_activation,
-            output_activation=test_output_activation,
-            learning_rate=test_learning_rate,
-        )
-
-    @pytest.fixture
-    def neural_network_config_data(self, neural_network_config: NeuralNetworkConfig) -> NeuralNetworkConfigData:
-        return NeuralNetworkConfigData(
-            num_inputs=neural_network_config.num_inputs,
-            num_outputs=neural_network_config.num_outputs,
-            hidden_layer_sizes=neural_network_config.hidden_layer_sizes,
-            weights_min=neural_network_config.weights_min,
-            weights_max=neural_network_config.weights_max,
-            bias_min=neural_network_config.bias_min,
-            bias_max=neural_network_config.bias_max,
-            input_activation=ActivationFunctionEnumData.from_protobuf(neural_network_config.input_activation),
-            hidden_activation=ActivationFunctionEnumData.from_protobuf(neural_network_config.hidden_activation),
-            output_activation=ActivationFunctionEnumData.from_protobuf(neural_network_config.output_activation),
-            learning_rate=neural_network_config.learning_rate,
-        )
-
     def test_from_protobuf(self, neural_network_config: NeuralNetworkConfig) -> None:
         neural_network_data_type = NeuralNetworkConfigData.from_protobuf(neural_network_config)
 
@@ -149,38 +107,6 @@ class TestNeuralNetworkDataType:
 
 # Training methods
 class TestConfigurationData:
-    @pytest.fixture
-    def neural_network_config(self) -> NeuralNetworkConfig:
-        return NeuralNetworkConfig(
-            num_inputs=2,
-            num_outputs=1,
-            hidden_layer_sizes=[3],
-            weights_min=-1.0,
-            weights_max=1.0,
-            bias_min=-1.0,
-            bias_max=1.0,
-            input_activation=ActivationFunctionEnum.RELU,
-            hidden_activation=ActivationFunctionEnum.SIGMOID,
-            output_activation=ActivationFunctionEnum.LINEAR,
-            learning_rate=0.01,
-        )
-
-    @pytest.fixture
-    def configuration_neuroevolution(self, neural_network_config: NeuralNetworkConfig) -> Configuration:
-        return Configuration(neuroevolution=NeuroevolutionConfig(neural_network=neural_network_config))
-
-    @pytest.fixture
-    def configuration_fitness(self, neural_network_config: NeuralNetworkConfig) -> Configuration:
-        return Configuration(fitness_approach=FitnessApproachConfig(neural_network=neural_network_config))
-
-    @pytest.fixture
-    def configuration_data_neuroevolution(self, configuration_neuroevolution: Configuration) -> ConfigurationData:
-        return ConfigurationData.from_protobuf(configuration_neuroevolution)
-
-    @pytest.fixture
-    def configuration_data_fitness(self, configuration_fitness: Configuration) -> ConfigurationData:
-        return ConfigurationData.from_protobuf(configuration_fitness)
-
     def test_from_protobuf(
         self, configuration_neuroevolution: Configuration, configuration_fitness: Configuration
     ) -> None:
@@ -219,19 +145,6 @@ class TestConfigurationData:
 
 
 class TestGeneticAlgorithmConfigData:
-    @pytest.fixture
-    def genetic_algorithm_config(self) -> GeneticAlgorithmConfig:
-        return GeneticAlgorithmConfig(
-            population_size=100,
-            mutation_rate=0.01,
-        )
-
-    @pytest.fixture
-    def genetic_algorithm_config_data(
-        self, genetic_algorithm_config: GeneticAlgorithmConfig
-    ) -> GeneticAlgorithmConfigData:
-        return GeneticAlgorithmConfigData.from_protobuf(genetic_algorithm_config)
-
     def test_from_protobuf(self, genetic_algorithm_config: GeneticAlgorithmConfig) -> None:
         ga_data = GeneticAlgorithmConfigData.from_protobuf(genetic_algorithm_config)
 
@@ -256,42 +169,6 @@ class TestGeneticAlgorithmConfigData:
 
 
 class TestNeuroevolutionConfigData:
-    @pytest.fixture
-    def neural_network_config(self) -> NeuralNetworkConfig:
-        return NeuralNetworkConfig(
-            num_inputs=2,
-            num_outputs=1,
-            hidden_layer_sizes=[3],
-            weights_min=-1.0,
-            weights_max=1.0,
-            bias_min=-1.0,
-            bias_max=1.0,
-            input_activation=ActivationFunctionEnum.RELU,
-            hidden_activation=ActivationFunctionEnum.SIGMOID,
-            output_activation=ActivationFunctionEnum.LINEAR,
-            learning_rate=0.01,
-        )
-
-    @pytest.fixture
-    def genetic_algorithm_config(self) -> GeneticAlgorithmConfig:
-        return GeneticAlgorithmConfig(
-            population_size=100,
-            mutation_rate=0.01,
-        )
-
-    @pytest.fixture
-    def neuroevolution_config(
-        self, neural_network_config: NeuralNetworkConfig, genetic_algorithm_config: GeneticAlgorithmConfig
-    ) -> NeuroevolutionConfig:
-        return NeuroevolutionConfig(
-            neural_network=neural_network_config,
-            genetic_algorithm=genetic_algorithm_config,
-        )
-
-    @pytest.fixture
-    def neuroevolution_config_data(self, neuroevolution_config: NeuroevolutionConfig) -> NeuroevolutionConfigData:
-        return NeuroevolutionConfigData.from_protobuf(neuroevolution_config)
-
     def test_from_protobuf(self, neuroevolution_config: NeuroevolutionConfig) -> None:
         config_data = NeuroevolutionConfigData.from_protobuf(neuroevolution_config)
 
@@ -316,30 +193,6 @@ class TestNeuroevolutionConfigData:
 
 
 class TestFitnessApproachConfigData:
-    @pytest.fixture
-    def neural_network_config(self) -> NeuralNetworkConfig:
-        return NeuralNetworkConfig(
-            num_inputs=2,
-            num_outputs=1,
-            hidden_layer_sizes=[3],
-            weights_min=-1.0,
-            weights_max=1.0,
-            bias_min=-1.0,
-            bias_max=1.0,
-            input_activation=ActivationFunctionEnum.RELU,
-            hidden_activation=ActivationFunctionEnum.SIGMOID,
-            output_activation=ActivationFunctionEnum.LINEAR,
-            learning_rate=0.01,
-        )
-
-    @pytest.fixture
-    def fitness_approach_config(self, neural_network_config: NeuralNetworkConfig) -> FitnessApproachConfig:
-        return FitnessApproachConfig(neural_network=neural_network_config)
-
-    @pytest.fixture
-    def fitness_approach_config_data(self, fitness_approach_config: FitnessApproachConfig) -> FitnessApproachConfigData:
-        return FitnessApproachConfigData.from_protobuf(fitness_approach_config)
-
     def test_from_protobuf(self, fitness_approach_config: FitnessApproachConfig) -> None:
         config_data = FitnessApproachConfigData.from_protobuf(fitness_approach_config)
 

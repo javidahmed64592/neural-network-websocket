@@ -11,32 +11,6 @@ from nn_websocket.protobuf.frame_data_types import (
 
 
 class TestFrameRequestData:
-    @pytest.fixture
-    def frame_request_observation(self) -> FrameRequest:
-        return FrameRequest(observation=Observation(inputs=[0.0, 1.0, 2.0]))
-
-    @pytest.fixture
-    def frame_request_fitness(self) -> FrameRequest:
-        return FrameRequest(fitness=Fitness(values=[0.1, 0.2, 0.3]))
-
-    @pytest.fixture
-    def frame_request_train(self) -> FrameRequest:
-        return FrameRequest(
-            train_request=TrainRequest(observation=[Observation(inputs=[0.0, 1.0])], fitness=[Fitness(values=[0.9])])
-        )
-
-    @pytest.fixture
-    def frame_request_data_observation(self, frame_request_observation: FrameRequest) -> FrameRequestData:
-        return FrameRequestData.from_protobuf(frame_request_observation)
-
-    @pytest.fixture
-    def frame_request_data_fitness(self, frame_request_fitness: FrameRequest) -> FrameRequestData:
-        return FrameRequestData.from_protobuf(frame_request_fitness)
-
-    @pytest.fixture
-    def frame_request_data_train(self, frame_request_train: FrameRequest) -> FrameRequestData:
-        return FrameRequestData.from_protobuf(frame_request_train)
-
     def test_from_protobuf(
         self,
         frame_request_observation: FrameRequest,
@@ -99,14 +73,6 @@ class TestFrameRequestData:
 
 
 class TestObservationData:
-    @pytest.fixture
-    def observation(self) -> Observation:
-        return Observation(inputs=[0.0, 1.0, 2.0])
-
-    @pytest.fixture
-    def observation_data(self, observation: Observation) -> ObservationData:
-        return ObservationData.from_protobuf(observation)
-
     def test_from_protobuf(self, observation: Observation) -> None:
         """Test converting from Protobuf to ObservationData."""
         observation_data = ObservationData.from_protobuf(observation)
@@ -130,14 +96,6 @@ class TestObservationData:
 
 
 class TestActionData:
-    @pytest.fixture
-    def action(self) -> Action:
-        return Action(outputs=[0.0, 1.0, 2.0])
-
-    @pytest.fixture
-    def action_data(self, action: Action) -> ActionData:
-        return ActionData.from_protobuf(action)
-
     def test_from_protobuf(self, action: Action) -> None:
         """Test converting from Protobuf to ActionData."""
         action_data = ActionData.from_protobuf(action)
@@ -161,14 +119,6 @@ class TestActionData:
 
 
 class TestFitnessData:
-    @pytest.fixture
-    def fitness(self) -> Fitness:
-        return Fitness(values=[0.0, 1.0, 2.0])
-
-    @pytest.fixture
-    def fitness_data(self, fitness: Fitness) -> FitnessData:
-        return FitnessData.from_protobuf(fitness)
-
     def test_from_protobuf(self, fitness: Fitness) -> None:
         """Test converting from Protobuf to FitnessData."""
         fitness_data = FitnessData.from_protobuf(fitness)
@@ -192,16 +142,6 @@ class TestFitnessData:
 
 
 class TestTrainRequestData:
-    @pytest.fixture
-    def train_request(self) -> TrainRequest:
-        return TrainRequest(
-            observation=[Observation(inputs=[0.0, 1.0, 2.0])], fitness=[Fitness(values=[0.0, 1.0, 2.0])]
-        )
-
-    @pytest.fixture
-    def train_request_data(self, train_request: TrainRequest) -> TrainRequestData:
-        return TrainRequestData.from_protobuf(train_request)
-
     def test_from_protobuf(self, train_request: TrainRequest) -> None:
         """Test converting from Protobuf to TrainRequestData."""
         train_request_data = TrainRequestData.from_protobuf(train_request)
