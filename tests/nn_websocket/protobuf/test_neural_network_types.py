@@ -2,7 +2,7 @@ import pytest
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation, TanhActivation
 
 from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
-    ActivationFunctionData,
+    ActivationFunctionEnum,
     Configuration,
     FitnessApproachConfig,
     GeneticAlgorithmConfig,
@@ -10,7 +10,7 @@ from nn_websocket.protobuf.compiled.NeuralNetwork_pb2 import (
     NeuroevolutionConfig,
 )
 from nn_websocket.protobuf.neural_network_types import (
-    ActivationFunctionEnum,
+    ActivationFunctionEnumData,
     ConfigurationData,
     FitnessApproachConfigData,
     GeneticAlgorithmConfigData,
@@ -19,30 +19,39 @@ from nn_websocket.protobuf.neural_network_types import (
 )
 
 
-class TestActivationFunctionEnum:
+class TestActivationFunctionEnumData:
     def test_get_class(self) -> None:
-        assert ActivationFunctionEnum.LINEAR.get_class() == LinearActivation
-        assert ActivationFunctionEnum.RELU.get_class() == ReluActivation
-        assert ActivationFunctionEnum.SIGMOID.get_class() == SigmoidActivation
-        assert ActivationFunctionEnum.TANH.get_class() == TanhActivation
+        assert ActivationFunctionEnumData.LINEAR.get_class() == LinearActivation
+        assert ActivationFunctionEnumData.RELU.get_class() == ReluActivation
+        assert ActivationFunctionEnumData.SIGMOID.get_class() == SigmoidActivation
+        assert ActivationFunctionEnumData.TANH.get_class() == TanhActivation
 
     def test_from_class(self) -> None:
-        assert ActivationFunctionEnum.from_class(LinearActivation) == ActivationFunctionEnum.LINEAR
-        assert ActivationFunctionEnum.from_class(ReluActivation) == ActivationFunctionEnum.RELU
-        assert ActivationFunctionEnum.from_class(SigmoidActivation) == ActivationFunctionEnum.SIGMOID
-        assert ActivationFunctionEnum.from_class(TanhActivation) == ActivationFunctionEnum.TANH
+        assert ActivationFunctionEnumData.from_class(LinearActivation) == ActivationFunctionEnumData.LINEAR
+        assert ActivationFunctionEnumData.from_class(ReluActivation) == ActivationFunctionEnumData.RELU
+        assert ActivationFunctionEnumData.from_class(SigmoidActivation) == ActivationFunctionEnumData.SIGMOID
+        assert ActivationFunctionEnumData.from_class(TanhActivation) == ActivationFunctionEnumData.TANH
 
     def test_from_protobuf(self) -> None:
-        assert ActivationFunctionEnum.from_protobuf(ActivationFunctionData.LINEAR) == ActivationFunctionEnum.LINEAR
-        assert ActivationFunctionEnum.from_protobuf(ActivationFunctionData.RELU) == ActivationFunctionEnum.RELU
-        assert ActivationFunctionEnum.from_protobuf(ActivationFunctionData.SIGMOID) == ActivationFunctionEnum.SIGMOID
-        assert ActivationFunctionEnum.from_protobuf(ActivationFunctionData.TANH) == ActivationFunctionEnum.TANH
+        assert (
+            ActivationFunctionEnumData.from_protobuf(ActivationFunctionEnum.LINEAR) == ActivationFunctionEnumData.LINEAR
+        )
+        assert ActivationFunctionEnumData.from_protobuf(ActivationFunctionEnum.RELU) == ActivationFunctionEnumData.RELU
+        assert (
+            ActivationFunctionEnumData.from_protobuf(ActivationFunctionEnum.SIGMOID)
+            == ActivationFunctionEnumData.SIGMOID
+        )
+        assert ActivationFunctionEnumData.from_protobuf(ActivationFunctionEnum.TANH) == ActivationFunctionEnumData.TANH
 
     def test_to_protobuf(self) -> None:
-        assert ActivationFunctionEnum.to_protobuf(ActivationFunctionEnum.LINEAR) == ActivationFunctionData.LINEAR
-        assert ActivationFunctionEnum.to_protobuf(ActivationFunctionEnum.RELU) == ActivationFunctionData.RELU
-        assert ActivationFunctionEnum.to_protobuf(ActivationFunctionEnum.SIGMOID) == ActivationFunctionData.SIGMOID
-        assert ActivationFunctionEnum.to_protobuf(ActivationFunctionEnum.TANH) == ActivationFunctionData.TANH
+        assert (
+            ActivationFunctionEnumData.to_protobuf(ActivationFunctionEnumData.LINEAR) == ActivationFunctionEnum.LINEAR
+        )
+        assert ActivationFunctionEnumData.to_protobuf(ActivationFunctionEnumData.RELU) == ActivationFunctionEnum.RELU
+        assert (
+            ActivationFunctionEnumData.to_protobuf(ActivationFunctionEnumData.SIGMOID) == ActivationFunctionEnum.SIGMOID
+        )
+        assert ActivationFunctionEnumData.to_protobuf(ActivationFunctionEnumData.TANH) == ActivationFunctionEnum.TANH
 
 
 class TestNeuralNetworkDataType:
@@ -53,9 +62,9 @@ class TestNeuralNetworkDataType:
         test_hidden_layer_sizes = [3]
         test_weights_range = (-1, 1)
         test_bias_range = (-1, 1)
-        test_input_activation = ActivationFunctionData.RELU
-        test_hidden_activation = ActivationFunctionData.SIGMOID
-        test_output_activation = ActivationFunctionData.LINEAR
+        test_input_activation = ActivationFunctionEnum.RELU
+        test_hidden_activation = ActivationFunctionEnum.SIGMOID
+        test_output_activation = ActivationFunctionEnum.LINEAR
         test_learning_rate = 0.01
 
         return NeuralNetworkConfig(
@@ -82,9 +91,9 @@ class TestNeuralNetworkDataType:
             weights_max=neural_network_config.weights_max,
             bias_min=neural_network_config.bias_min,
             bias_max=neural_network_config.bias_max,
-            input_activation=ActivationFunctionEnum.from_protobuf(neural_network_config.input_activation),
-            hidden_activation=ActivationFunctionEnum.from_protobuf(neural_network_config.hidden_activation),
-            output_activation=ActivationFunctionEnum.from_protobuf(neural_network_config.output_activation),
+            input_activation=ActivationFunctionEnumData.from_protobuf(neural_network_config.input_activation),
+            hidden_activation=ActivationFunctionEnumData.from_protobuf(neural_network_config.hidden_activation),
+            output_activation=ActivationFunctionEnumData.from_protobuf(neural_network_config.output_activation),
             learning_rate=neural_network_config.learning_rate,
         )
 
@@ -150,9 +159,9 @@ class TestConfigurationData:
             weights_max=1.0,
             bias_min=-1.0,
             bias_max=1.0,
-            input_activation=ActivationFunctionData.RELU,
-            hidden_activation=ActivationFunctionData.SIGMOID,
-            output_activation=ActivationFunctionData.LINEAR,
+            input_activation=ActivationFunctionEnum.RELU,
+            hidden_activation=ActivationFunctionEnum.SIGMOID,
+            output_activation=ActivationFunctionEnum.LINEAR,
             learning_rate=0.01,
         )
 
@@ -257,9 +266,9 @@ class TestNeuroevolutionConfigData:
             weights_max=1.0,
             bias_min=-1.0,
             bias_max=1.0,
-            input_activation=ActivationFunctionData.RELU,
-            hidden_activation=ActivationFunctionData.SIGMOID,
-            output_activation=ActivationFunctionData.LINEAR,
+            input_activation=ActivationFunctionEnum.RELU,
+            hidden_activation=ActivationFunctionEnum.SIGMOID,
+            output_activation=ActivationFunctionEnum.LINEAR,
             learning_rate=0.01,
         )
 
@@ -317,9 +326,9 @@ class TestFitnessApproachConfigData:
             weights_max=1.0,
             bias_min=-1.0,
             bias_max=1.0,
-            input_activation=ActivationFunctionData.RELU,
-            hidden_activation=ActivationFunctionData.SIGMOID,
-            output_activation=ActivationFunctionData.LINEAR,
+            input_activation=ActivationFunctionEnum.RELU,
+            hidden_activation=ActivationFunctionEnum.SIGMOID,
+            output_activation=ActivationFunctionEnum.LINEAR,
             learning_rate=0.01,
         )
 

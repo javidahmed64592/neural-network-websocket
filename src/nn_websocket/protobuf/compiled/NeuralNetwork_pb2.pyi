@@ -7,16 +7,16 @@ from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class ActivationFunctionData(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+class ActivationFunctionEnum(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
-    LINEAR: _ClassVar[ActivationFunctionData]
-    RELU: _ClassVar[ActivationFunctionData]
-    SIGMOID: _ClassVar[ActivationFunctionData]
-    TANH: _ClassVar[ActivationFunctionData]
-LINEAR: ActivationFunctionData
-RELU: ActivationFunctionData
-SIGMOID: ActivationFunctionData
-TANH: ActivationFunctionData
+    LINEAR: _ClassVar[ActivationFunctionEnum]
+    RELU: _ClassVar[ActivationFunctionEnum]
+    SIGMOID: _ClassVar[ActivationFunctionEnum]
+    TANH: _ClassVar[ActivationFunctionEnum]
+LINEAR: ActivationFunctionEnum
+RELU: ActivationFunctionEnum
+SIGMOID: ActivationFunctionEnum
+TANH: ActivationFunctionEnum
 
 class NeuralNetworkConfig(_message.Message):
     __slots__ = ("num_inputs", "num_outputs", "hidden_layer_sizes", "weights_min", "weights_max", "bias_min", "bias_max", "input_activation", "hidden_activation", "output_activation", "learning_rate")
@@ -38,11 +38,11 @@ class NeuralNetworkConfig(_message.Message):
     weights_max: float
     bias_min: float
     bias_max: float
-    input_activation: ActivationFunctionData
-    hidden_activation: ActivationFunctionData
-    output_activation: ActivationFunctionData
+    input_activation: ActivationFunctionEnum
+    hidden_activation: ActivationFunctionEnum
+    output_activation: ActivationFunctionEnum
     learning_rate: float
-    def __init__(self, num_inputs: _Optional[int] = ..., num_outputs: _Optional[int] = ..., hidden_layer_sizes: _Optional[_Iterable[int]] = ..., weights_min: _Optional[float] = ..., weights_max: _Optional[float] = ..., bias_min: _Optional[float] = ..., bias_max: _Optional[float] = ..., input_activation: _Optional[_Union[ActivationFunctionData, str]] = ..., hidden_activation: _Optional[_Union[ActivationFunctionData, str]] = ..., output_activation: _Optional[_Union[ActivationFunctionData, str]] = ..., learning_rate: _Optional[float] = ...) -> None: ...
+    def __init__(self, num_inputs: _Optional[int] = ..., num_outputs: _Optional[int] = ..., hidden_layer_sizes: _Optional[_Iterable[int]] = ..., weights_min: _Optional[float] = ..., weights_max: _Optional[float] = ..., bias_min: _Optional[float] = ..., bias_max: _Optional[float] = ..., input_activation: _Optional[_Union[ActivationFunctionEnum, str]] = ..., hidden_activation: _Optional[_Union[ActivationFunctionEnum, str]] = ..., output_activation: _Optional[_Union[ActivationFunctionEnum, str]] = ..., learning_rate: _Optional[float] = ...) -> None: ...
 
 class Configuration(_message.Message):
     __slots__ = ("neuroevolution", "fitness_approach")
