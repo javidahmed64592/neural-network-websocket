@@ -7,9 +7,10 @@ import pytest
 
 from nn_websocket.ga.nn_ga import NeuralNetworkGA
 from nn_websocket.ga.nn_member import NeuralNetworkMember
+from nn_websocket.models.config import Config
 
 # from nn_websocket.main import NeuralNetworkWebsocketServer
-from nn_websocket.models.config import Config
+from nn_websocket.models.nn_suites import NeuroevolutionSuite
 from nn_websocket.protobuf.compiled.FrameRequestClasses_pb2 import (
     Action,
     Fitness,
@@ -254,6 +255,12 @@ def mock_load_config(mock_config: Config) -> Generator[MagicMock, None, None]:
     with patch("nn_websocket.models.config.Config.load_config") as mock_load_config:
         mock_load_config.return_value = mock_config
         yield mock_load_config
+
+
+@pytest.fixture
+def mock_neuroevolution_suite(neuroevolution_config_data: NeuroevolutionConfigData) -> NeuroevolutionSuite:
+    """Fixture for NeuroevolutionSuite."""
+    return NeuroevolutionSuite.from_config_data(neuroevolution_config_data)
 
 
 # @pytest.fixture
