@@ -5,6 +5,11 @@ from nn_websocket.models.config import Config
 
 
 class TestConfig:
+    def test_uri_property(self) -> None:
+        """Test the URI property of the Config class."""
+        config = Config(host="localhost", port=8080)
+        assert config.uri == "ws://localhost:8080"
+
     def test_load_config(self, mock_config: Config) -> None:
         """Test loading configuration from a file."""
         mock_data = json.dumps({"host": mock_config.host, "port": mock_config.port})
