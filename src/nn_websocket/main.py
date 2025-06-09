@@ -35,12 +35,9 @@ class NeuralNetworkWebsocketServer:
         logger.info("Configuring neural networks...")
         if neuroevolution := config.neuroevolution:
             return NeuroevolutionSuite.from_bytes(NeuroevolutionConfigData.to_bytes(neuroevolution))
-        if fitness_approach := config.fitness_approach:
-            return FitnessSuite.from_bytes(FitnessApproachConfigData.to_bytes(fitness_approach))
 
-        msg = "Configuration must contain either neuroevolution or fitness approach data."
-        logger.error(msg)
-        raise ValueError(msg)
+        fitness_approach = config.fitness_approach
+        return FitnessSuite.from_bytes(FitnessApproachConfigData.to_bytes(fitness_approach))
 
     @staticmethod
     def process_observations(
@@ -48,12 +45,7 @@ class NeuralNetworkWebsocketServer:
     ) -> ActionData:
         if isinstance(neural_network_suite, NeuroevolutionSuite):
             return neural_network_suite.feedforward_through_networks(observation)
-        if isinstance(neural_network_suite, FitnessSuite):
-            return neural_network_suite.feedforward(observation)
-
-        msg = "Neural network suite must be either NeuroevolutionSuite or FitnessSuite."
-        logger.error(msg)
-        raise ValueError(msg)
+        return neural_network_suite.feedforward(observation)
 
     @staticmethod
     def crossover_neural_networks(neural_network_suite: NeuroevolutionSuite, fitness_data: FitnessData) -> None:

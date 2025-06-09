@@ -7,9 +7,8 @@ import pytest
 
 from nn_websocket.ga.nn_ga import NeuralNetworkGA
 from nn_websocket.ga.nn_member import NeuralNetworkMember
+from nn_websocket.main import NeuralNetworkWebsocketServer
 from nn_websocket.models.config import Config
-
-# from nn_websocket.main import NeuralNetworkWebsocketServer
 from nn_websocket.models.nn_suites import FitnessSuite, NeuroevolutionSuite
 from nn_websocket.protobuf.compiled.FrameRequestClasses_pb2 import (
     Action,
@@ -269,54 +268,86 @@ def mock_fitness_suite(fitness_approach_config_data: FitnessApproachConfigData) 
     return FitnessSuite.from_config_data(fitness_approach_config_data)
 
 
-# # Main fixtures
-# @pytest.fixture
-# def mock_neural_network_websocket_server(
-#     mock_load_config: MagicMock,
-# ) -> NeuralNetworkWebsocketServer:
-#     """Fixture for NeuralNetworkWebsocketServer."""
-#     return NeuralNetworkWebsocketServer(MOCK_CONFIG_FILEPATH)
+# Main fixtures
+@pytest.fixture
+def mock_neural_network_websocket_server(
+    mock_load_config: MagicMock,
+) -> NeuralNetworkWebsocketServer:
+    """Fixture for NeuralNetworkWebsocketServer."""
+    return NeuralNetworkWebsocketServer(MOCK_CONFIG_FILEPATH)
 
 
-# @pytest.fixture
-# def mock_configure_neural_networks(
-#     mock_neural_network_suite: NeuralNetworkSuite,
-# ) -> Generator[MagicMock, None, None]:
-#     """Patch the configure_neural_networks function."""
-#     with patch("nn_websocket.main.NeuralNetworkWebsocketServer.configure_neural_networks") as mock_configure:
-#         mock_configure.return_value = mock_neural_network_suite
-#         yield mock_configure
+@pytest.fixture
+def mock_configure_neural_networks_neuroevolution(
+    mock_neuroevolution_suite: NeuroevolutionSuite,
+) -> Generator[MagicMock, None, None]:
+    """Patch the configure_neural_network_suite function."""
+    with patch("nn_websocket.main.NeuralNetworkWebsocketServer.configure_neural_network_suite") as mock_configure:
+        mock_configure.return_value = mock_neuroevolution_suite
+        yield mock_configure
 
 
-# @pytest.fixture
-# def mock_crossover_neural_networks() -> Generator[MagicMock, None, None]:
-#     """Patch the crossover_neural_networks function."""
-#     with patch("nn_websocket.main.NeuralNetworkWebsocketServer.crossover_neural_networks") as mock_crossover:
-#         mock_crossover.return_value = None
-#         yield mock_crossover
+@pytest.fixture
+def mock_configure_neural_networks_fitness(
+    mock_fitness_suite: FitnessSuite,
+) -> Generator[MagicMock, None, None]:
+    """Patch the configure_neural_network_suite function for fitness approach."""
+    with patch("nn_websocket.main.NeuralNetworkWebsocketServer.configure_neural_network_suite") as mock_configure:
+        mock_configure.return_value = mock_fitness_suite
+        yield mock_configure
 
 
-# @pytest.fixture
-# def mock_process_observations() -> Generator[MagicMock, None, None]:
-#     """Patch the process_observations function."""
-#     with patch("nn_websocket.main.NeuralNetworkWebsocketServer.process_observations") as mock_process:
-#         mock_process.return_value = ActionData(
-#             outputs=np.arange(MOCK_NUM_OUTPUTS * MOCK_NUM_AGENTS, dtype=float).tolist()
-#         )
-#         yield mock_process
+@pytest.fixture
+def mock_process_observations(action_data: ActionData) -> Generator[MagicMock, None, None]:
+    """Patch the process_observations function."""
+    with patch("nn_websocket.main.NeuralNetworkWebsocketServer.process_observations") as mock_process:
+        mock_process.return_value = action_data
+        yield mock_process
 
 
-# @pytest.fixture
-# def mock_websocket(
-#     nn_config_data: NeuralNetworkConfigData,
-#     frame_request_data_observation: FrameRequestData,
-#     frame_request_data_population: FrameRequestData,
-# ) -> AsyncMock:
-#     """Fixture for a mock websocket connection."""
-#     mock_websocket = AsyncMock()
-#     mock_websocket.__aiter__.return_value = [
-#         NeuralNetworkConfigData.to_bytes(nn_config_data),
-#         FrameRequestData.to_bytes(frame_request_data_observation),
-#         FrameRequestData.to_bytes(frame_request_data_population),
-#     ]
-#     return mock_websocket
+@pytest.fixture
+def mock_crossover_neural_networks() -> Generator[MagicMock, None, None]:
+    """Patch the crossover_neural_networks function."""
+    with patch("nn_websocket.main.NeuralNetworkWebsocketServer.crossover_neural_networks") as mock_crossover:
+        mock_crossover.return_value = None
+        yield mock_crossover
+
+
+@pytest.fixture
+def mock_train_neural_network() -> Generator[MagicMock, None, None]:
+    """Patch the train function."""
+    with patch("nn_websocket.main.NeuralNetworkWebsocketServer.train") as mock_train:
+        mock_train.return_value = None
+        yield mock_train
+
+
+@pytest.fixture
+def mock_websocket_neuroevolution(
+    configuration_data_neuroevolution: ConfigurationData,
+    frame_request_data_observation: FrameRequestData,
+    frame_request_data_fitness: FrameRequestData,
+) -> AsyncMock:
+    """Fixture for a mock websocket connection."""
+    mock_websocket = AsyncMock()
+    mock_websocket.__aiter__.return_value = [
+        ConfigurationData.to_bytes(configuration_data_neuroevolution),
+        FrameRequestData.to_bytes(frame_request_data_observation),
+        FrameRequestData.to_bytes(frame_request_data_fitness),
+    ]
+    return mock_websocket
+
+
+@pytest.fixture
+def mock_websocket_fitness(
+    configuration_data_fitness: ConfigurationData,
+    frame_request_data_observation: FrameRequestData,
+    frame_request_data_train: FrameRequestData,
+) -> AsyncMock:
+    """Fixture for a mock websocket connection for fitness approach."""
+    mock_websocket = AsyncMock()
+    mock_websocket.__aiter__.return_value = [
+        ConfigurationData.to_bytes(configuration_data_fitness),
+        FrameRequestData.to_bytes(frame_request_data_observation),
+        FrameRequestData.to_bytes(frame_request_data_train),
+    ]
+    return mock_websocket
