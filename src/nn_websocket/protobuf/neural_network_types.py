@@ -66,7 +66,7 @@ class NeuralNetworkConfigData:
     input_activation: ActivationFunctionEnumData
     hidden_activation: ActivationFunctionEnumData
     output_activation: ActivationFunctionEnumData
-    learning_rate: float = 0.01
+    learning_rate: float
 
     @classmethod
     def from_protobuf(cls, config: NeuralNetworkConfig) -> NeuralNetworkConfigData:
