@@ -269,14 +269,6 @@ def mock_fitness_suite(fitness_approach_config_data: FitnessApproachConfigData) 
     return FitnessSuite.from_config_data(fitness_approach_config_data)
 
 
-# @pytest.fixture
-# def mock_neural_network_suite(
-#     configuration_data: ConfigurationData,
-# ) -> NeuralNetworkSuite:
-#     """Fixture for NeuralNetworkSuite."""
-#     return NeuralNetworkSuite.from_bytes(ConfigurationData.to_bytes(configuration_data))
-
-
 # # Main fixtures
 # @pytest.fixture
 # def mock_neural_network_websocket_server(
