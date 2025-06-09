@@ -14,7 +14,7 @@ from nn_websocket.protobuf.neural_network_types import (
     NeuralNetworkConfigData,
     NeuroevolutionConfigData,
 )
-from nn_websocket.tools.client_utils import get_config, get_random_observation, get_random_population_fitness
+from nn_websocket.tools.client_utils import get_config, get_random_fitness_frame, get_random_observation_frame
 
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -22,7 +22,6 @@ rng = np.random.default_rng()
 
 # Load websocket config from JSON file
 config = get_config()
-SERVER_URI = f"ws://{config.host}:{config.port}"
 
 # Configuration for the neuroevolution client
 NUM_AGENTS = 10
@@ -39,6 +38,7 @@ BIAS_MAX = 0.2
 INPUT_ACTIVATION = ActivationFunctionEnumData.LINEAR
 HIDDEN_ACTIVATION = ActivationFunctionEnumData.RELU
 OUTPUT_ACTIVATION = ActivationFunctionEnumData.SIGMOID
+LEARNING_RATE = 0.01
 
 nn_config = NeuralNetworkConfigData(
     num_inputs=NUM_INPUTS,
@@ -51,6 +51,7 @@ nn_config = NeuralNetworkConfigData(
     input_activation=INPUT_ACTIVATION,
     hidden_activation=HIDDEN_ACTIVATION,
     output_activation=OUTPUT_ACTIVATION,
+    learning_rate=LEARNING_RATE,
 )
 
 genetic_algorithm_config = GeneticAlgorithmConfigData(
@@ -71,7 +72,7 @@ class NeuroevolutionClient:
     async def start() -> None:
         num_observations = 0
 
-        async with websockets.connect(SERVER_URI) as ws:
+        async with websockets.connect(config.uri) as ws:
             # Send configuration data to the server
             logger.info("Sending NeuroevolutionConfigData to server.")
             await ws.send(ConfigurationData.to_bytes(config_data))
@@ -80,13 +81,13 @@ class NeuroevolutionClient:
             # Send observations and fitness data in episodes
             while True:
                 logger.info("Sending ObservationData to server (observation #%d).", num_observations + 1)
-                await ws.send(FrameRequestData.to_bytes(get_random_observation(NUM_INPUTS * NUM_AGENTS)))
+                await ws.send(FrameRequestData.to_bytes(get_random_observation_frame(NUM_INPUTS * NUM_AGENTS)))
                 num_observations += 1
 
                 # Every EPISODE_LENGTH observations, send fitness data for crossover
                 if num_observations % EPISODE_LENGTH == 0:
                     logger.info("Episode complete. Sending FitnessData to server for crossover.")
-                    await ws.send(FrameRequestData.to_bytes(get_random_population_fitness(NUM_AGENTS)))
+                    await ws.send(FrameRequestData.to_bytes(get_random_fitness_frame(NUM_AGENTS)))
 
                 try:
                     response = await asyncio.wait_for(ws.recv(), timeout=2)

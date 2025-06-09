@@ -4,18 +4,14 @@ import logging
 import numpy as np
 import websockets
 
-from nn_websocket.protobuf.frame_data_types import (
-    FitnessData,
-    FrameRequestData,
-    TrainRequestData,
-)
+from nn_websocket.protobuf.frame_data_types import FrameRequestData
 from nn_websocket.protobuf.neural_network_types import (
     ActivationFunctionEnumData,
     ConfigurationData,
     FitnessApproachConfigData,
     NeuralNetworkConfigData,
 )
-from nn_websocket.tools.client_utils import get_config, get_random_observation
+from nn_websocket.tools.client_utils import get_config, get_random_observation_frame, get_random_train_request_frame
 
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -23,7 +19,6 @@ rng = np.random.default_rng()
 
 # Load websocket config from JSON file
 config = get_config()
-SERVER_URI = f"ws://{config.host}:{config.port}"
 
 # Configuration for the fitness approach client
 NUM_INPUTS = 5
@@ -60,28 +55,10 @@ config_data = ConfigurationData(fitness_approach=fitness_approach_config)
 
 class FitnessClient:
     @staticmethod
-    def get_training_data() -> FrameRequestData:
-        """Generate training data with observations and target fitness values."""
-        # TODO: Move to client_utils.py
-        observations = []
-        fitness_values = []
-
-        for _ in range(TRAINING_BATCH_SIZE):
-            # Generate random observation
-            observations.append(get_random_observation(NUM_INPUTS))
-
-            # Generate target fitness (could be based on some reward function)
-            fitness = rng.uniform(low=0, high=1, size=1).astype(np.float32).tolist()
-            fitness_values.append(FitnessData(values=fitness))
-
-        train_request = TrainRequestData(observation=observations, fitness=fitness_values)
-        return FrameRequestData(train_request=train_request)
-
-    @staticmethod
     async def start() -> None:
         observation_count = 0
 
-        async with websockets.connect(SERVER_URI) as ws:
+        async with websockets.connect(config.uri) as ws:
             # Send configuration data to the server
             logger.info("Sending FitnessApproachConfigData to server.")
             await ws.send(ConfigurationData.to_bytes(config_data))
@@ -90,13 +67,15 @@ class FitnessClient:
             # Send observations and training data
             while True:
                 logger.info("Sending ObservationData to server (observation #%d).", observation_count + 1)
-                await ws.send(FrameRequestData.to_bytes(get_random_observation(NUM_INPUTS)))
+                await ws.send(FrameRequestData.to_bytes(get_random_observation_frame(NUM_INPUTS)))
                 observation_count += 1
 
                 # Every TRAINING_BATCH_SIZE observations, send training data
                 if observation_count % TRAINING_BATCH_SIZE == 0:
                     logger.info("Sending training batch to server.")
-                    await ws.send(FrameRequestData.to_bytes(FitnessClient.get_training_data()))
+                    await ws.send(
+                        FrameRequestData.to_bytes(get_random_train_request_frame(TRAINING_BATCH_SIZE, NUM_INPUTS))
+                    )
 
                 try:
                     response = await asyncio.wait_for(ws.recv(), timeout=2)
