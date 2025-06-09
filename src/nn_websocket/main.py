@@ -5,8 +5,19 @@ from pathlib import Path
 import websockets
 
 from nn_websocket.models.config import Config
-from nn_websocket.models.nn_suite import NeuralNetworkSuite
-from nn_websocket.protobuf.proto_types import ActionData, FitnessData, FrameRequestData, ObservationData
+from nn_websocket.models.nn_suites import FitnessSuite, NeuroevolutionSuite
+from nn_websocket.protobuf.frame_data_types import (
+    ActionData,
+    FitnessData,
+    FrameRequestData,
+    ObservationData,
+    TrainRequestData,
+)
+from nn_websocket.protobuf.neural_network_types import (
+    ConfigurationData,
+    FitnessApproachConfigData,
+    NeuroevolutionConfigData,
+)
 
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -20,36 +31,62 @@ class NeuralNetworkWebsocketServer:
         self.config = Config.load_config(self.config_filepath)
 
     @staticmethod
-    def configure_neural_networks(config: bytes) -> NeuralNetworkSuite:
+    def configure_neural_network_suite(config: ConfigurationData) -> NeuroevolutionSuite | FitnessSuite:
         logger.info("Configuring neural networks...")
-        return NeuralNetworkSuite.from_bytes(config)
+        if neuroevolution := config.neuroevolution:
+            return NeuroevolutionSuite.from_bytes(NeuroevolutionConfigData.to_bytes(neuroevolution))
+        if fitness_approach := config.fitness_approach:
+            return FitnessSuite.from_bytes(FitnessApproachConfigData.to_bytes(fitness_approach))
+
+        msg = "Configuration must contain either neuroevolution or fitness approach data."
+        logger.error(msg)
+        raise ValueError(msg)
 
     @staticmethod
-    def crossover_neural_networks(neural_network_suite: NeuralNetworkSuite, fitness_data: FitnessData) -> None:
+    def process_observations(
+        neural_network_suite: NeuroevolutionSuite | FitnessSuite, observation: ObservationData
+    ) -> ActionData:
+        if isinstance(neural_network_suite, NeuroevolutionSuite):
+            return neural_network_suite.feedforward_through_networks(observation)
+        if isinstance(neural_network_suite, FitnessSuite):
+            return neural_network_suite.feedforward(observation)
+
+        msg = "Neural network suite must be either NeuroevolutionSuite or FitnessSuite."
+        logger.error(msg)
+        raise ValueError(msg)
+
+    @staticmethod
+    def crossover_neural_networks(neural_network_suite: NeuroevolutionSuite, fitness_data: FitnessData) -> None:
         logger.info("Crossover neural networks...")
         neural_network_suite.crossover_networks(fitness_data)
 
     @staticmethod
-    def process_observations(neural_network_suite: NeuralNetworkSuite, observation: ObservationData) -> ActionData:
-        return neural_network_suite.feedforward_through_networks(observation)
+    def train(neural_network_suite: FitnessSuite, train_request: TrainRequestData) -> None:
+        logger.info("Training neural network...")
+        neural_network_suite.train(train_request)
 
     @staticmethod
     async def handle_connection(websocket: websockets.ServerConnection) -> None:
-        neural_network_suite: NeuralNetworkSuite | None = None
+        def _ensure_bytes(message: str | bytes) -> bytes:
+            return message.encode("utf-8") if isinstance(message, str) else message
+
+        neural_network_suite: NeuroevolutionSuite | FitnessSuite | None = None
         async for message in websocket:
-            if isinstance(message, str):
-                message_bytes = message.encode("utf-8")
-            else:
-                message_bytes = message
+            message_bytes = _ensure_bytes(message)
+
+            # Initialise the neural network suite if not already done
             if neural_network_suite is None:
-                neural_network_suite = NeuralNetworkWebsocketServer.configure_neural_networks(message_bytes)
+                neural_network_suite = NeuralNetworkWebsocketServer.configure_neural_network_suite(message_bytes)
+            # Check if client requesting actions or training
             else:
                 message_data = FrameRequestData.from_bytes(message_bytes)
-                if fitness := message_data.fitness:
-                    NeuralNetworkWebsocketServer.crossover_neural_networks(neural_network_suite, fitness)
-                elif observation := message_data.observation:
+                if observation := message_data.observation:
                     actions = NeuralNetworkWebsocketServer.process_observations(neural_network_suite, observation)
                     await websocket.send(actions.to_bytes(actions))
+                elif (fitness := message_data.fitness) and isinstance(neural_network_suite, NeuroevolutionSuite):
+                    NeuralNetworkWebsocketServer.crossover_neural_networks(neural_network_suite, fitness)
+                elif (train_request := message_data.train_request) and isinstance(neural_network_suite, FitnessSuite):
+                    NeuralNetworkWebsocketServer.train(neural_network_suite, train_request)
 
     async def start(self) -> None:
         async with websockets.serve(NeuralNetworkWebsocketServer.handle_connection, self.config.host, self.config.port):
