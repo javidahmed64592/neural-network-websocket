@@ -25,14 +25,21 @@ class NeuralNetworkMember(Member):
         input_activation: type[ActivationFunction],
         hidden_activation: type[ActivationFunction],
         output_activation: type[ActivationFunction],
+        learning_rate: float = 0.01,
     ) -> None:
         """
         Initialise NeuralNetworkMember with a starting position, a width and a height.
 
         Parameters:
+            num_inputs (int): Number of inputs to the neural network
+            num_outputs (int): Number of outputs from the neural network
             hidden_layer_sizes (list[int]): Neural network hidden layer sizes
             weights_range (tuple[float, float]): Range for random weights
             bias_range (tuple[float, float]): Range for random biases
+            input_activation (type[ActivationFunction]): Activation function for the input layer
+            hidden_activation (type[ActivationFunction]): Activation function for the hidden layers
+            output_activation (type[ActivationFunction]): Activation function for the output layer
+            learning_rate (float): Learning rate for the neural network (default is 0.01)
         """
         super().__init__()
 
@@ -44,6 +51,7 @@ class NeuralNetworkMember(Member):
         self._input_activation = input_activation
         self._hidden_activation = hidden_activation
         self._output_activation = output_activation
+        self._learning_rate = learning_rate
 
         self._input_layer = InputLayer(size=self._num_inputs, activation=self._input_activation)
         self._hidden_layers = [
@@ -61,7 +69,7 @@ class NeuralNetworkMember(Member):
             weights_range=self._weights_range,
             bias_range=self._bias_range,
         )
-        self._nn = NeuralNetwork.from_layers(layers=self.nn_layers)
+        self._nn = NeuralNetwork.from_layers(layers=self.nn_layers, lr=self._learning_rate)
         self._score: float = 0
 
     @classmethod
@@ -84,6 +92,7 @@ class NeuralNetworkMember(Member):
             input_activation=config_data.input_activation.get_class(),
             hidden_activation=config_data.hidden_activation.get_class(),
             output_activation=config_data.output_activation.get_class(),
+            learning_rate=config_data.learning_rate,
         )
 
     @property
@@ -118,7 +127,7 @@ class NeuralNetworkMember(Member):
 
     def crossover(self, parent_a: NeuralNetworkMember, parent_b: NeuralNetworkMember, mutation_rate: float) -> None:
         """
-        Crossover the chromosomes of two birds to create a new chromosome.
+        Crossover the chromosomes of two members to create a new chromosome.
 
         Parameters:
             parent_a (NeuralNetworkMember): Used to construct new chromosome

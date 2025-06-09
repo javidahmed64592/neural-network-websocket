@@ -24,6 +24,7 @@ class TestNeuralNetworkMember:
         assert mock_neural_network_member._input_activation == neural_network_config_data.input_activation.get_class()
         assert mock_neural_network_member._hidden_activation == neural_network_config_data.hidden_activation.get_class()
         assert mock_neural_network_member._output_activation == neural_network_config_data.output_activation.get_class()
+        assert mock_neural_network_member._learning_rate == neural_network_config_data.learning_rate
 
     def test_nn_layers_property(
         self, mock_neural_network_member: NeuralNetworkMember, neural_network_config_data: NeuralNetworkConfigData
