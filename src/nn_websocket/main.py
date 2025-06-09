@@ -68,7 +68,9 @@ class NeuralNetworkWebsocketServer:
 
             # Initialise the neural network suite if not already done
             if neural_network_suite is None:
-                neural_network_suite = NeuralNetworkWebsocketServer.configure_neural_network_suite(message_bytes)
+                neural_network_suite = NeuralNetworkWebsocketServer.configure_neural_network_suite(
+                    ConfigurationData.from_bytes(message_bytes)
+                )
             # Check if client requesting actions or training
             else:
                 message_data = FrameRequestData.from_bytes(message_bytes)

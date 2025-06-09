@@ -83,7 +83,7 @@ class TestNeuralNetworkWebsocketServer:
         await NeuralNetworkWebsocketServer.handle_connection(mock_websocket_neuroevolution)
 
         mock_configure_neural_networks_neuroevolution.assert_called_once_with(
-            ConfigurationData.to_bytes(configuration_data_neuroevolution)
+            ConfigurationData.from_bytes(ConfigurationData.to_bytes(configuration_data_neuroevolution))
         )
 
         mock_process_observations.assert_called_once_with(
@@ -112,7 +112,7 @@ class TestNeuralNetworkWebsocketServer:
         await NeuralNetworkWebsocketServer.handle_connection(mock_websocket_fitness)
 
         mock_configure_neural_networks_fitness.assert_called_once_with(
-            ConfigurationData.to_bytes(configuration_data_fitness)
+            ConfigurationData.from_bytes(ConfigurationData.to_bytes(configuration_data_fitness))
         )
 
         mock_process_observations.assert_called_once_with(
