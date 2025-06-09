@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import numpy as np
 from neural_network.neural_network import NeuralNetwork
-from numpy.typing import NDArray
 
 from nn_websocket.ga.nn_ga import NeuralNetworkGA
+from nn_websocket.ga.nn_member import NeuralNetworkMember
 from nn_websocket.protobuf.frame_data_types import ActionData, FitnessData, ObservationData, TrainRequestData
 from nn_websocket.protobuf.neural_network_types import (
-    ConfigurationData,
     FitnessApproachConfigData,
     NeuroevolutionConfigData,
 )
@@ -74,3 +73,51 @@ class NeuroevolutionSuite:
     def crossover_networks(self, fitness_data: FitnessData) -> None:
         """Perform crossover on the neural networks based on population fitness."""
         self.nn_ga.evolve(fitness_data)
+
+
+class FitnessSuite:
+    """A suite for handling fitness calculations."""
+
+    def __init__(self, nn_member: NeuralNetworkMember) -> None:
+        """Initialize the fitness suite with a neural network member."""
+        self.nn_member = nn_member
+
+    @classmethod
+    def from_config_data(cls, config_data: FitnessApproachConfigData) -> FitnessSuite:
+        """
+        Create a FitnessSuite from the provided configuration data.
+
+        Parameters:
+            config_data (FitnessApproachConfigData): Configuration data for the fitness approach
+
+        Returns:
+            FitnessSuite: An instance of FitnessSuite
+        """
+        nn_member = NeuralNetworkMember.from_config_data(config_data.neural_network)
+        return cls(nn_member)
+
+    @classmethod
+    def from_bytes(cls, config_data_bytes: bytes) -> FitnessSuite:
+        """
+        Create a FitnessSuite from a bytes representation of the configuration data.
+
+        Parameters:
+            config_data_bytes (bytes): Bytes representation of the configuration data
+
+        Returns:
+            FitnessSuite: An instance of FitnessSuite
+        """
+        config_data = FitnessApproachConfigData.from_bytes(config_data_bytes)
+        return cls.from_config_data(config_data)
+
+    def feedforward(self, observation_data: ObservationData) -> ActionData:
+        """Feedforward through all networks and return a list of action data."""
+        actions = self.nn_member._nn.feedforward(observation_data.inputs)
+        return ActionData(outputs=actions)
+
+    def train(self, train_request_data: TrainRequestData) -> None:
+        """Train the neural network member."""
+        self.nn_member._nn.run_fitness_training(
+            [observation.inputs for observation in train_request_data.observation],
+            [value for fitness in train_request_data.fitness for value in fitness.values],
+        )
