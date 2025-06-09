@@ -1,7 +1,6 @@
 import asyncio
 import logging
 
-import numpy as np
 import websockets
 
 from nn_websocket.protobuf.frame_data_types import (
@@ -18,16 +17,11 @@ from nn_websocket.tools.client_utils import get_config, get_random_fitness_frame
 
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-rng = np.random.default_rng()
 
 # Load websocket config from JSON file
 config = get_config()
 
 # Configuration for the neuroevolution client
-NUM_AGENTS = 10
-MUTATION_RATE = 0.1
-EPISODE_LENGTH = 10
-
 NUM_INPUTS = 5
 NUM_OUTPUTS = 2
 HIDDEN_LAYER_SIZES = [4, 4]
@@ -40,7 +34,11 @@ HIDDEN_ACTIVATION = ActivationFunctionEnumData.RELU
 OUTPUT_ACTIVATION = ActivationFunctionEnumData.SIGMOID
 LEARNING_RATE = 0.01
 
-nn_config = NeuralNetworkConfigData(
+NUM_AGENTS = 10
+MUTATION_RATE = 0.1
+EPISODE_LENGTH = 10
+
+NN_CONFIG = NeuralNetworkConfigData(
     num_inputs=NUM_INPUTS,
     num_outputs=NUM_OUTPUTS,
     hidden_layer_sizes=HIDDEN_LAYER_SIZES,
@@ -53,18 +51,13 @@ nn_config = NeuralNetworkConfigData(
     output_activation=OUTPUT_ACTIVATION,
     learning_rate=LEARNING_RATE,
 )
+GA_CONFIG = GeneticAlgorithmConfigData(population_size=NUM_AGENTS, mutation_rate=MUTATION_RATE)
 
-genetic_algorithm_config = GeneticAlgorithmConfigData(
-    population_size=NUM_AGENTS,
-    mutation_rate=MUTATION_RATE,
+NEUROEVOLUTION_CONFIG = NeuroevolutionConfigData(
+    neural_network=NN_CONFIG,
+    genetic_algorithm=GA_CONFIG,
 )
-
-neuroevolution_config = NeuroevolutionConfigData(
-    neural_network=nn_config,
-    genetic_algorithm=genetic_algorithm_config,
-)
-
-config_data = ConfigurationData(neuroevolution=neuroevolution_config)
+CONFIG_DATA = ConfigurationData(neuroevolution=NEUROEVOLUTION_CONFIG)
 
 
 class NeuroevolutionClient:
@@ -75,7 +68,7 @@ class NeuroevolutionClient:
         async with websockets.connect(config.uri) as ws:
             # Send configuration data to the server
             logger.info("Sending NeuroevolutionConfigData to server.")
-            await ws.send(ConfigurationData.to_bytes(config_data))
+            await ws.send(ConfigurationData.to_bytes(CONFIG_DATA))
             await asyncio.sleep(1)
 
             # Send observations and fitness data in episodes

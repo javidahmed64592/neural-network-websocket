@@ -1,7 +1,6 @@
 import asyncio
 import logging
 
-import numpy as np
 import websockets
 
 from nn_websocket.protobuf.frame_data_types import FrameRequestData
@@ -15,7 +14,6 @@ from nn_websocket.tools.client_utils import get_config, get_random_observation_f
 
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-rng = np.random.default_rng()
 
 # Load websocket config from JSON file
 config = get_config()
@@ -35,7 +33,7 @@ LEARNING_RATE = 0.01
 
 TRAINING_BATCH_SIZE = 5
 
-nn_config = NeuralNetworkConfigData(
+NN_CONFIG = NeuralNetworkConfigData(
     num_inputs=NUM_INPUTS,
     num_outputs=NUM_OUTPUTS,
     hidden_layer_sizes=HIDDEN_LAYER_SIZES,
@@ -49,8 +47,8 @@ nn_config = NeuralNetworkConfigData(
     learning_rate=LEARNING_RATE,
 )
 
-fitness_approach_config = FitnessApproachConfigData(neural_network=nn_config)
-config_data = ConfigurationData(fitness_approach=fitness_approach_config)
+FITNESS_CONFIG = FitnessApproachConfigData(neural_network=NN_CONFIG)
+CONFIG_DATA = ConfigurationData(fitness_approach=FITNESS_CONFIG)
 
 
 class FitnessClient:
@@ -61,7 +59,7 @@ class FitnessClient:
         async with websockets.connect(config.uri) as ws:
             # Send configuration data to the server
             logger.info("Sending FitnessApproachConfigData to server.")
-            await ws.send(ConfigurationData.to_bytes(config_data))
+            await ws.send(ConfigurationData.to_bytes(CONFIG_DATA))
             await asyncio.sleep(1)
 
             # Send observations and training data
