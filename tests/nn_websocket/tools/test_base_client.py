@@ -1,3 +1,5 @@
+"""Unit tests for the src/nn_websocket/tools/base_client.py module."""
+
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -7,6 +9,8 @@ from nn_websocket.tools.base_client import EPISODE_LENGTH, BaseClient, run
 
 
 class TestBaseClient:
+    """Test cases for BaseClient websocket client logic."""
+
     def test_init(self, mock_base_client: BaseClient, configuration_data_neuroevolution: ConfigurationData) -> None:
         """Test BaseClient initialization."""
         assert mock_base_client.config_data == configuration_data_neuroevolution
@@ -78,6 +82,8 @@ class TestBaseClient:
 
 
 class TestRunFunction:
+    """Test cases for the run utility function."""
+
     def test_run_success(self, mock_base_client: BaseClient) -> None:
         """Test that the run function executes without exceptions."""
         with patch("asyncio.run") as mock_run:

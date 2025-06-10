@@ -1,3 +1,5 @@
+"""Test suite for the src/nn_websocket/models/config module."""
+
 import json
 from pathlib import Path
 from unittest.mock import mock_open, patch
@@ -6,6 +8,8 @@ from nn_websocket.models.config import Config
 
 
 class TestConfig:
+    """Test suite for the Config class."""
+
     def test_uri_property(self) -> None:
         """Test the URI property of the Config class."""
         config = Config(host="localhost", port=8080)

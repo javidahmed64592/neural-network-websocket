@@ -1,3 +1,5 @@
+"""Unit tests for the src/nn_websocket/tools/fitness_client.py module."""
+
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -17,6 +19,8 @@ def mock_fitness_client() -> FitnessClient:
 
 
 class TestFitnessClient:
+    """Test cases for FitnessClient send methods."""
+
     @pytest.mark.asyncio
     async def test_send_observation(self, mock_fitness_client: FitnessClient, mock_client_websocket: AsyncMock) -> None:
         """Test that send_observation sends the correct frame data."""
@@ -41,6 +45,8 @@ class TestFitnessClient:
 
 
 class TestMainFunction:
+    """Test cases for the main entry point of the fitness client."""
+
     def test_main(self) -> None:
         """Test that the main function runs without exceptions."""
         with patch("nn_websocket.tools.fitness_client.run") as mock_run:

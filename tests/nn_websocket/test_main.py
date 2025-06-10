@@ -1,3 +1,5 @@
+"""Unit tests for the src/nn_websocket/main.py module."""
+
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -17,9 +19,12 @@ from nn_websocket.protobuf.neural_network_types import ConfigurationData
 
 
 class TestNeuralNetworkWebsocketServer:
+    """Test suite for NeuralNetworkWebsocketServer methods and behaviors."""
+
     def test_init(
         self, mock_neural_network_websocket_server: NeuralNetworkWebsocketServer, mock_config: Config
     ) -> None:
+        """Test that the NeuralNetworkWebsocketServer initializes with the correct configuration."""
         assert mock_neural_network_websocket_server.config == mock_config
 
     def test_configure_nn_suite_neuroevolution(self, configuration_data_neuroevolution: ConfigurationData) -> None:
@@ -155,6 +160,8 @@ class TestNeuralNetworkWebsocketServer:
 
 
 class TestRunFunction:
+    """Test cases for the run function in main.py."""
+
     def test_run_success(self) -> None:
         """Test that the run function executes without exceptions."""
         with patch("asyncio.run") as mock_run:

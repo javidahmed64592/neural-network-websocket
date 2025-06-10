@@ -1,3 +1,5 @@
+"""Test suite for the src/nn_websocket/models/nn_suites.py module."""
+
 import numpy as np
 import pytest
 
@@ -15,12 +17,15 @@ rng = np.random.default_rng()
 
 
 class TestNeuroevolutionSuite:
+    """Test suite for NeuroevolutionSuite methods and behaviors."""
+
     def test_networks_property(
         self,
         mock_neuroevolution_suite: NeuroevolutionSuite,
         genetic_algorithm_config_data: GeneticAlgorithmConfigData,
         neural_network_config_data: NeuralNetworkConfigData,
     ) -> None:
+        """Test that the networks property returns the correct neural networks."""
         suite = mock_neuroevolution_suite
         networks = suite.networks
 
@@ -34,6 +39,7 @@ class TestNeuroevolutionSuite:
             )
 
     def test_from_config_data(self, neuroevolution_config_data: NeuroevolutionConfigData) -> None:
+        """Test that the NeuroevolutionSuite can be created from configuration data."""
         mock_neuroevolution_suite = NeuroevolutionSuite.from_config_data(neuroevolution_config_data)
         assert (
             len(mock_neuroevolution_suite.nn_ga.nn_members)
@@ -45,6 +51,7 @@ class TestNeuroevolutionSuite:
         neuroevolution_config_data: NeuroevolutionConfigData,
         genetic_algorithm_config_data: GeneticAlgorithmConfigData,
     ) -> None:
+        """Test that the NeuroevolutionSuite can be created from bytes."""
         mock_neuroevolution_suite = NeuroevolutionSuite.from_bytes(
             NeuroevolutionConfigData.to_bytes(neuroevolution_config_data)
         )
@@ -58,6 +65,7 @@ class TestNeuroevolutionSuite:
         mock_neuroevolution_suite: NeuroevolutionSuite,
         fitness_data: FitnessData,
     ) -> None:
+        """Test that the crossover of networks updates the fitness of each member."""
         suite = mock_neuroevolution_suite
         suite.crossover_networks(fitness_data)
         for index, member in enumerate(suite.nn_ga.nn_members):
@@ -70,6 +78,7 @@ class TestNeuroevolutionSuite:
         neural_network_config_data: NeuralNetworkConfigData,
         observation_data: ObservationData,
     ) -> None:
+        """Test that the feedforward through networks processes observation data correctly."""
         suite = mock_neuroevolution_suite
         observation_data.inputs *= genetic_algorithm_config_data.population_size
         action_data_list = suite.feedforward_through_networks(observation_data)
@@ -81,10 +90,13 @@ class TestNeuroevolutionSuite:
 
 
 class TestFitnessSuite:
+    """Test suite for FitnessSuite methods and behaviors."""
+
     def test_from_config_data(
         self,
         fitness_approach_config_data: FitnessApproachConfigData,
     ) -> None:
+        """Test that the FitnessSuite can be created from configuration data."""
         mock_fitness_suite = FitnessSuite.from_config_data(fitness_approach_config_data)
         assert isinstance(mock_fitness_suite.nn_member, NeuralNetworkMember)
 
@@ -92,6 +104,7 @@ class TestFitnessSuite:
         self,
         fitness_approach_config_data: FitnessApproachConfigData,
     ) -> None:
+        """Test that the FitnessSuite can be created from bytes."""
         mock_fitness_suite = FitnessSuite.from_bytes(FitnessApproachConfigData.to_bytes(fitness_approach_config_data))
         assert isinstance(mock_fitness_suite.nn_member, NeuralNetworkMember)
 
@@ -100,10 +113,12 @@ class TestFitnessSuite:
         mock_fitness_suite: FitnessSuite,
         observation_data: ObservationData,
     ) -> None:
+        """Test that the feedforward method processes the observation data correctly."""
         action_data = mock_fitness_suite.feedforward(observation_data)
         assert len(action_data.outputs) == mock_fitness_suite.nn_member._nn._output_layer.size
 
     def test_train(self, mock_fitness_suite: FitnessSuite, train_request_data: TrainRequestData) -> None:
+        """Test that the training of the neural network works correctly."""
         initial_weights, initial_biases = mock_fitness_suite.nn_member.chromosome
         mock_fitness_suite.train(train_request_data)
         new_weights, new_biases = mock_fitness_suite.nn_member.chromosome

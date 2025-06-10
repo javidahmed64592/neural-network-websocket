@@ -1,3 +1,5 @@
+"""Unit tests for the src/nn_websocket/protobuf/compile_protobuf.py module."""
+
 import sys
 from collections.abc import Generator
 from pathlib import Path
@@ -10,12 +12,14 @@ from nn_websocket.protobuf.compile_protobuf import OUT_DIR, PROJECT_ROOT, PROTO_
 
 @pytest.fixture
 def mock_logger() -> Generator[MagicMock, None, None]:
+    """Fixture for patching the logger used in compile_protobuf module."""
     with patch("nn_websocket.protobuf.compile_protobuf.logger") as mock:
         yield mock
 
 
 @pytest.fixture(autouse=True)
 def mock_mkdir() -> Generator[MagicMock, None, None]:
+    """Fixture for patching Path.mkdir used in compile_protobuf module."""
     with patch("nn_websocket.protobuf.compile_protobuf.Path.mkdir") as mock:
         mock.return_value = None
         yield mock
@@ -23,6 +27,7 @@ def mock_mkdir() -> Generator[MagicMock, None, None]:
 
 @pytest.fixture(autouse=True)
 def mock_glob() -> Generator[MagicMock, None, None]:
+    """Fixture for patching Path.glob used in compile_protobuf module."""
     with patch("nn_websocket.protobuf.compile_protobuf.Path.glob") as mock:
         mock.return_value = []
         yield mock
@@ -30,26 +35,32 @@ def mock_glob() -> Generator[MagicMock, None, None]:
 
 @pytest.fixture
 def mock_subprocess_run() -> Generator[MagicMock, None, None]:
+    """Fixture for patching subprocess.run used in compile_protobuf module."""
     with patch("nn_websocket.protobuf.compile_protobuf.subprocess.run") as mock:
         yield mock
 
 
 @pytest.fixture
 def mock_compile_protobuf() -> Generator[MagicMock, None, None]:
+    """Fixture for patching compile_protobuf function itself."""
     with patch("nn_websocket.protobuf.compile_protobuf.compile_protobuf") as mock:
         yield mock
 
 
 @pytest.fixture
 def mock_sys_exit() -> Generator[MagicMock, None, None]:
+    """Fixture for patching sys.exit used in compile_protobuf module."""
     with patch("nn_websocket.protobuf.compile_protobuf.sys.exit") as mock:
         yield mock
 
 
 class TestCompileProtobuf:
+    """Test cases for protobuf compilation and CLI entry point."""
+
     def test_compile_protobuf_success(
         self, mock_logger: MagicMock, mock_glob: MagicMock, mock_mkdir: MagicMock, mock_subprocess_run: MagicMock
     ) -> None:
+        """Test successful compilation of protobuf files."""
         mock_proto_files = [Path("test1.proto"), Path("test2.proto")]
         mock_glob.return_value = mock_proto_files
 
@@ -85,6 +96,7 @@ class TestCompileProtobuf:
     def test_compile_protobuf_no_proto_files(
         self, mock_logger: MagicMock, mock_glob: MagicMock, mock_mkdir: MagicMock, mock_subprocess_run: MagicMock
     ) -> None:
+        """Test behavior when no .proto files are found."""
         mock_glob.return_value = []
 
         result = compile_protobuf()
@@ -100,6 +112,7 @@ class TestCompileProtobuf:
     def test_compile_protobuf_subprocess_error(
         self, mock_logger: MagicMock, mock_glob: MagicMock, mock_mkdir: MagicMock, mock_subprocess_run: MagicMock
     ) -> None:
+        """Test behavior when subprocess returns an error during compilation."""
         mock_glob.return_value = [Path("test1.proto")]
 
         error_message = "Error: something went wrong"
@@ -133,6 +146,7 @@ class TestCompileProtobuf:
     def test_compile_protobuf_exception(
         self, mock_logger: MagicMock, mock_glob: MagicMock, mock_mkdir: MagicMock, mock_subprocess_run: MagicMock
     ) -> None:
+        """Test behavior when an exception is raised during compilation."""
         mock_glob.return_value = [Path("test1.proto")]
 
         mock_subprocess_run.side_effect = Exception("Unexpected error")
@@ -154,6 +168,7 @@ class TestCompileProtobuf:
         mock_logger.exception.assert_called_once_with("Error during protobuf compilation")
 
     def test_main_success(self, mock_compile_protobuf: MagicMock, mock_sys_exit: MagicMock) -> None:
+        """Test main function exits with code 0 on success."""
         mock_compile_protobuf.return_value = True
 
         main()
@@ -162,6 +177,7 @@ class TestCompileProtobuf:
         mock_sys_exit.assert_called_once_with(0)
 
     def test_main_failure(self, mock_compile_protobuf: MagicMock, mock_sys_exit: MagicMock) -> None:
+        """Test main function exits with code 1 on failure."""
         mock_compile_protobuf.return_value = False
 
         main()

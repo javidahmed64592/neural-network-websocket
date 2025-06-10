@@ -1,3 +1,5 @@
+"""Unit tests for the src/nn_websocket/protobuf/neural_network_types.py module."""
+
 import pytest
 from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation, TanhActivation
 
@@ -20,19 +22,24 @@ from nn_websocket.protobuf.neural_network_types import (
 
 
 class TestActivationFunctionEnumData:
+    """Test cases for ActivationFunctionEnumData conversions and mapping."""
+
     def test_get_class(self) -> None:
+        """Test getting the activation class from enum."""
         assert ActivationFunctionEnumData.LINEAR.get_class() == LinearActivation
         assert ActivationFunctionEnumData.RELU.get_class() == ReluActivation
         assert ActivationFunctionEnumData.SIGMOID.get_class() == SigmoidActivation
         assert ActivationFunctionEnumData.TANH.get_class() == TanhActivation
 
     def test_from_class(self) -> None:
+        """Test getting the enum from the activation class."""
         assert ActivationFunctionEnumData.from_class(LinearActivation) == ActivationFunctionEnumData.LINEAR
         assert ActivationFunctionEnumData.from_class(ReluActivation) == ActivationFunctionEnumData.RELU
         assert ActivationFunctionEnumData.from_class(SigmoidActivation) == ActivationFunctionEnumData.SIGMOID
         assert ActivationFunctionEnumData.from_class(TanhActivation) == ActivationFunctionEnumData.TANH
 
     def test_from_protobuf(self) -> None:
+        """Test creating enum from protobuf enum value."""
         assert (
             ActivationFunctionEnumData.from_protobuf(ActivationFunctionEnum.LINEAR) == ActivationFunctionEnumData.LINEAR
         )
@@ -44,6 +51,7 @@ class TestActivationFunctionEnumData:
         assert ActivationFunctionEnumData.from_protobuf(ActivationFunctionEnum.TANH) == ActivationFunctionEnumData.TANH
 
     def test_to_protobuf(self) -> None:
+        """Test getting the protobuf enum value from enum."""
         assert (
             ActivationFunctionEnumData.to_protobuf(ActivationFunctionEnumData.LINEAR) == ActivationFunctionEnum.LINEAR
         )
@@ -55,7 +63,10 @@ class TestActivationFunctionEnumData:
 
 
 class TestNeuralNetworkDataType:
+    """Test cases for NeuralNetworkConfigData conversions and serialization."""
+
     def test_from_protobuf(self, neural_network_config: NeuralNetworkConfig) -> None:
+        """Test creating NeuralNetworkConfigData from NeuralNetworkConfig protobuf."""
         neural_network_data_type = NeuralNetworkConfigData.from_protobuf(neural_network_config)
 
         assert neural_network_data_type.num_inputs == neural_network_config.num_inputs
@@ -71,6 +82,7 @@ class TestNeuralNetworkDataType:
         assert neural_network_data_type.learning_rate == neural_network_config.learning_rate
 
     def test_to_protobuf(self, neural_network_config_data: NeuralNetworkConfigData) -> None:
+        """Test converting NeuralNetworkConfigData to NeuralNetworkConfig protobuf."""
         protobuf_data = NeuralNetworkConfigData.to_protobuf(neural_network_config_data)
 
         assert protobuf_data.num_inputs == neural_network_config_data.num_inputs
@@ -86,9 +98,11 @@ class TestNeuralNetworkDataType:
         assert protobuf_data.learning_rate == neural_network_config_data.learning_rate
 
     def test_to_bytes(self, neural_network_config_data: NeuralNetworkConfigData) -> None:
+        """Test serializing NeuralNetworkConfigData to bytes."""
         assert isinstance(NeuralNetworkConfigData.to_bytes(neural_network_config_data), bytes)
 
     def test_from_bytes(self, neural_network_config_data: NeuralNetworkConfigData) -> None:
+        """Test deserializing bytes to NeuralNetworkConfigData."""
         msg_bytes = NeuralNetworkConfigData.to_bytes(neural_network_config_data)
         result = NeuralNetworkConfigData.from_bytes(msg_bytes)
 
@@ -107,9 +121,12 @@ class TestNeuralNetworkDataType:
 
 # Training methods
 class TestConfigurationData:
+    """Test cases for ConfigurationData conversions and serialization."""
+
     def test_from_protobuf(
         self, configuration_neuroevolution: Configuration, configuration_fitness: Configuration
     ) -> None:
+        """Test creating ConfigurationData from Configuration protobufs."""
         config_data_neuroevolution = ConfigurationData.from_protobuf(configuration_neuroevolution)
         config_data_fitness = ConfigurationData.from_protobuf(configuration_fitness)
 
@@ -119,6 +136,7 @@ class TestConfigurationData:
     def test_to_protobuf(
         self, configuration_data_neuroevolution: ConfigurationData, configuration_data_fitness: ConfigurationData
     ) -> None:
+        """Test converting ConfigurationData to Configuration protobufs."""
         protobuf_neuroevolution = ConfigurationData.to_protobuf(configuration_data_neuroevolution)
         protobuf_fitness = ConfigurationData.to_protobuf(configuration_data_fitness)
 
@@ -128,12 +146,14 @@ class TestConfigurationData:
     def test_to_bytes(
         self, configuration_data_neuroevolution: ConfigurationData, configuration_data_fitness: ConfigurationData
     ) -> None:
+        """Test serializing ConfigurationData to bytes."""
         assert isinstance(ConfigurationData.to_bytes(configuration_data_neuroevolution), bytes)
         assert isinstance(ConfigurationData.to_bytes(configuration_data_fitness), bytes)
 
     def test_from_bytes(
         self, configuration_data_neuroevolution: ConfigurationData, configuration_data_fitness: ConfigurationData
     ) -> None:
+        """Test deserializing bytes to ConfigurationData."""
         msg_bytes_neuroevolution = ConfigurationData.to_bytes(configuration_data_neuroevolution)
         msg_bytes_fitness = ConfigurationData.to_bytes(configuration_data_fitness)
 
@@ -145,22 +165,28 @@ class TestConfigurationData:
 
 
 class TestGeneticAlgorithmConfigData:
+    """Test cases for GeneticAlgorithmConfigData conversions and serialization."""
+
     def test_from_protobuf(self, genetic_algorithm_config: GeneticAlgorithmConfig) -> None:
+        """Test creating GeneticAlgorithmConfigData from GeneticAlgorithmConfig protobuf."""
         ga_data = GeneticAlgorithmConfigData.from_protobuf(genetic_algorithm_config)
 
         assert ga_data.population_size == genetic_algorithm_config.population_size
         assert ga_data.mutation_rate == pytest.approx(genetic_algorithm_config.mutation_rate)
 
     def test_to_protobuf(self, genetic_algorithm_config_data: GeneticAlgorithmConfigData) -> None:
+        """Test converting GeneticAlgorithmConfigData to GeneticAlgorithmConfig protobuf."""
         protobuf_data = GeneticAlgorithmConfigData.to_protobuf(genetic_algorithm_config_data)
 
         assert protobuf_data.population_size == genetic_algorithm_config_data.population_size
         assert protobuf_data.mutation_rate == pytest.approx(genetic_algorithm_config_data.mutation_rate)
 
     def test_to_bytes(self, genetic_algorithm_config_data: GeneticAlgorithmConfigData) -> None:
+        """Test serializing GeneticAlgorithmConfigData to bytes."""
         assert isinstance(GeneticAlgorithmConfigData.to_bytes(genetic_algorithm_config_data), bytes)
 
     def test_from_bytes(self, genetic_algorithm_config_data: GeneticAlgorithmConfigData) -> None:
+        """Test deserializing bytes to GeneticAlgorithmConfigData."""
         msg_bytes = GeneticAlgorithmConfigData.to_bytes(genetic_algorithm_config_data)
         result = GeneticAlgorithmConfigData.from_bytes(msg_bytes)
 
@@ -169,22 +195,28 @@ class TestGeneticAlgorithmConfigData:
 
 
 class TestNeuroevolutionConfigData:
+    """Test cases for NeuroevolutionConfigData conversions and serialization."""
+
     def test_from_protobuf(self, neuroevolution_config: NeuroevolutionConfig) -> None:
+        """Test creating NeuroevolutionConfigData from NeuroevolutionConfig protobuf."""
         config_data = NeuroevolutionConfigData.from_protobuf(neuroevolution_config)
 
         assert isinstance(config_data.neural_network, NeuralNetworkConfigData)
         assert isinstance(config_data.genetic_algorithm, GeneticAlgorithmConfigData)
 
     def test_to_protobuf(self, neuroevolution_config_data: NeuroevolutionConfigData) -> None:
+        """Test converting NeuroevolutionConfigData to NeuroevolutionConfig protobuf."""
         protobuf_data = NeuroevolutionConfigData.to_protobuf(neuroevolution_config_data)
 
         assert isinstance(protobuf_data.neural_network, NeuralNetworkConfig)
         assert isinstance(protobuf_data.genetic_algorithm, GeneticAlgorithmConfig)
 
     def test_to_bytes(self, neuroevolution_config_data: NeuroevolutionConfigData) -> None:
+        """Test serializing NeuroevolutionConfigData to bytes."""
         assert isinstance(NeuroevolutionConfigData.to_bytes(neuroevolution_config_data), bytes)
 
     def test_from_bytes(self, neuroevolution_config_data: NeuroevolutionConfigData) -> None:
+        """Test deserializing bytes to NeuroevolutionConfigData."""
         msg_bytes = NeuroevolutionConfigData.to_bytes(neuroevolution_config_data)
         result = NeuroevolutionConfigData.from_bytes(msg_bytes)
 
@@ -193,20 +225,26 @@ class TestNeuroevolutionConfigData:
 
 
 class TestFitnessApproachConfigData:
+    """Test cases for FitnessApproachConfigData conversions and serialization."""
+
     def test_from_protobuf(self, fitness_approach_config: FitnessApproachConfig) -> None:
+        """Test creating FitnessApproachConfigData from FitnessApproachConfig protobuf."""
         config_data = FitnessApproachConfigData.from_protobuf(fitness_approach_config)
 
         assert isinstance(config_data.neural_network, NeuralNetworkConfigData)
 
     def test_to_protobuf(self, fitness_approach_config_data: FitnessApproachConfigData) -> None:
+        """Test converting FitnessApproachConfigData to FitnessApproachConfig protobuf."""
         protobuf_data = FitnessApproachConfigData.to_protobuf(fitness_approach_config_data)
 
         assert isinstance(protobuf_data.neural_network, NeuralNetworkConfig)
 
     def test_to_bytes(self, fitness_approach_config_data: FitnessApproachConfigData) -> None:
+        """Test serializing FitnessApproachConfigData to bytes."""
         assert isinstance(FitnessApproachConfigData.to_bytes(fitness_approach_config_data), bytes)
 
     def test_from_bytes(self, fitness_approach_config_data: FitnessApproachConfigData) -> None:
+        """Test deserializing bytes to FitnessApproachConfigData."""
         msg_bytes = FitnessApproachConfigData.to_bytes(fitness_approach_config_data)
         result = FitnessApproachConfigData.from_bytes(msg_bytes)
 

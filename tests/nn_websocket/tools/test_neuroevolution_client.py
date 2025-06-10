@@ -1,3 +1,5 @@
+"""Unit tests for the src/nn_websocket/tools/neuroevolution_client.py module."""
+
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -17,11 +19,13 @@ def mock_neuroevolution_client() -> NeuroevolutionClient:
 
 
 class TestNeuroevolutionClient:
+    """Test cases for NeuroevolutionClient send_observation and send_training methods."""
+
     @pytest.mark.asyncio
     async def test_send_observation(
         self, mock_neuroevolution_client: NeuroevolutionClient, mock_client_websocket: AsyncMock
     ) -> None:
-        """Test that send_observation sends the correct frame data."""
+        """Test that send_observation sends the correct frame data as bytes."""
         with patch("nn_websocket.tools.client_utils.get_random_observation_frame") as mock_get_obs:
             mock_get_obs.return_value = FrameRequestData()
             await mock_neuroevolution_client.send_observation(mock_client_websocket)
@@ -34,7 +38,7 @@ class TestNeuroevolutionClient:
     async def test_send_training(
         self, mock_neuroevolution_client: NeuroevolutionClient, mock_client_websocket: AsyncMock
     ) -> None:
-        """Test that send_training sends the correct frame data."""
+        """Test that send_training sends the correct frame data as bytes."""
         with patch("nn_websocket.tools.client_utils.get_random_fitness_frame") as mock_get_fitness:
             mock_get_fitness.return_value = FrameRequestData()
             await mock_neuroevolution_client.send_training(mock_client_websocket)
@@ -45,6 +49,8 @@ class TestNeuroevolutionClient:
 
 
 class TestMainFunction:
+    """Test cases for the main function of the neuroevolution client."""
+
     def test_main(self) -> None:
         """Test that the main function runs without exceptions."""
         with patch("nn_websocket.tools.neuroevolution_client.run") as mock_run:

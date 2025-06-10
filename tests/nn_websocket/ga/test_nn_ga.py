@@ -1,3 +1,5 @@
+"""Unit tests for the src/nn_websocket/ga/nn_ga.py module."""
+
 import numpy as np
 
 from nn_websocket.ga.nn_ga import NeuralNetworkGA
@@ -7,6 +9,8 @@ from nn_websocket.protobuf.neural_network_types import GeneticAlgorithmConfigDat
 
 
 class TestNeuralNetworkGA:
+    """Test suite for the NeuralNetworkGA class."""
+
     def test_initialization(
         self,
         mock_neural_network_ga: NeuralNetworkGA,
