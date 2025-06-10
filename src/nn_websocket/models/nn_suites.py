@@ -37,10 +37,6 @@ class NeuroevolutionSuite:
         """
         nn_config_data = config_data.neural_network
         ga_config_data = config_data.genetic_algorithm
-
-        if nn_config_data is None or ga_config_data is None:
-            msg = "Configuration data must contain both neural network and genetic algorithm data."
-            raise ValueError(msg)
         nn_ga = NeuralNetworkGA.from_config_data(nn_config_data, ga_config_data)
         return cls(nn_ga)
 

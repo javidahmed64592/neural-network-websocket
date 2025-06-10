@@ -36,7 +36,9 @@ class NeuralNetworkWebsocketServer:
         if neuroevolution := config.neuroevolution:
             return NeuroevolutionSuite.from_bytes(NeuroevolutionConfigData.to_bytes(neuroevolution))
 
-        fitness_approach = config.fitness_approach
+        if not (fitness_approach := config.fitness_approach):
+            msg = "No fitness approach configured in the provided ConfigurationData."
+            raise ValueError(msg)
         return FitnessSuite.from_bytes(FitnessApproachConfigData.to_bytes(fitness_approach))
 
     @staticmethod

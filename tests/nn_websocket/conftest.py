@@ -74,9 +74,9 @@ def neural_network_config() -> NeuralNetworkConfig:
         weights_max=MOCK_WEIGHTS_MAX,
         bias_min=MOCK_BIAS_MIN,
         bias_max=MOCK_BIAS_MAX,
-        input_activation=MOCK_INPUT_ACTIVATION,
-        hidden_activation=MOCK_HIDDEN_ACTIVATION,
-        output_activation=MOCK_OUTPUT_ACTIVATION,
+        input_activation=ActivationFunctionEnumData.to_protobuf(MOCK_INPUT_ACTIVATION),
+        hidden_activation=ActivationFunctionEnumData.to_protobuf(MOCK_HIDDEN_ACTIVATION),
+        output_activation=ActivationFunctionEnumData.to_protobuf(MOCK_OUTPUT_ACTIVATION),
         learning_rate=MOCK_LEARNING_RATE,
     )
 
@@ -86,7 +86,7 @@ def neural_network_config_data(neural_network_config: NeuralNetworkConfig) -> Ne
     return NeuralNetworkConfigData(
         num_inputs=neural_network_config.num_inputs,
         num_outputs=neural_network_config.num_outputs,
-        hidden_layer_sizes=neural_network_config.hidden_layer_sizes,
+        hidden_layer_sizes=list(neural_network_config.hidden_layer_sizes),
         weights_min=neural_network_config.weights_min,
         weights_max=neural_network_config.weights_max,
         bias_min=neural_network_config.bias_min,

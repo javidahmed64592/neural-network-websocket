@@ -63,18 +63,18 @@ class NeuroevolutionClient(BaseClient):
         await ws.send(
             FrameRequestData.to_bytes(
                 get_random_observation_frame(
-                    self.config_data.neuroevolution.neural_network.num_inputs
-                    * self.config_data.neuroevolution.genetic_algorithm.population_size
+                    self.config_data.neuroevolution.neural_network.num_inputs  # type: ignore[union-attr]
+                    * self.config_data.neuroevolution.genetic_algorithm.population_size  # type: ignore[union-attr]
                 )
             )
         )
 
     async def send_training(self, ws: websockets.ClientConnection) -> None:
         """Send training data to the server."""
-        super().send_training(ws)
+        await super().send_training(ws)
         await ws.send(
             FrameRequestData.to_bytes(
-                get_random_fitness_frame(self.config_data.neuroevolution.genetic_algorithm.population_size)
+                get_random_fitness_frame(self.config_data.neuroevolution.genetic_algorithm.population_size)  # type: ignore[union-attr]
             )
         )
 

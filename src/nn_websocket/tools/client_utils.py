@@ -43,5 +43,5 @@ def get_random_train_request_frame(batch_size: int, num_inputs: int) -> FrameReq
         observations.append(get_random_observation_frame(num_inputs).observation)
         fitness_values.append(get_random_fitness_frame(1).fitness)
 
-    train_request = TrainRequestData(observation=observations, fitness=fitness_values)
+    train_request = TrainRequestData(observation=observations, fitness=fitness_values)  # type: ignore[arg-type]
     return FrameRequestData(train_request=train_request)

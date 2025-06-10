@@ -49,7 +49,7 @@ class ActivationFunctionEnumData(IntEnum):
     @staticmethod
     def to_protobuf(enum_value: ActivationFunctionEnumData) -> ActivationFunctionEnum:
         """Maps an ActivationFunctionEnumData value to Protobuf ActivationFunctionEnum."""
-        return ActivationFunctionEnum.Value(enum_value.name)  # type: ignore[no-any-return]
+        return ActivationFunctionEnum.Value(enum_value.name)  # type: ignore[return-value]
 
 
 @dataclass

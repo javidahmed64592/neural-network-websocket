@@ -54,17 +54,18 @@ class FitnessClient(BaseClient):
         await super().send_observation(ws)
         await ws.send(
             FrameRequestData.to_bytes(
-                get_random_observation_frame(self.config_data.fitness_approach.neural_network.num_inputs)
+                get_random_observation_frame(self.config_data.fitness_approach.neural_network.num_inputs)  # type: ignore[union-attr]
             )
         )
 
     async def send_training(self, ws: websockets.ClientConnection) -> None:
         """Send training data to the server."""
-        super().send_training(ws)
+        await super().send_training(ws)
         await ws.send(
             FrameRequestData.to_bytes(
                 get_random_train_request_frame(
-                    TRAINING_BATCH_SIZE, self.config_data.fitness_approach.neural_network.num_inputs
+                    TRAINING_BATCH_SIZE,
+                    self.config_data.fitness_approach.neural_network.num_inputs,  # type: ignore[union-attr]
                 )
             )
         )
