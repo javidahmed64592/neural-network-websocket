@@ -7,11 +7,8 @@ logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%H:%M:%
 logger = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
-logger.info("Project root directory: %s", PROJECT_ROOT)
 PROTO_DIR = PROJECT_ROOT / "protobuf"
-logger.info("Protobuf directory: %s", PROTO_DIR)
 OUT_DIR = PROJECT_ROOT / "src" / "nn_websocket" / "protobuf" / "compiled"
-logger.info("Output directory for compiled protobuf files: %s", OUT_DIR)
 
 
 def compile_protobuf() -> bool:
