@@ -10,7 +10,7 @@ version = "0.1.1"
 description = "A Python websocket application to communicate with NeuralNetwork package."
 readme = "README.md"
 requires-python = ">=3.12"
-license = { file = "LICENSE" }
+license-files = ["LICENSE"]
 authors = [
     { name = "Javid Ahmed", email = "javidahmed@icloud.com" }
 ]
