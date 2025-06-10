@@ -138,7 +138,7 @@ Both clients connect to the server, send randomized data, and log responses for 
 
 ## Protobuf Integration
 
-All communication between clients and the server uses Protocol Buffers for message serialization. The `.proto` files are located in `protobuf/` and compiled Python classes are generated in `src/nn_websocket/protobuf/compiled/`.
+All communication between clients and the server uses [Protocol Buffers](https://developers.google.com/protocol-buffers) for message serialization. The `.proto` files are located in `protobuf/` and compiled Python classes are generated in `src/nn_websocket/protobuf/compiled/`.
 
 ### Compiling Protobuf Files
 
@@ -159,7 +159,7 @@ This will regenerate the Python classes used for message encoding/decoding.
 ## Development
 
 - The server and clients use the `websockets` library for async communication.
-- Neural network and genetic algorithm logic is integrated via external packages (`neural-network`, `genetic-algorithm`).
+- Neural network and genetic algorithm logic is integrated via my [`neural_network`](https://github.com/javidahmed64592/neural-network) and [`genetic_algorithm`](https://github.com/javidahmed64592/genetic-algorithm) libraries.
 - Utilities are provided for generating random test data and encoding/decoding Protobuf messages.
 
 ## Testing, Linting, and Type Checking
