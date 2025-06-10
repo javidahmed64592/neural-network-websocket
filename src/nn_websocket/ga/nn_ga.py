@@ -1,3 +1,5 @@
+"""Genetic algorithm for evolving neural network populations."""
+
 from __future__ import annotations
 
 from typing import cast
@@ -10,21 +12,19 @@ from nn_websocket.protobuf.neural_network_types import GeneticAlgorithmConfigDat
 
 
 class NeuralNetworkGA(GeneticAlgorithm):
-    """
-    Genetic algorithm for training neural networks.
-    """
+    """Genetic algorithm for training neural networks."""
 
     def __init__(
         self,
         members: list[NeuralNetworkMember],
         mutation_rate: float,
     ) -> None:
-        """
-        Initialise NeuralNetworkGA with a mutation rate.
+        """Initialise NeuralNetworkGA with a mutation rate.
 
-        Parameters:
-            members (list[NeuralNetworkMember]): Population of NeuralNetworkMembers
-            mutation_rate (float): Population mutation rate
+        :param list[NeuralNetworkMember] members:
+            Population of NeuralNetworkMembers.
+        :param float mutation_rate:
+            Population mutation rate.
         """
         super().__init__(members, mutation_rate)
 
@@ -34,15 +34,14 @@ class NeuralNetworkGA(GeneticAlgorithm):
         nn_config_data: NeuralNetworkConfigData,
         ga_config_data: GeneticAlgorithmConfigData,
     ) -> NeuralNetworkGA:
-        """
-        Create a NeuralNetworkGA from the provided configuration data.
+        """Create a NeuralNetworkGA from the provided configuration data.
 
-        Parameters:
-            nn_config_data (NeuralNetworkConfigData): Configuration data for the neural network
-            ga_config_data (GeneticAlgorithmConfigData): Configuration data for the genetic algorithm
-
-        Returns:
-            neural_network_ga (NeuralNetworkGA): Neural Network Genetic Algorithm
+        :param NeuralNetworkConfigData nn_config_data:
+            Configuration data for the neural network.
+        :param GeneticAlgorithmConfigData ga_config_data:
+            Configuration data for the genetic algorithm.
+        :return NeuralNetworkGA:
+            Neural Network Genetic Algorithm.
         """
         return cls(
             [NeuralNetworkMember.from_config_data(nn_config_data) for _ in range(ga_config_data.population_size)],
@@ -51,40 +50,36 @@ class NeuralNetworkGA(GeneticAlgorithm):
 
     @property
     def nn_members(self) -> list[NeuralNetworkMember]:
-        """
-        Get the list of neural network members.
+        """Get the list of neural network members.
 
-        Returns:
-            list[NeuralNetworkMember]: List of neural network members
+        :return list[NeuralNetworkMember]:
+            List of neural network members.
         """
         return cast(list[NeuralNetworkMember], self._population._members)
 
     @property
     def population_size(self) -> int:
-        """
-        Get the size of the population.
+        """Get the size of the population.
 
-        Returns:
-            int: Size of the population
+        :return int:
+            Size of the population.
         """
         return int(self._population.size)
 
     def set_population_fitness(self, fitness_scores: list[float]) -> None:
-        """
-        Set the fitness scores for the population.
+        """Set the fitness scores for the population.
 
-        Parameters:
-            fitness_scores (list[float]): List of fitness scores for each member in the population
+        :param list[float] fitness_scores:
+            List of fitness scores for each member in the population.
         """
         for member, score in zip(self.nn_members, fitness_scores, strict=False):
             member.fitness = score
 
     def evolve(self, fitness_data: FitnessData) -> None:
-        """
-        Evolve the population based on the provided fitness data.
+        """Evolve the population based on the provided fitness data.
 
-        Parameters:
-            fitness_data (FitnessData): Population fitness data containing fitness scores
+        :param FitnessData fitness_data:
+            Population fitness data containing fitness scores.
         """
         self.set_population_fitness(fitness_data.values)
         self._population.evaluate()

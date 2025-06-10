@@ -1,3 +1,8 @@
+"""Mock neuroevolution client for the neural network websocket server.
+
+Simulates a population-based neuroevolution approach for testing and demonstration.
+"""
+
 import logging
 
 import websockets
@@ -57,8 +62,14 @@ CONFIG_DATA = ConfigurationData(neuroevolution=NEUROEVOLUTION_CONFIG)
 
 
 class NeuroevolutionClient(BaseClient):
+    """Client for simulating neuroevolution-based neural network training over websocket."""
+
     async def send_observation(self, ws: websockets.ClientConnection) -> None:
-        """Send observation data to the server."""
+        """Send observation data to the server.
+
+        :param websockets.ClientConnection ws:
+            The websocket connection to send data to.
+        """
         await super().send_observation(ws)
         await ws.send(
             FrameRequestData.to_bytes(
@@ -70,7 +81,11 @@ class NeuroevolutionClient(BaseClient):
         )
 
     async def send_training(self, ws: websockets.ClientConnection) -> None:
-        """Send training data to the server."""
+        """Send training data to the server.
+
+        :param websockets.ClientConnection ws:
+            The websocket connection to send data to.
+        """
         await super().send_training(ws)
         await ws.send(
             FrameRequestData.to_bytes(
@@ -80,4 +95,5 @@ class NeuroevolutionClient(BaseClient):
 
 
 def main() -> None:
+    """Entry point for running the neuroevolution client."""
     run(NeuroevolutionClient(CONFIG_DATA))

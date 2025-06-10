@@ -1,3 +1,5 @@
+"""Base class and runner utility for neural network websocket clients."""
+
 import asyncio
 import logging
 
@@ -16,24 +18,44 @@ EPISODE_LENGTH = 10
 
 
 class BaseClient:
+    """Base class for neural network websocket clients."""
+
     def __init__(self, config_data: ConfigurationData) -> None:
+        """Initialize the base client with configuration data.
+
+        :param ConfigurationData config_data:
+            The configuration data for the client.
+        """
         self.config_data = config_data
 
     async def send_configuration(self, ws: websockets.ClientConnection) -> None:
-        """Send configuration data to the server."""
+        """Send configuration data to the server.
+
+        :param websockets.ClientConnection ws:
+            The websocket connection to send data to.
+        """
         logger.info("Sending ConfigData to server.")
         await ws.send(ConfigurationData.to_bytes(self.config_data))
         await asyncio.sleep(1)
 
     async def send_observation(self, ws: websockets.ClientConnection) -> None:
-        """Send observation data to the server."""
+        """Send observation data to the server.
+
+        :param websockets.ClientConnection ws:
+            The websocket connection to send data to.
+        """
         logger.info("Sending ObservationData to server.")
 
     async def send_training(self, ws: websockets.ClientConnection) -> None:
-        """Send training data to the server."""
+        """Send training data to the server.
+
+        :param websockets.ClientConnection ws:
+            The websocket connection to send data to.
+        """
         logger.info("Sending training batch to server.")
 
     async def start(self) -> None:
+        """Start the client and manage the websocket connection loop."""
         num_observations = 0
 
         async with websockets.connect(config.uri) as ws:
@@ -59,6 +81,11 @@ class BaseClient:
 
 
 def run(client: BaseClient) -> None:
+    """Run the websocket client event loop.
+
+    :param BaseClient client:
+        The client instance to run.
+    """
     try:
         asyncio.run(client.start())
     except (SystemExit, KeyboardInterrupt):

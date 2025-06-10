@@ -1,3 +1,5 @@
+"""Neural network member for a genetic algorithm population."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -13,7 +15,7 @@ rng = np.random.default_rng()
 
 
 class NeuralNetworkMember(Member):
-    """This class creates a Member for the genetic algorithm."""
+    """Create a member for the genetic algorithm population."""
 
     def __init__(
         self,
@@ -25,21 +27,28 @@ class NeuralNetworkMember(Member):
         input_activation: type[ActivationFunction],
         hidden_activation: type[ActivationFunction],
         output_activation: type[ActivationFunction],
-        learning_rate: float = 0.01,
+        learning_rate: float,
     ) -> None:
-        """
-        Initialise NeuralNetworkMember with a starting position, a width and a height.
+        """Initialise NeuralNetworkMember with neural network architecture and hyperparameters.
 
-        Parameters:
-            num_inputs (int): Number of inputs to the neural network
-            num_outputs (int): Number of outputs from the neural network
-            hidden_layer_sizes (list[int]): Neural network hidden layer sizes
-            weights_range (tuple[float, float]): Range for random weights
-            bias_range (tuple[float, float]): Range for random biases
-            input_activation (type[ActivationFunction]): Activation function for the input layer
-            hidden_activation (type[ActivationFunction]): Activation function for the hidden layers
-            output_activation (type[ActivationFunction]): Activation function for the output layer
-            learning_rate (float): Learning rate for the neural network (default is 0.01)
+        :param int num_inputs:
+            Number of inputs to the neural network.
+        :param int num_outputs:
+            Number of outputs from the neural network.
+        :param list[int] hidden_layer_sizes:
+            Neural network hidden layer sizes.
+        :param tuple[float, float] weights_range:
+            Range for random weights.
+        :param tuple[float, float] bias_range:
+            Range for random biases.
+        :param type[ActivationFunction] input_activation:
+            Activation function for the input layer.
+        :param type[ActivationFunction] hidden_activation:
+            Activation function for the hidden layers.
+        :param type[ActivationFunction] output_activation:
+            Activation function for the output layer.
+        :param float learning_rate:
+            Learning rate for the neural network.
         """
         super().__init__()
 
@@ -74,14 +83,12 @@ class NeuralNetworkMember(Member):
 
     @classmethod
     def from_config_data(cls, config_data: NeuralNetworkConfigData) -> NeuralNetworkMember:
-        """
-        Create a NeuralNetworkMember from the provided configuration data.
+        """Create a NeuralNetworkMember from the provided configuration data.
 
-        Parameters:
-            config_data (NeuralNetworkConfigData): Configuration data for the neural network
-
-        Returns:
-            NeuralNetworkMember: A new instance of NeuralNetworkMember
+        :param NeuralNetworkConfigData config_data:
+            Configuration data for the neural network.
+        :return NeuralNetworkMember:
+            A new instance of NeuralNetworkMember.
         """
         return cls(
             num_inputs=config_data.num_inputs,
@@ -97,42 +104,83 @@ class NeuralNetworkMember(Member):
 
     @property
     def nn_layers(self) -> list[Layer]:
+        """Return the layers of the neural network.
+
+        :return list[Layer]:
+            List of neural network layers.
+        """
         return [self._input_layer, *self._hidden_layers, self._output_layer]
 
     @property
     def chromosome(self) -> tuple[list[Matrix], list[Matrix]]:
+        """Return the chromosome (weights and biases) of the neural network.
+
+        :return tuple[list[Matrix], list[Matrix]]:
+            The weights and biases of the neural network.
+        """
         return self._nn.weights, self._nn.bias
 
     @chromosome.setter
     def chromosome(self, new_chromosome: tuple[list[Matrix], list[Matrix]]) -> None:
+        """Set the chromosome (weights and biases) of the neural network.
+
+        :param tuple[list[Matrix], list[Matrix]] new_chromosome:
+            The new weights and biases to set.
+        """
         self._nn.weights = new_chromosome[0]
         self._nn.bias = new_chromosome[1]
 
     @property
     def fitness(self) -> float:
+        """Return the fitness score of the member.
+
+        :return float:
+            The fitness score.
+        """
         return self._score
 
     @fitness.setter
     def fitness(self, score: float) -> None:
+        """Set the fitness score of the member.
+
+        :param float score:
+            The fitness score to set.
+        """
         self._score = score
 
     @staticmethod
     def crossover_genes(
         element: float, other_element: float, roll: float, mutation_rate: float, random_range: tuple[float, float]
     ) -> float:
+        """Perform crossover and mutation for a single gene value.
+
+        :param float element:
+            The gene value from one parent.
+        :param float other_element:
+            The gene value from the other parent.
+        :param float roll:
+            Random value for mutation decision.
+        :param float mutation_rate:
+            Probability for mutation.
+        :param tuple[float, float] random_range:
+            Range for random mutation.
+        :return float:
+            The resulting gene value after crossover/mutation.
+        """
         if roll < mutation_rate:
             return rng.uniform(low=random_range[0], high=random_range[1])
 
         return float(rng.choice([element, other_element], p=[0.5, 0.5]))
 
     def crossover(self, parent_a: NeuralNetworkMember, parent_b: NeuralNetworkMember, mutation_rate: float) -> None:
-        """
-        Crossover the chromosomes of two members to create a new chromosome.
+        """Crossover the chromosomes of two members to create a new chromosome.
 
-        Parameters:
-            parent_a (NeuralNetworkMember): Used to construct new chromosome
-            parent_b (NeuralNetworkMember): Used to construct new chromosome
-            mutation_rate (float): Probability for mutations to occur
+        :param NeuralNetworkMember parent_a:
+            Used to construct new chromosome.
+        :param NeuralNetworkMember parent_b:
+            Used to construct new chromosome.
+        :param float mutation_rate:
+            Probability for mutations to occur.
         """
 
         def crossover_weights(element: float, other_element: float, roll: float) -> float:

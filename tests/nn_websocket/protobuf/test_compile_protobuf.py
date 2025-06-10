@@ -55,12 +55,12 @@ def mock_sys_exit() -> Generator[MagicMock, None, None]:
 
 
 class TestCompileProtobuf:
-    """Test cases for protobuf compilation and CLI entry point."""
+    """Test cases for Protobuf compilation and CLI entry point."""
 
     def test_compile_protobuf_success(
         self, mock_logger: MagicMock, mock_glob: MagicMock, mock_mkdir: MagicMock, mock_subprocess_run: MagicMock
     ) -> None:
-        """Test successful compilation of protobuf files."""
+        """Test successful compilation of Protobuf files."""
         mock_proto_files = [Path("test1.proto"), Path("test2.proto")]
         mock_glob.return_value = mock_proto_files
 
@@ -138,7 +138,7 @@ class TestCompileProtobuf:
         )
         mock_logger.error.assert_has_calls(
             [
-                call("Error during protobuf compilation:"),
+                call("Error during Protobuf compilation:"),
                 call(error_message),
             ]
         )
@@ -165,7 +165,7 @@ class TestCompileProtobuf:
                 call("Output directory: %s", OUT_DIR),
             ]
         )
-        mock_logger.exception.assert_called_once_with("Error during protobuf compilation")
+        mock_logger.exception.assert_called_once_with("Error during Protobuf compilation")
 
     def test_main_success(self, mock_compile_protobuf: MagicMock, mock_sys_exit: MagicMock) -> None:
         """Test main function exits with code 0 on success."""

@@ -1,3 +1,8 @@
+"""Mock fitness approach client for the neural network websocket server.
+
+Simulates fitness-based training for testing and demonstration.
+"""
+
 import logging
 
 import websockets
@@ -49,8 +54,14 @@ CONFIG_DATA = ConfigurationData(fitness_approach=FITNESS_CONFIG)
 
 
 class FitnessClient(BaseClient):
+    """Client for simulating fitness-based neural network training over websocket."""
+
     async def send_observation(self, ws: websockets.ClientConnection) -> None:
-        """Send observation data to the server."""
+        """Send observation data to the server.
+
+        :param websockets.ClientConnection ws:
+            The websocket connection to send data to.
+        """
         await super().send_observation(ws)
         await ws.send(
             FrameRequestData.to_bytes(
@@ -59,7 +70,11 @@ class FitnessClient(BaseClient):
         )
 
     async def send_training(self, ws: websockets.ClientConnection) -> None:
-        """Send training data to the server."""
+        """Send training data to the server.
+
+        :param websockets.ClientConnection ws:
+            The websocket connection to send data to.
+        """
         await super().send_training(ws)
         await ws.send(
             FrameRequestData.to_bytes(
@@ -72,4 +87,5 @@ class FitnessClient(BaseClient):
 
 
 def main() -> None:
+    """Entry point for running the fitness client."""
     run(FitnessClient(CONFIG_DATA))
