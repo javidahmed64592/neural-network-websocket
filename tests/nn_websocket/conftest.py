@@ -39,6 +39,7 @@ from nn_websocket.protobuf.neural_network_types import (
     NeuralNetworkConfigData,
     NeuroevolutionConfigData,
 )
+from nn_websocket.tools.base_client import BaseClient
 
 # from nn_websocket.models.nn_suite import NeuralNetworkSuite
 
@@ -351,3 +352,25 @@ def mock_websocket_fitness(
         FrameRequestData.to_bytes(frame_request_data_train),
     ]
     return mock_websocket
+
+
+# Base Client fixtures
+@pytest.fixture
+def mock_base_client(configuration_data_neuroevolution: ConfigurationData, mock_load_config: MagicMock) -> BaseClient:
+    """Fixture for BaseClient."""
+    return BaseClient(configuration_data_neuroevolution)
+
+
+@pytest.fixture
+def mock_client_websocket() -> AsyncMock:
+    """Fixture for a mock websocket connection for client testing."""
+    mock_websocket = AsyncMock()
+    mock_websocket.recv.return_value = b"mock_response"
+    return mock_websocket
+
+
+@pytest.fixture
+def mock_sleep() -> Generator[AsyncMock, None, None]:
+    """Fixture for mocking asyncio.sleep."""
+    with patch("asyncio.sleep", new_callable=AsyncMock) as mock_sleep:
+        yield mock_sleep
