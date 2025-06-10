@@ -1,4 +1,3 @@
-import asyncio
 import logging
 
 import websockets
@@ -10,13 +9,11 @@ from nn_websocket.protobuf.neural_network_types import (
     FitnessApproachConfigData,
     NeuralNetworkConfigData,
 )
-from nn_websocket.tools.client_utils import get_config, get_random_observation_frame, get_random_train_request_frame
+from nn_websocket.tools.base_client import BaseClient, run
+from nn_websocket.tools.client_utils import get_random_observation_frame, get_random_train_request_frame
 
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-
-# Load websocket config from JSON file
-config = get_config()
 
 # Configuration for the fitness approach client
 NUM_INPUTS = 5
@@ -51,41 +48,27 @@ FITNESS_CONFIG = FitnessApproachConfigData(neural_network=NN_CONFIG)
 CONFIG_DATA = ConfigurationData(fitness_approach=FITNESS_CONFIG)
 
 
-class FitnessClient:
-    @staticmethod
-    async def start() -> None:
-        observation_count = 0
+class FitnessClient(BaseClient):
+    async def send_observation(self, ws: websockets.ClientConnection) -> None:
+        """Send observation data to the server."""
+        await super().send_observation(ws)
+        await ws.send(
+            FrameRequestData.to_bytes(
+                get_random_observation_frame(self.config_data.fitness_approach.neural_network.num_inputs)
+            )
+        )
 
-        async with websockets.connect(config.uri) as ws:
-            # Send configuration data to the server
-            logger.info("Sending FitnessApproachConfigData to server.")
-            await ws.send(ConfigurationData.to_bytes(CONFIG_DATA))
-            await asyncio.sleep(1)
-
-            # Send observations and training data
-            while True:
-                logger.info("Sending ObservationData to server (observation #%d).", observation_count + 1)
-                await ws.send(FrameRequestData.to_bytes(get_random_observation_frame(NUM_INPUTS)))
-                observation_count += 1
-
-                # Every TRAINING_BATCH_SIZE observations, send training data
-                if observation_count % TRAINING_BATCH_SIZE == 0:
-                    logger.info("Sending training batch to server.")
-                    await ws.send(
-                        FrameRequestData.to_bytes(get_random_train_request_frame(TRAINING_BATCH_SIZE, NUM_INPUTS))
-                    )
-
-                try:
-                    response = await asyncio.wait_for(ws.recv(), timeout=2)
-                    logger.info("Received action response of length: %d bytes", len(response))
-                except TimeoutError:
-                    logger.warning("No response received from server within timeout.")
-
-                await asyncio.sleep(5)
+    async def send_training(self, ws: websockets.ClientConnection) -> None:
+        """Send training data to the server."""
+        super().send_training(ws)
+        await ws.send(
+            FrameRequestData.to_bytes(
+                get_random_train_request_frame(
+                    TRAINING_BATCH_SIZE, self.config_data.fitness_approach.neural_network.num_inputs
+                )
+            )
+        )
 
 
 def main() -> None:
-    try:
-        asyncio.run(FitnessClient.start())
-    except (SystemExit, KeyboardInterrupt):
-        logger.info("Shutting down the fitness approach client.")
+    run(FitnessClient(CONFIG_DATA))
