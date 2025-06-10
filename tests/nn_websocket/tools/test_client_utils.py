@@ -1,3 +1,5 @@
+"""Unit tests for the src/nn_websocket/tools/client_utils.py module."""
+
 from unittest.mock import MagicMock
 
 from nn_websocket.models.config import Config
@@ -12,7 +14,7 @@ from nn_websocket.tools.client_utils import (
 
 
 def test_get_config(mock_load_config: MagicMock, mock_config: Config) -> None:
-    """Test that the configuration is loaded correctly."""
+    """Test that the configuration is loaded correctly from file."""
     config = get_config()
     mock_load_config.assert_called_once_with(CONFIG_FILEPATH)
     assert config == mock_config

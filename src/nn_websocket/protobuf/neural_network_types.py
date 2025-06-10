@@ -1,8 +1,16 @@
+"""Dataclasses and enums for neural network and configuration Protobuf messages."""
+
 from __future__ import annotations
 
 from enum import IntEnum
 
-from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation, TanhActivation
+from neural_network.math.activation_functions import (
+    ActivationFunction,
+    LinearActivation,
+    ReluActivation,
+    SigmoidActivation,
+    TanhActivation,
+)
 from pydantic.dataclasses import dataclass
 
 from nn_websocket.protobuf.compiled.NNWebsocketClasses_pb2 import (
@@ -16,6 +24,8 @@ from nn_websocket.protobuf.compiled.NNWebsocketClasses_pb2 import (
 
 
 class ActivationFunctionEnumData(IntEnum):
+    """Enum for supported activation functions."""
+
     LINEAR = 0
     RELU = 1
     SIGMOID = 2
@@ -23,7 +33,11 @@ class ActivationFunctionEnumData(IntEnum):
 
     @property
     def map(self) -> dict[ActivationFunctionEnumData, type[ActivationFunctionEnum]]:
-        """Maps the enum to the corresponding activation function."""
+        """Return a mapping from enum to activation function class.
+
+        :return dict[ActivationFunctionEnumData, type[ActivationFunctionEnum]]:
+            Mapping from enum to activation function class.
+        """
         return {
             ActivationFunctionEnumData.LINEAR: LinearActivation,
             ActivationFunctionEnumData.RELU: ReluActivation,
@@ -31,24 +45,46 @@ class ActivationFunctionEnumData(IntEnum):
             ActivationFunctionEnumData.TANH: TanhActivation,
         }
 
-    def get_class(self) -> type:
-        """Returns the corresponding activation function class."""
+    def get_class(self) -> type[ActivationFunction]:
+        """Return the corresponding activation function class.
+
+        :return type[ActivationFunction]:
+            The activation function class.
+        """
         return self.map[self]
 
     @classmethod
-    def from_class(cls, activation_function: type[ActivationFunctionEnum]) -> ActivationFunctionEnumData:
-        """Maps an ActivationFunctionEnum class to ActivationFunctionEnumData."""
+    def from_class(cls, activation_function: type[ActivationFunction]) -> ActivationFunctionEnumData:
+        """Return the enum value for a given activation function class.
+
+        :param type[ActivationFunction] activation_function:
+            The activation function class.
+        :return ActivationFunctionEnumData:
+            The corresponding enum value.
+        """
         reverse_map = {v: k for k, v in cls.LINEAR.map.items()}
         return reverse_map[activation_function]
 
     @classmethod
     def from_protobuf(cls, proto_enum_value: ActivationFunctionEnum) -> ActivationFunctionEnumData:
-        """Maps a Protobuf ActivationFunctionEnum value to ActivationFunctionEnumData."""
+        """Return the enum value from a Protobuf ActivationFunctionEnum value.
+
+        :param ActivationFunctionEnum proto_enum_value:
+            The Protobuf enum value.
+        :return ActivationFunctionEnumData:
+            The corresponding enum value.
+        """
         return cls(proto_enum_value)
 
     @staticmethod
     def to_protobuf(enum_value: ActivationFunctionEnumData) -> ActivationFunctionEnum:
-        """Maps an ActivationFunctionEnumData value to Protobuf ActivationFunctionEnum."""
+        """Return the Protobuf ActivationFunctionEnum from an enum value.
+
+        :param ActivationFunctionEnumData enum_value:
+            The enum value.
+        :return ActivationFunctionEnum:
+            The Protobuf enum value.
+        """
         return ActivationFunctionEnum.Value(enum_value.name)  # type: ignore[return-value]
 
 
@@ -70,7 +106,13 @@ class NeuralNetworkConfigData:
 
     @classmethod
     def from_protobuf(cls, config: NeuralNetworkConfig) -> NeuralNetworkConfigData:
-        """Creates a NeuralNetworkConfigData instance from Protobuf."""
+        """Create a NeuralNetworkConfigData instance from Protobuf.
+
+        :param NeuralNetworkConfig config:
+            The Protobuf neural network config.
+        :return NeuralNetworkConfigData:
+            The created data instance.
+        """
         return cls(
             num_inputs=config.num_inputs,
             num_outputs=config.num_outputs,
@@ -87,7 +129,13 @@ class NeuralNetworkConfigData:
 
     @staticmethod
     def to_protobuf(config_data: NeuralNetworkConfigData) -> NeuralNetworkConfig:
-        """Converts NeuralNetworkConfigData to Protobuf."""
+        """Convert NeuralNetworkConfigData to Protobuf.
+
+        :param NeuralNetworkConfigData config_data:
+            The data instance to convert.
+        :return NeuralNetworkConfig:
+            The Protobuf config.
+        """
         return NeuralNetworkConfig(
             num_inputs=config_data.num_inputs,
             num_outputs=config_data.num_outputs,
@@ -104,14 +152,26 @@ class NeuralNetworkConfigData:
 
     @classmethod
     def from_bytes(cls, data: bytes) -> NeuralNetworkConfigData:
-        """Creates a NeuralNetworkConfigData instance from Protobuf bytes."""
+        """Create a NeuralNetworkConfigData instance from Protobuf bytes.
+
+        :param bytes data:
+            The Protobuf bytes.
+        :return NeuralNetworkConfigData:
+            The created data instance.
+        """
         config = NeuralNetworkConfig()
         config.ParseFromString(data)
         return cls.from_protobuf(config)
 
     @staticmethod
     def to_bytes(config_data: NeuralNetworkConfigData) -> bytes:
-        """Converts NeuralNetworkConfigData to Protobuf bytes."""
+        """Convert NeuralNetworkConfigData to Protobuf bytes.
+
+        :param NeuralNetworkConfigData config_data:
+            The data instance to convert.
+        :return bytes:
+            The Protobuf bytes.
+        """
         config = NeuralNetworkConfigData.to_protobuf(config_data)
         return config.SerializeToString()
 
@@ -119,14 +179,20 @@ class NeuralNetworkConfigData:
 # Training methods
 @dataclass
 class ConfigurationData:
-    """Data class to hold configuration data."""
+    """Data class to hold configuration data for the websocket server."""
 
     neuroevolution: NeuroevolutionConfigData | None = None
     fitness_approach: FitnessApproachConfigData | None = None
 
     @classmethod
     def from_protobuf(cls, config: Configuration) -> ConfigurationData:
-        """Creates a ConfigurationData instance from Protobuf."""
+        """Create a ConfigurationData instance from Protobuf.
+
+        :param Configuration config:
+            The Protobuf configuration.
+        :return ConfigurationData:
+            The created data instance.
+        """
         result = cls()
 
         which_oneof = config.WhichOneof("msg")
@@ -142,7 +208,13 @@ class ConfigurationData:
 
     @classmethod
     def to_protobuf(cls, config_data: ConfigurationData) -> Configuration:
-        """Converts ConfigurationData to Protobuf."""
+        """Convert ConfigurationData to Protobuf.
+
+        :param ConfigurationData config_data:
+            The data instance to convert.
+        :return Configuration:
+            The Protobuf configuration.
+        """
         neuroevolution = config_data.neuroevolution
         fitness_approach = config_data.fitness_approach
         return Configuration(
@@ -152,14 +224,26 @@ class ConfigurationData:
 
     @classmethod
     def from_bytes(cls, data: bytes) -> ConfigurationData:
-        """Creates a ConfigurationData instance from Protobuf bytes."""
+        """Create a ConfigurationData instance from Protobuf bytes.
+
+        :param bytes data:
+            The Protobuf bytes.
+        :return ConfigurationData:
+            The created data instance.
+        """
         config = Configuration()
         config.ParseFromString(data)
         return cls.from_protobuf(config)
 
     @staticmethod
     def to_bytes(config_data: ConfigurationData) -> bytes:
-        """Converts ConfigurationData to Protobuf bytes."""
+        """Convert ConfigurationData to Protobuf bytes.
+
+        :param ConfigurationData config_data:
+            The data instance to convert.
+        :return bytes:
+            The Protobuf bytes.
+        """
         config = ConfigurationData.to_protobuf(config_data)
         return config.SerializeToString()
 
@@ -173,7 +257,13 @@ class GeneticAlgorithmConfigData:
 
     @classmethod
     def from_protobuf(cls, config: GeneticAlgorithmConfig) -> GeneticAlgorithmConfigData:
-        """Creates a GeneticAlgorithmConfigData instance from Protobuf."""
+        """Create a GeneticAlgorithmConfigData instance from Protobuf.
+
+        :param GeneticAlgorithmConfig config:
+            The Protobuf genetic algorithm config.
+        :return GeneticAlgorithmConfigData:
+            The created data instance.
+        """
         return cls(
             population_size=config.population_size,
             mutation_rate=config.mutation_rate,
@@ -181,7 +271,13 @@ class GeneticAlgorithmConfigData:
 
     @staticmethod
     def to_protobuf(config_data: GeneticAlgorithmConfigData) -> GeneticAlgorithmConfig:
-        """Converts GeneticAlgorithmConfigData to Protobuf."""
+        """Convert GeneticAlgorithmConfigData to Protobuf.
+
+        :param GeneticAlgorithmConfigData config_data:
+            The data instance to convert.
+        :return GeneticAlgorithmConfig:
+            The Protobuf config.
+        """
         return GeneticAlgorithmConfig(
             population_size=config_data.population_size,
             mutation_rate=config_data.mutation_rate,
@@ -189,14 +285,26 @@ class GeneticAlgorithmConfigData:
 
     @classmethod
     def from_bytes(cls, data: bytes) -> GeneticAlgorithmConfigData:
-        """Creates a GeneticAlgorithmConfigData instance from Protobuf bytes."""
+        """Create a GeneticAlgorithmConfigData instance from Protobuf bytes.
+
+        :param bytes data:
+            The Protobuf bytes.
+        :return GeneticAlgorithmConfigData:
+            The created data instance.
+        """
         config = GeneticAlgorithmConfig()
         config.ParseFromString(data)
         return cls.from_protobuf(config)
 
     @staticmethod
     def to_bytes(config_data: GeneticAlgorithmConfigData) -> bytes:
-        """Converts GeneticAlgorithmConfigData to Protobuf bytes."""
+        """Convert GeneticAlgorithmConfigData to Protobuf bytes.
+
+        :param GeneticAlgorithmConfigData config_data:
+            The data instance to convert.
+        :return bytes:
+            The Protobuf bytes.
+        """
         config = GeneticAlgorithmConfigData.to_protobuf(config_data)
         return config.SerializeToString()
 
@@ -210,7 +318,13 @@ class NeuroevolutionConfigData:
 
     @classmethod
     def from_protobuf(cls, config: NeuroevolutionConfig) -> NeuroevolutionConfigData:
-        """Creates a NeuroevolutionConfigData instance from Protobuf."""
+        """Create a NeuroevolutionConfigData instance from Protobuf.
+
+        :param NeuroevolutionConfig config:
+            The Protobuf neuroevolution config.
+        :return NeuroevolutionConfigData:
+            The created data instance.
+        """
         return cls(
             neural_network=NeuralNetworkConfigData.from_protobuf(config.neural_network),
             genetic_algorithm=GeneticAlgorithmConfigData.from_protobuf(config.genetic_algorithm),
@@ -218,7 +332,13 @@ class NeuroevolutionConfigData:
 
     @staticmethod
     def to_protobuf(config_data: NeuroevolutionConfigData) -> NeuroevolutionConfig:
-        """Converts NeuroevolutionConfigData to Protobuf."""
+        """Convert NeuroevolutionConfigData to Protobuf.
+
+        :param NeuroevolutionConfigData config_data:
+            The data instance to convert.
+        :return NeuroevolutionConfig:
+            The Protobuf config.
+        """
         return NeuroevolutionConfig(
             neural_network=NeuralNetworkConfigData.to_protobuf(config_data.neural_network),
             genetic_algorithm=GeneticAlgorithmConfigData.to_protobuf(config_data.genetic_algorithm),
@@ -226,14 +346,26 @@ class NeuroevolutionConfigData:
 
     @classmethod
     def from_bytes(cls, data: bytes) -> NeuroevolutionConfigData:
-        """Creates a NeuroevolutionConfigData instance from Protobuf bytes."""
+        """Create a NeuroevolutionConfigData instance from Protobuf bytes.
+
+        :param bytes data:
+            The Protobuf bytes.
+        :return NeuroevolutionConfigData:
+            The created data instance.
+        """
         config = NeuroevolutionConfig()
         config.ParseFromString(data)
         return cls.from_protobuf(config)
 
     @staticmethod
     def to_bytes(config_data: NeuroevolutionConfigData) -> bytes:
-        """Converts NeuroevolutionConfigData to Protobuf bytes."""
+        """Convert NeuroevolutionConfigData to Protobuf bytes.
+
+        :param NeuroevolutionConfigData config_data:
+            The data instance to convert.
+        :return bytes:
+            The Protobuf bytes.
+        """
         config = NeuroevolutionConfigData.to_protobuf(config_data)
         return config.SerializeToString()
 
@@ -246,27 +378,51 @@ class FitnessApproachConfigData:
 
     @classmethod
     def from_protobuf(cls, config: FitnessApproachConfig) -> FitnessApproachConfigData:
-        """Creates a FitnessApproachConfigData instance from Protobuf."""
+        """Create a FitnessApproachConfigData instance from Protobuf.
+
+        :param FitnessApproachConfig config:
+            The Protobuf fitness approach config.
+        :return FitnessApproachConfigData:
+            The created data instance.
+        """
         return cls(
             neural_network=NeuralNetworkConfigData.from_protobuf(config.neural_network),
         )
 
     @staticmethod
     def to_protobuf(config_data: FitnessApproachConfigData) -> FitnessApproachConfig:
-        """Converts FitnessApproachConfigData to Protobuf."""
+        """Convert FitnessApproachConfigData to Protobuf.
+
+        :param FitnessApproachConfigData config_data:
+            The data instance to convert.
+        :return FitnessApproachConfig:
+            The Protobuf config.
+        """
         return FitnessApproachConfig(
             neural_network=NeuralNetworkConfigData.to_protobuf(config_data.neural_network),
         )
 
     @classmethod
     def from_bytes(cls, data: bytes) -> FitnessApproachConfigData:
-        """Creates a FitnessApproachConfigData instance from Protobuf bytes."""
+        """Create a FitnessApproachConfigData instance from Protobuf bytes.
+
+        :param bytes data:
+            The Protobuf bytes.
+        :return FitnessApproachConfigData:
+            The created data instance.
+        """
         config = FitnessApproachConfig()
         config.ParseFromString(data)
         return cls.from_protobuf(config)
 
     @staticmethod
     def to_bytes(config_data: FitnessApproachConfigData) -> bytes:
-        """Converts FitnessApproachConfigData to Protobuf bytes."""
+        """Convert FitnessApproachConfigData to Protobuf bytes.
+
+        :param FitnessApproachConfigData config_data:
+            The data instance to convert.
+        :return bytes:
+            The Protobuf bytes.
+        """
         config = FitnessApproachConfigData.to_protobuf(config_data)
         return config.SerializeToString()

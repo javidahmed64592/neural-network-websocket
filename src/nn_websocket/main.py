@@ -1,5 +1,16 @@
+"""Websocket server for neural network operations and training.
+
+This module implements a Websocket server for handling neural network operations,
+including processing observations, training networks, and performing crossover operations.
+It uses the `websockets` library to manage connections and messages.
+It is designed to work with neural network configurations defined in Protobuf format,
+and it supports both neuroevolution and fitness-based approaches to neural networks.
+This script serves as the entry point for running the server.
+"""
+
 import asyncio
 import logging
+import os
 from pathlib import Path
 
 import websockets
@@ -26,12 +37,28 @@ CONFIG_FILEPATH = Path("config") / "websocket_config.json"
 
 
 class NeuralNetworkWebsocketServer:
-    def __init__(self, config_filepath: Path = CONFIG_FILEPATH) -> None:
+    """A Websocket server for handling neural network operations."""
+
+    def __init__(self, config_filepath: os.PathLike = CONFIG_FILEPATH) -> None:
+        """Initialize the Websocket server with the given configuration file path.
+
+        :param os.PathLike config_filepath:
+            The path to the configuration file containing server settings and neural network configurations.
+        """
         self.config_filepath = config_filepath
         self.config = Config.load_config(self.config_filepath)
 
     @staticmethod
     def configure_neural_network_suite(config: ConfigurationData) -> NeuroevolutionSuite | FitnessSuite:
+        """Configure the neural network suite based on the provided configuration data.
+
+        :param ConfigurationData config:
+            The configuration data containing settings for the neural networks.
+        :return NeuroevolutionSuite | FitnessSuite:
+            An instance of NeuroevolutionSuite or FitnessSuite based on the configuration.
+        :raises ValueError:
+            If no fitness approach is configured in the provided ConfigurationData.
+        """
         logger.info("Configuring neural networks...")
         if neuroevolution := config.neuroevolution:
             return NeuroevolutionSuite.from_bytes(NeuroevolutionConfigData.to_bytes(neuroevolution))
@@ -45,28 +72,50 @@ class NeuralNetworkWebsocketServer:
     def process_observations(
         neural_network_suite: NeuroevolutionSuite | FitnessSuite, observation: ObservationData
     ) -> ActionData:
+        """Process an observation through the neural network suite and return the resulting actions.
+
+        :param NeuroevolutionSuite | FitnessSuite neural_network_suite:
+            The neural network suite to process the observation.
+        :param ObservationData observation:
+            The observation data to process.
+        :return ActionData:
+            The resulting action data from the neural network(s).
+        """
         if isinstance(neural_network_suite, NeuroevolutionSuite):
             return neural_network_suite.feedforward_through_networks(observation)
         return neural_network_suite.feedforward(observation)
 
     @staticmethod
     def crossover_neural_networks(neural_network_suite: NeuroevolutionSuite, fitness_data: FitnessData) -> None:
+        """Perform crossover on the neural networks using the provided fitness data.
+
+        :param NeuroevolutionSuite neural_network_suite:
+            The neuroevolution suite containing the networks to crossover.
+        :param FitnessData fitness_data:
+            The fitness data to guide the crossover process.
+        """
         logger.info("Crossover neural networks...")
         neural_network_suite.crossover_networks(fitness_data)
 
     @staticmethod
     def train(neural_network_suite: FitnessSuite, train_request: TrainRequestData) -> None:
+        """Train the neural network using the provided training request.
+
+        :param FitnessSuite neural_network_suite: The fitness suite containing the network to train.
+        :param TrainRequestData train_request: The training request data.
+        """
         logger.info("Training neural network...")
         neural_network_suite.train(train_request)
 
     @staticmethod
     async def handle_connection(websocket: websockets.ServerConnection) -> None:
-        def _ensure_bytes(message: str | bytes) -> bytes:
-            return message.encode("utf-8") if isinstance(message, str) else message
+        """Handle an incoming websocket connection, processing messages for neural network operations.
 
+        :param websockets.ServerConnection websocket: The websocket connection to handle.
+        """
         neural_network_suite: NeuroevolutionSuite | FitnessSuite | None = None
         async for message in websocket:
-            message_bytes = _ensure_bytes(message)
+            message_bytes = message.encode("utf-8") if isinstance(message, str) else message
 
             # Initialise the neural network suite if not already done
             if neural_network_suite is None:
@@ -85,15 +134,18 @@ class NeuralNetworkWebsocketServer:
                     NeuralNetworkWebsocketServer.train(neural_network_suite, train_request)
 
     async def start(self) -> None:
+        """Start the websocket server and listen for incoming connections."""
         async with websockets.serve(NeuralNetworkWebsocketServer.handle_connection, self.config.host, self.config.port):
             logger.info("Neural network websocket server running on %s:%s", self.config.host, self.config.port)
             await asyncio.Future()
 
     def run(self) -> None:
+        """Run the websocket server event loop."""
         asyncio.run(self.start())
 
 
 def run() -> None:
+    """Entry point for running the neural network websocket server."""
     try:
         server = NeuralNetworkWebsocketServer()
         server.run()

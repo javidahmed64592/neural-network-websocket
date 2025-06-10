@@ -1,3 +1,5 @@
+"""Test suite for the src/nn_websocket/ga/nn_member.py module."""
+
 from neural_network.layer import HiddenLayer, InputLayer, OutputLayer
 from neural_network.math.matrix import Matrix
 
@@ -6,6 +8,8 @@ from nn_websocket.protobuf.neural_network_types import NeuralNetworkConfigData
 
 
 class TestNeuralNetworkMember:
+    """Test suite for the NeuralNetworkMember class."""
+
     def test_initialization(
         self, mock_neural_network_member: NeuralNetworkMember, neural_network_config_data: NeuralNetworkConfigData
     ) -> None:
