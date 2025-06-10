@@ -1,0 +1,48 @@
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+package NNWebsocket;
+
+enum ActivationFunctionEnum {
+    LINEAR = 0;
+    RELU = 1;
+    SIGMOID = 2;
+    TANH = 3;
+}
+
+message NeuralNetworkConfig {
+    int32 num_inputs = 1;
+    int32 num_outputs = 2;
+    repeated int32 hidden_layer_sizes = 3;
+    float weights_min = 4;
+    float weights_max = 5;
+    float bias_min = 6;
+    float bias_max = 7;
+    ActivationFunctionEnum input_activation = 8;
+    ActivationFunctionEnum hidden_activation = 9;
+    ActivationFunctionEnum output_activation = 10;
+    float learning_rate = 11;
+}
+
+// Traning methods
+message Configuration {
+    oneof msg {
+        NeuroevolutionConfig neuroevolution = 1;
+        FitnessApproachConfig fitness_approach = 2;
+    }
+}
+
+// Neuroevolution
+message GeneticAlgorithmConfig {
+    int32 population_size = 1;
+    float mutation_rate = 2;
+}
+
+message NeuroevolutionConfig {
+    NeuralNetworkConfig neural_network = 1;
+    GeneticAlgorithmConfig genetic_algorithm = 2;
+}
+
+// Fitness approach
+message FitnessApproachConfig {
+    NeuralNetworkConfig neural_network = 1;
+}

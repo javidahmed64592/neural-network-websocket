@@ -6,11 +6,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "neural-network-websocket"
-version = "0.1.1"
+version = "0.2.0"
 description = "A Python websocket application to communicate with NeuralNetwork package."
 readme = "README.md"
 requires-python = ">=3.12"
-license = { file = "LICENSE" }
+license-files = ["LICENSE"]
 authors = [
     { name = "Javid Ahmed", email = "javidahmed@icloud.com" }
 ]
@@ -39,11 +39,14 @@ dev = [
 ]
 
 [project.scripts]
-run_websocket_server = "nn_websocket.main:run"
-run_mock_client = "nn_websocket.tools.mock_client:run"
+compile-websocket-protobuf = "nn_websocket.protobuf.compile_protobuf:main"
+nn-websocket = "nn_websocket.main:run"
+neuroevolution-client = "nn_websocket.tools.neuroevolution_client:main"
+fitness-client = "nn_websocket.tools.fitness_client:main"
+
 
 [project.urls]
-repository = "https://https://github.com/javidahmed64592/neural-network-websocket"
+repository = "https://github.com/javidahmed64592/neural-network-websocket"
 
 [tool.pytest.ini_options]
 addopts = [

@@ -1,0 +1,30 @@
+syntax = "proto3";
+option optimize_for = LITE_RUNTIME;
+package NNWebsocket;
+
+message FrameRequest {
+    oneof msg {
+        Observation observation = 1;
+        Fitness fitness = 2;
+        TrainRequest train_request = 3;
+    }
+}
+
+message Observation {
+    repeated float inputs = 1;
+}
+
+message Action {
+    repeated float outputs = 1;
+}
+
+// Neuroevolution
+message Fitness {
+    repeated float values = 1;
+}
+
+// Fitness approach
+message TrainRequest {
+    repeated Observation observation = 1;
+    repeated Fitness fitness = 2;
+}

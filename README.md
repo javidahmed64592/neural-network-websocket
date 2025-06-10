@@ -1,49 +1,174 @@
 [![python](https://img.shields.io/badge/Python-3.12-3776AB.svg?style=flat&logo=python&logoColor=ffd343)](https://docs.python.org/3.12/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 <!-- omit from toc -->
 # Neural Network Websocket
-A Python websocket application to communicate with NeuralNetwork package.
+
+A Python websocket server and client toolkit for communicating with neural networks using Protobuf-encoded messages. This project enables real-time, efficient communication between clients and a neural network backend, supporting both neuroevolution and fitness-based training paradigms. It includes a server, mock clients for testing, and utilities for message encoding/decoding.
 
 <!-- omit from toc -->
 ## Table of Contents
-- [Installing Dependencies](#installing-dependencies)
-- [Testing](#testing)
-- [Linting and Formatting](#linting-and-formatting)
-- [Type Checking](#type-checking)
+- [Overview](#overview)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Running the Websocket Server](#running-the-websocket-server)
+- [Running the Mock Clients](#running-the-mock-clients)
+  - [Neuroevolution Client](#neuroevolution-client)
+  - [Fitness Client](#fitness-client)
+- [Protobuf Integration](#protobuf-integration)
+  - [Compiling Protobuf Files](#compiling-protobuf-files)
+- [Development](#development)
+- [Testing, Linting, and Type Checking](#testing-linting-and-type-checking)
+- [License](#license)
 
-## Installing Dependencies
-Install the required dependencies using `pip`:
+## Overview
 
-    pip install -e .
+This application provides a websocket server that interfaces with neural networks for tasks such as inference, training, and neuroevolution. Communication between clients and the server is handled using Protocol Buffers (Protobuf) for efficient, strongly-typed message serialization.
 
-To install with `dev` dependencies:
+Two mock clients are included:
+- **Neuroevolution Client:** Simulates a population-based evolutionary approach.
+- **Fitness Client:** Simulates a single-network fitness-based training approach.
 
+## Features
+
+- **Websocket Server:** Handles real-time neural network requests and training instructions.
+- **Protobuf Messaging:** All data (observations, actions, fitness, configuration) is serialized using Protobuf for speed and interoperability.
+- **Mock Clients:** Easily test server behavior with randomized data.
+- **Configurable:** Server and client behavior can be customized via config files and code.
+
+## Project Structure
+
+```
+config/
+  websocket_config.json      # Server configuration file
+protobuf/                    # Protobuf message definitions
+src/
+  nn_websocket/
+    main.py                  # Websocket server entry point
+    ga/                      # Genetic algorithm integration
+    models/                  # Data models and configuration
+    protobuf/                # Data classes for parsing Protobuf
+    tools/
+      neuroevolution_client.py  # Mock neuroevolution client
+      fitness_client.py         # Mock fitness client
+      base_client.py            # Base client logic
+      client_utils.py           # Utilities for generating random frames
+```
+
+---
+
+## Installation
+
+1. **Clone the repository:**
+    ```sh
+    git clone https://github.com/javidahmed64592/neural-network-websocket.git
+    cd neural-network-websocket
+    ```
+
+2. **Install dependencies:**
+    ```sh
     pip install -e .[dev]
+    ```
 
-## Testing
-This library uses Pytest for the unit tests.
-These tests are located in the `tests` directory.
-To run the tests:
+---
 
-    python -m pytest tests
+## Configuration
 
-## Linting and Formatting
-This library uses `ruff` for linting and formatting.
-This is configured in `pyproject.toml`.
+The server reads its host and port from `config/websocket_config.json`:
 
-To check the code for linting errors:
+```json
+{
+  "host": "localhost",
+  "port": 8765
+}
+```
 
-    python -m ruff check .
+Edit this file to change the server's network settings.
 
-To format the code:
+## Running the Websocket Server
 
-    python -m ruff format .
+Start the server using the provided script:
 
-## Type Checking
-This library uses `mypy` for static type checking.
-This is configured in `pyproject.toml`.
+```sh
+nn-websocket
+```
 
-To check the code for type check errors:
+Or directly:
 
-    python -m mypy .
+```sh
+python -m nn_websocket.main
+```
+
+The server will listen for websocket connections and handle Protobuf-encoded messages for neural network inference and training.
+
+## Running the Mock Clients
+
+### Neuroevolution Client
+
+Simulates a population of agents sending observations and fitness data.
+
+```sh
+neuroevolution-client
+```
+
+Or:
+
+```sh
+python -m nn_websocket.tools.neuroevolution_client
+```
+
+### Fitness Client
+
+Simulates a single agent sending observations and training batches.
+
+```sh
+fitness-client
+```
+
+Or:
+
+```sh
+python -m nn_websocket.tools.fitness_client
+```
+
+Both clients connect to the server, send randomized data, and log responses for testing purposes.
+
+## Protobuf Integration
+
+All communication between clients and the server uses [Protocol Buffers](https://developers.google.com/protocol-buffers) for message serialization. The `.proto` files are located in `protobuf/` and compiled Python classes are generated in `src/nn_websocket/protobuf/compiled/`.
+
+### Compiling Protobuf Files
+
+If you modify or add `.proto` files, recompile them with:
+
+```sh
+compile-websocket-protobuf
+```
+
+Or:
+
+```sh
+python -m nn_websocket.protobuf.compile_protobuf
+```
+
+This will regenerate the Python classes used for message encoding/decoding.
+
+## Development
+
+- The server and clients use the `websockets` library for async communication.
+- Neural network and genetic algorithm logic is integrated via my [`neural_network`](https://github.com/javidahmed64592/neural-network) and [`genetic_algorithm`](https://github.com/javidahmed64592/genetic-algorithm) libraries.
+- Utilities are provided for generating random test data and encoding/decoding Protobuf messages.
+
+## Testing, Linting, and Type Checking
+
+- **Run tests:** `python -m pytest tests`
+- **Lint code:** `python -m ruff check .`
+- **Format code:** `python -m ruff format .`
+- **Type check:** `python -m mypy .`
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
