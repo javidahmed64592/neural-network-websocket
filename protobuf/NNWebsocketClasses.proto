@@ -1,13 +1,7 @@
 syntax = "proto3";
 option optimize_for = LITE_RUNTIME;
 package NNWebsocket;
-
-enum ActivationFunctionEnum {
-    LINEAR = 0;
-    RELU = 1;
-    SIGMOID = 2;
-    TANH = 3;
-}
+import "NeuralNetwork.proto";
 
 message NeuralNetworkConfig {
     int32 num_inputs = 1;
@@ -17,10 +11,10 @@ message NeuralNetworkConfig {
     float weights_max = 5;
     float bias_min = 6;
     float bias_max = 7;
-    ActivationFunctionEnum input_activation = 8;
-    ActivationFunctionEnum hidden_activation = 9;
-    ActivationFunctionEnum output_activation = 10;
-    float learning_rate = 11;
+    NeuralNetwork.ActivationFunctionData input_activation = 8;
+    NeuralNetwork.ActivationFunctionData hidden_activation = 9;
+    NeuralNetwork.ActivationFunctionData output_activation = 10;
+    optional NeuralNetwork.OptimizerData optimizer = 11;
 }
 
 // Traning methods
