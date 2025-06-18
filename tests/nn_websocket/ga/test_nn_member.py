@@ -28,7 +28,16 @@ class TestNeuralNetworkMember:
         assert mock_neural_network_member._input_activation == neural_network_config_data.input_activation.get_class()
         assert mock_neural_network_member._hidden_activation == neural_network_config_data.hidden_activation.get_class()
         assert mock_neural_network_member._output_activation == neural_network_config_data.output_activation.get_class()
-        assert mock_neural_network_member._learning_rate == neural_network_config_data.learning_rate
+        nn_config_data_optimizer = neural_network_config_data.optimizer.get_class_instance()
+        assert mock_neural_network_member._optimizer.lr == nn_config_data_optimizer.lr
+        assert (
+            mock_neural_network_member._optimizer.lr_scheduler.decay_rate
+            == nn_config_data_optimizer.lr_scheduler.decay_rate
+        )
+        assert (
+            mock_neural_network_member._optimizer.lr_scheduler.decay_steps
+            == nn_config_data_optimizer.lr_scheduler.decay_steps
+        )
 
     def test_nn_layers_property(
         self, mock_neural_network_member: NeuralNetworkMember, neural_network_config_data: NeuralNetworkConfigData

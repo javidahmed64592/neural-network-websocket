@@ -7,6 +7,7 @@ from genetic_algorithm.ga import Member
 from neural_network.layer import HiddenLayer, InputLayer, Layer, OutputLayer
 from neural_network.math.activation_functions import ActivationFunction
 from neural_network.math.matrix import Matrix
+from neural_network.math.optimizer import Optimizer
 from neural_network.neural_network import NeuralNetwork
 
 from nn_websocket.protobuf.neural_network_types import NeuralNetworkConfigData
@@ -27,7 +28,7 @@ class NeuralNetworkMember(Member):
         input_activation: type[ActivationFunction],
         hidden_activation: type[ActivationFunction],
         output_activation: type[ActivationFunction],
-        learning_rate: float,
+        optimizer: Optimizer,
     ) -> None:
         """Initialise NeuralNetworkMember with neural network architecture and hyperparameters.
 
@@ -47,8 +48,8 @@ class NeuralNetworkMember(Member):
             Activation function for the hidden layers.
         :param type[ActivationFunction] output_activation:
             Activation function for the output layer.
-        :param float learning_rate:
-            Learning rate for the neural network.
+        :param Optimizer optimizer:
+            Optimizer for the neural network.
         """
         super().__init__()
 
@@ -60,7 +61,7 @@ class NeuralNetworkMember(Member):
         self._input_activation = input_activation
         self._hidden_activation = hidden_activation
         self._output_activation = output_activation
-        self._learning_rate = learning_rate
+        self._optimizer = optimizer
 
         self._input_layer = InputLayer(size=self._num_inputs, activation=self._input_activation)
         self._hidden_layers = [
@@ -78,7 +79,7 @@ class NeuralNetworkMember(Member):
             weights_range=self._weights_range,
             bias_range=self._bias_range,
         )
-        self._nn = NeuralNetwork.from_layers(layers=self.nn_layers, lr=self._learning_rate)
+        self._nn = NeuralNetwork.from_layers(layers=self.nn_layers, optimizer=self._optimizer)
         self._score: float = 0
 
     @classmethod
@@ -99,7 +100,7 @@ class NeuralNetworkMember(Member):
             input_activation=config_data.input_activation.get_class(),
             hidden_activation=config_data.hidden_activation.get_class(),
             output_activation=config_data.output_activation.get_class(),
-            learning_rate=config_data.learning_rate,
+            optimizer=config_data.optimizer.get_class_instance(),
         )
 
     @property
