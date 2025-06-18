@@ -2,90 +2,19 @@
 
 from __future__ import annotations
 
-from enum import IntEnum
-
-from neural_network.math.activation_functions import (
-    ActivationFunction,
-    LinearActivation,
-    ReluActivation,
-    SigmoidActivation,
-    TanhActivation,
+from neural_network.protobuf.neural_network_types import (
+    ActivationFunctionEnum,
+    OptimizerDataType,
 )
 from pydantic.dataclasses import dataclass
 
 from nn_websocket.protobuf.compiled.NNWebsocketClasses_pb2 import (
-    ActivationFunctionEnum,
     Configuration,
     FitnessApproachConfig,
     GeneticAlgorithmConfig,
     NeuralNetworkConfig,
     NeuroevolutionConfig,
 )
-
-
-class ActivationFunctionEnumData(IntEnum):
-    """Enum for supported activation functions."""
-
-    LINEAR = 0
-    RELU = 1
-    SIGMOID = 2
-    TANH = 3
-
-    @property
-    def map(self) -> dict[ActivationFunctionEnumData, type[ActivationFunctionEnum]]:
-        """Return a mapping from enum to activation function class.
-
-        :return dict[ActivationFunctionEnumData, type[ActivationFunctionEnum]]:
-            Mapping from enum to activation function class.
-        """
-        return {
-            ActivationFunctionEnumData.LINEAR: LinearActivation,
-            ActivationFunctionEnumData.RELU: ReluActivation,
-            ActivationFunctionEnumData.SIGMOID: SigmoidActivation,
-            ActivationFunctionEnumData.TANH: TanhActivation,
-        }
-
-    def get_class(self) -> type[ActivationFunction]:
-        """Return the corresponding activation function class.
-
-        :return type[ActivationFunction]:
-            The activation function class.
-        """
-        return self.map[self]
-
-    @classmethod
-    def from_class(cls, activation_function: type[ActivationFunction]) -> ActivationFunctionEnumData:
-        """Return the enum value for a given activation function class.
-
-        :param type[ActivationFunction] activation_function:
-            The activation function class.
-        :return ActivationFunctionEnumData:
-            The corresponding enum value.
-        """
-        reverse_map = {v: k for k, v in cls.LINEAR.map.items()}
-        return reverse_map[activation_function]
-
-    @classmethod
-    def from_protobuf(cls, proto_enum_value: ActivationFunctionEnum) -> ActivationFunctionEnumData:
-        """Return the enum value from a Protobuf ActivationFunctionEnum value.
-
-        :param ActivationFunctionEnum proto_enum_value:
-            The Protobuf enum value.
-        :return ActivationFunctionEnumData:
-            The corresponding enum value.
-        """
-        return cls(proto_enum_value)
-
-    @staticmethod
-    def to_protobuf(enum_value: ActivationFunctionEnumData) -> ActivationFunctionEnum:
-        """Return the Protobuf ActivationFunctionEnum from an enum value.
-
-        :param ActivationFunctionEnumData enum_value:
-            The enum value.
-        :return ActivationFunctionEnum:
-            The Protobuf enum value.
-        """
-        return ActivationFunctionEnum.Value(enum_value.name)  # type: ignore[return-value]
 
 
 @dataclass
@@ -99,10 +28,10 @@ class NeuralNetworkConfigData:
     weights_max: float
     bias_min: float
     bias_max: float
-    input_activation: ActivationFunctionEnumData
-    hidden_activation: ActivationFunctionEnumData
-    output_activation: ActivationFunctionEnumData
-    learning_rate: float
+    input_activation: ActivationFunctionEnum
+    hidden_activation: ActivationFunctionEnum
+    output_activation: ActivationFunctionEnum
+    optimizer: OptimizerDataType
 
     @classmethod
     def from_protobuf(cls, config: NeuralNetworkConfig) -> NeuralNetworkConfigData:
@@ -121,10 +50,10 @@ class NeuralNetworkConfigData:
             weights_max=config.weights_max,
             bias_min=config.bias_min,
             bias_max=config.bias_max,
-            input_activation=ActivationFunctionEnumData.from_protobuf(config.input_activation),
-            hidden_activation=ActivationFunctionEnumData.from_protobuf(config.hidden_activation),
-            output_activation=ActivationFunctionEnumData.from_protobuf(config.output_activation),
-            learning_rate=config.learning_rate,
+            input_activation=ActivationFunctionEnum.from_protobuf(config.input_activation),
+            hidden_activation=ActivationFunctionEnum.from_protobuf(config.hidden_activation),
+            output_activation=ActivationFunctionEnum.from_protobuf(config.output_activation),
+            optimizer=OptimizerDataType.from_protobuf(config.optimizer),
         )
 
     @staticmethod
@@ -144,10 +73,10 @@ class NeuralNetworkConfigData:
             weights_max=config_data.weights_max,
             bias_min=config_data.bias_min,
             bias_max=config_data.bias_max,
-            input_activation=ActivationFunctionEnumData.to_protobuf(config_data.input_activation),
-            hidden_activation=ActivationFunctionEnumData.to_protobuf(config_data.hidden_activation),
-            output_activation=ActivationFunctionEnumData.to_protobuf(config_data.output_activation),
-            learning_rate=config_data.learning_rate,
+            input_activation=ActivationFunctionEnum.to_protobuf(config_data.input_activation),
+            hidden_activation=ActivationFunctionEnum.to_protobuf(config_data.hidden_activation),
+            output_activation=ActivationFunctionEnum.to_protobuf(config_data.output_activation),
+            optimizer=OptimizerDataType.to_protobuf(config_data.optimizer),
         )
 
     @classmethod
