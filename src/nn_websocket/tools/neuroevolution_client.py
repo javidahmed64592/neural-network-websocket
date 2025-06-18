@@ -8,10 +8,10 @@ import logging
 import websockets
 from neural_network.protobuf.neural_network_types import (
     ActivationFunctionEnum,
+    AdamOptimizerDataType,
     LearningRateMethodEnum,
     LearningRateSchedulerDataType,
     OptimizerDataType,
-    SGDOptimizerDataType,
 )
 
 from nn_websocket.protobuf.frame_data_types import (
@@ -41,12 +41,20 @@ INPUT_ACTIVATION = ActivationFunctionEnum.LINEAR
 HIDDEN_ACTIVATION = ActivationFunctionEnum.RELU
 OUTPUT_ACTIVATION = ActivationFunctionEnum.SIGMOID
 MOCK_LEARNING_RATE = 0.01
+MOCK_BETA1 = 0.9
+MOCK_BETA2 = 0.999
+MOCK_EPSILON = 1e-08
 MOCK_DECAY_RATE = 0.1
 MOCK_DECAY_STEPS = 1000
-MOCK_LEARNING_RATE_METHOD = LearningRateMethodEnum.STEP_DECAY
+MOCK_LEARNING_RATE_METHOD = LearningRateMethodEnum.EXPONENTIAL_DECAY
 MOCK_OPTIMIZER = OptimizerDataType(
-    adam=None,
-    sgd=SGDOptimizerDataType(learning_rate=MOCK_LEARNING_RATE),
+    adam=AdamOptimizerDataType(
+        learning_rate=MOCK_LEARNING_RATE,
+        beta1=MOCK_BETA1,
+        beta2=MOCK_BETA2,
+        epsilon=MOCK_EPSILON,
+    ),
+    sgd=None,
     learning_rate_scheduler=LearningRateSchedulerDataType(
         decay_rate=MOCK_DECAY_RATE, decay_steps=MOCK_DECAY_STEPS, method=MOCK_LEARNING_RATE_METHOD
     ),
