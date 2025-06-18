@@ -14,7 +14,7 @@ message NeuralNetworkConfig {
     NeuralNetwork.ActivationFunctionData input_activation = 8;
     NeuralNetwork.ActivationFunctionData hidden_activation = 9;
     NeuralNetwork.ActivationFunctionData output_activation = 10;
-    optional NeuralNetwork.OptimizerData optimizer = 11;
+    NeuralNetwork.OptimizerData optimizer = 11;
 }
 
 // Traning methods
