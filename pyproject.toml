@@ -10,7 +10,7 @@ version = "0.3.1"
 description = "A Python websocket application to communicate with NeuralNetwork package."
 readme = "README.md"
 requires-python = ">=3.12"
-license-files = ["LICENSE"]
+license = {"file"="LICENSE"}
 authors = [
     { name = "Javid Ahmed", email = "javidahmed@icloud.com" }
 ]
@@ -125,6 +125,8 @@ select = [
     "YTT",
 ]
 ignore = [
+    "ANN101",
+    "ANN102",
     "D203",
     "D213",
     "PLR0913",
