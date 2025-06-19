@@ -6,7 +6,7 @@ from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
-class FrameRequest(_message.Message):
+class FrameRequestData(_message.Message):
     __slots__ = ("observation", "fitness", "train_request")
     OBSERVATION_FIELD_NUMBER: _ClassVar[int]
     FITNESS_FIELD_NUMBER: _ClassVar[int]

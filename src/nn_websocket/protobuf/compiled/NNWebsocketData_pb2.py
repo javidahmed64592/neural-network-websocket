@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from . import NeuralNetwork_pb2 as NeuralNetwork__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15NNWebsocketData.proto\x12\x0bNNWebsocket\x1a\x13NeuralNetwork.proto\"\x9e\x03\n\x13NeuralNetworkConfig\x12\x12\n\nnum_inputs\x18\x01 \x01(\x05\x12\x13\n\x0bnum_outputs\x18\x02 \x01(\x05\x12\x1a\n\x12hidden_layer_sizes\x18\x03 \x03(\x05\x12\x13\n\x0bweights_min\x18\x04 \x01(\x02\x12\x13\n\x0bweights_max\x18\x05 \x01(\x02\x12\x10\n\x08\x62ias_min\x18\x06 \x01(\x02\x12\x10\n\x08\x62ias_max\x18\x07 \x01(\x02\x12?\n\x10input_activation\x18\x08 \x01(\x0e\x32%.NeuralNetwork.ActivationFunctionData\x12@\n\x11hidden_activation\x18\t \x01(\x0e\x32%.NeuralNetwork.ActivationFunctionData\x12@\n\x11output_activation\x18\n \x01(\x0e\x32%.NeuralNetwork.ActivationFunctionData\x12/\n\toptimizer\x18\x0b \x01(\x0b\x32\x1c.NeuralNetwork.OptimizerData\"\x93\x01\n\rConfiguration\x12;\n\x0eneuroevolution\x18\x01 \x01(\x0b\x32!.NNWebsocket.NeuroevolutionConfigH\x00\x12>\n\x10\x66itness_approach\x18\x02 \x01(\x0b\x32\".NNWebsocket.FitnessApproachConfigH\x00\x42\x05\n\x03msg\"H\n\x16GeneticAlgorithmConfig\x12\x17\n\x0fpopulation_size\x18\x01 \x01(\x05\x12\x15\n\rmutation_rate\x18\x02 \x01(\x02\"\x90\x01\n\x14NeuroevolutionConfig\x12\x38\n\x0eneural_network\x18\x01 \x01(\x0b\x32 .NNWebsocket.NeuralNetworkConfig\x12>\n\x11genetic_algorithm\x18\x02 \x01(\x0b\x32#.NNWebsocket.GeneticAlgorithmConfig\"Q\n\x15\x46itnessApproachConfig\x12\x38\n\x0eneural_network\x18\x01 \x01(\x0b\x32 .NNWebsocket.NeuralNetworkConfigB\x02H\x03\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15NNWebsocketData.proto\x12\x0bNNWebsocket\x1a\x13NeuralNetwork.proto\"\x90\x01\n\nConfigData\x12;\n\x0eneuroevolution\x18\x01 \x01(\x0b\x32!.NNWebsocket.NeuroevolutionConfigH\x00\x12>\n\x10\x66itness_approach\x18\x02 \x01(\x0b\x32\".NNWebsocket.FitnessApproachConfigH\x00\x42\x05\n\x03msg\"\x9e\x03\n\x13NeuralNetworkConfig\x12\x12\n\nnum_inputs\x18\x01 \x01(\x05\x12\x13\n\x0bnum_outputs\x18\x02 \x01(\x05\x12\x1a\n\x12hidden_layer_sizes\x18\x03 \x03(\x05\x12\x13\n\x0bweights_min\x18\x04 \x01(\x02\x12\x13\n\x0bweights_max\x18\x05 \x01(\x02\x12\x10\n\x08\x62ias_min\x18\x06 \x01(\x02\x12\x10\n\x08\x62ias_max\x18\x07 \x01(\x02\x12?\n\x10input_activation\x18\x08 \x01(\x0e\x32%.NeuralNetwork.ActivationFunctionData\x12@\n\x11hidden_activation\x18\t \x01(\x0e\x32%.NeuralNetwork.ActivationFunctionData\x12@\n\x11output_activation\x18\n \x01(\x0e\x32%.NeuralNetwork.ActivationFunctionData\x12/\n\toptimizer\x18\x0b \x01(\x0b\x32\x1c.NeuralNetwork.OptimizerData\"H\n\x16GeneticAlgorithmConfig\x12\x17\n\x0fpopulation_size\x18\x01 \x01(\x05\x12\x15\n\rmutation_rate\x18\x02 \x01(\x02\"\x90\x01\n\x14NeuroevolutionConfig\x12\x38\n\x0eneural_network\x18\x01 \x01(\x0b\x32 .NNWebsocket.NeuralNetworkConfig\x12>\n\x11genetic_algorithm\x18\x02 \x01(\x0b\x32#.NNWebsocket.GeneticAlgorithmConfig\"Q\n\x15\x46itnessApproachConfig\x12\x38\n\x0eneural_network\x18\x01 \x01(\x0b\x32 .NNWebsocket.NeuralNetworkConfigB\x02H\x03\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -33,14 +33,14 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'NNWebsocketData_pb2', _glob
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'H\003'
-  _globals['_NEURALNETWORKCONFIG']._serialized_start=60
-  _globals['_NEURALNETWORKCONFIG']._serialized_end=474
-  _globals['_CONFIGURATION']._serialized_start=477
-  _globals['_CONFIGURATION']._serialized_end=624
-  _globals['_GENETICALGORITHMCONFIG']._serialized_start=626
-  _globals['_GENETICALGORITHMCONFIG']._serialized_end=698
-  _globals['_NEUROEVOLUTIONCONFIG']._serialized_start=701
-  _globals['_NEUROEVOLUTIONCONFIG']._serialized_end=845
-  _globals['_FITNESSAPPROACHCONFIG']._serialized_start=847
-  _globals['_FITNESSAPPROACHCONFIG']._serialized_end=928
+  _globals['_CONFIGDATA']._serialized_start=60
+  _globals['_CONFIGDATA']._serialized_end=204
+  _globals['_NEURALNETWORKCONFIG']._serialized_start=207
+  _globals['_NEURALNETWORKCONFIG']._serialized_end=621
+  _globals['_GENETICALGORITHMCONFIG']._serialized_start=623
+  _globals['_GENETICALGORITHMCONFIG']._serialized_end=695
+  _globals['_NEUROEVOLUTIONCONFIG']._serialized_start=698
+  _globals['_NEUROEVOLUTIONCONFIG']._serialized_end=842
+  _globals['_FITNESSAPPROACHCONFIG']._serialized_start=844
+  _globals['_FITNESSAPPROACHCONFIG']._serialized_end=925
 # @@protoc_insertion_point(module_scope)

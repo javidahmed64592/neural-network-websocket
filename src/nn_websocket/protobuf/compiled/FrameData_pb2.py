@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0f\x46rameData.proto\x12\x0bNNWebsocket\"\xa3\x01\n\x0c\x46rameRequest\x12/\n\x0bobservation\x18\x01 \x01(\x0b\x32\x18.NNWebsocket.ObservationH\x00\x12\'\n\x07\x66itness\x18\x02 \x01(\x0b\x32\x14.NNWebsocket.FitnessH\x00\x12\x32\n\rtrain_request\x18\x03 \x01(\x0b\x32\x19.NNWebsocket.TrainRequestH\x00\x42\x05\n\x03msg\"\x1d\n\x0bObservation\x12\x0e\n\x06inputs\x18\x01 \x03(\x02\"\x19\n\x06\x41\x63tion\x12\x0f\n\x07outputs\x18\x01 \x03(\x02\"\x19\n\x07\x46itness\x12\x0e\n\x06values\x18\x01 \x03(\x02\"d\n\x0cTrainRequest\x12-\n\x0bobservation\x18\x01 \x03(\x0b\x32\x18.NNWebsocket.Observation\x12%\n\x07\x66itness\x18\x02 \x03(\x0b\x32\x14.NNWebsocket.FitnessB\x02H\x03\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0f\x46rameData.proto\x12\x0bNNWebsocket\"\xa7\x01\n\x10\x46rameRequestData\x12/\n\x0bobservation\x18\x01 \x01(\x0b\x32\x18.NNWebsocket.ObservationH\x00\x12\'\n\x07\x66itness\x18\x02 \x01(\x0b\x32\x14.NNWebsocket.FitnessH\x00\x12\x32\n\rtrain_request\x18\x03 \x01(\x0b\x32\x19.NNWebsocket.TrainRequestH\x00\x42\x05\n\x03msg\"\x1d\n\x0bObservation\x12\x0e\n\x06inputs\x18\x01 \x03(\x02\"\x19\n\x06\x41\x63tion\x12\x0f\n\x07outputs\x18\x01 \x03(\x02\"\x19\n\x07\x46itness\x12\x0e\n\x06values\x18\x01 \x03(\x02\"d\n\x0cTrainRequest\x12-\n\x0bobservation\x18\x01 \x03(\x0b\x32\x18.NNWebsocket.Observation\x12%\n\x07\x66itness\x18\x02 \x03(\x0b\x32\x14.NNWebsocket.FitnessB\x02H\x03\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,14 +32,14 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'FrameData_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'H\003'
-  _globals['_FRAMEREQUEST']._serialized_start=33
-  _globals['_FRAMEREQUEST']._serialized_end=196
-  _globals['_OBSERVATION']._serialized_start=198
-  _globals['_OBSERVATION']._serialized_end=227
-  _globals['_ACTION']._serialized_start=229
-  _globals['_ACTION']._serialized_end=254
-  _globals['_FITNESS']._serialized_start=256
-  _globals['_FITNESS']._serialized_end=281
-  _globals['_TRAINREQUEST']._serialized_start=283
-  _globals['_TRAINREQUEST']._serialized_end=383
+  _globals['_FRAMEREQUESTDATA']._serialized_start=33
+  _globals['_FRAMEREQUESTDATA']._serialized_end=200
+  _globals['_OBSERVATION']._serialized_start=202
+  _globals['_OBSERVATION']._serialized_end=231
+  _globals['_ACTION']._serialized_start=233
+  _globals['_ACTION']._serialized_end=258
+  _globals['_FITNESS']._serialized_start=260
+  _globals['_FITNESS']._serialized_end=285
+  _globals['_TRAINREQUEST']._serialized_start=287
+  _globals['_TRAINREQUEST']._serialized_end=387
 # @@protoc_insertion_point(module_scope)
