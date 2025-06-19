@@ -6,12 +6,16 @@ This directory contains the Protocol Buffer (`.proto`) files used for defining t
 
 The `.proto` files in this folder describe the structure of messages for:
 
+- **Neural network data structures and serialization** (see `NeuralNetwork.proto`)
 - **Neural network configuration and training** (see `NNWebsocketClasses.proto`)
 - **Frame data exchange between client and server** (see `FrameRequestClasses.proto`)
 
 These files are compiled into Python classes (and can be compiled for other languages) to enable serialization and deserialization of messages over the network.
 
 ## Files
+
+- **NeuralNetwork.proto**
+  Defines core neural network data structures including matrices, activation functions, optimizers (SGD and Adam), learning rate schedulers, and complete neural network serialization format.
 
 - **NNWebsocketClasses.proto**
   Defines messages for configuring neural networks, specifying training methods (neuroevolution or fitness-based), and genetic algorithm parameters.
@@ -21,10 +25,19 @@ These files are compiled into Python classes (and can be compiled for other lang
 
 ## Message Structure
 
+### NeuralNetwork.proto
+
+- **ActivationFunctionData**: Enumerates supported activation functions (LINEAR, RELU, SIGMOID, TANH).
+- **MatrixData**: Represents matrices with data, rows, and columns for weights and biases.
+- **SGDOptimizerData**: Stochastic Gradient Descent optimizer configuration.
+- **AdamOptimizerData**: Adam optimizer configuration with beta1, beta2, and epsilon parameters.
+- **LearningRateSchedulerData**: Learning rate scheduling with step decay and exponential decay methods.
+- **OptimizerData**: Combines optimizer algorithms with learning rate scheduling.
+- **NeuralNetworkData**: Complete neural network serialization including architecture, weights, biases, and optimizer state.
+
 ### NNWebsocketClasses.proto
 
-- **ActivationFunctionEnum**: Enumerates supported activation functions (LINEAR, RELU, SIGMOID, TANH).
-- **NeuralNetworkConfig**: Specifies neural network architecture and hyperparameters.
+- **NeuralNetworkConfig**: Specifies neural network architecture, weight/bias initialization ranges, and optimizer configuration.
 - **Configuration**: Uses a `oneof` to select between neuroevolution and fitness-based training configurations.
 - **GeneticAlgorithmConfig**: Parameters for population size and mutation rate.
 - **NeuroevolutionConfig**: Configuration for neuroevolution training.
@@ -49,13 +62,6 @@ From the project root, run:
 ```sh
 compile-websocket-protobuf
 python -m nn_websocket.protobuf.compile_protobuf # Or run directly
-```
-
-Or, manually with `protoc`:
-
-```sh
-python -m grpc_tools.protoc -I=protobuf --python_out=src/nn_websocket/protobuf/compiled protobuf/NNWebsocketClasses.proto
-python -m grpc_tools.protoc -I=protobuf --python_out=src/nn_websocket/protobuf/compiled protobuf/FrameRequestClasses.proto
 ```
 
 _Note: If you modify any `.proto` files, you must recompile them for changes to take effect._

@@ -1,10 +1,8 @@
 """Unit tests for the src/nn_websocket/protobuf/neural_network_types.py module."""
 
 import pytest
-from neural_network.math.activation_functions import LinearActivation, ReluActivation, SigmoidActivation, TanhActivation
 
 from nn_websocket.protobuf.compiled.NNWebsocketClasses_pb2 import (
-    ActivationFunctionEnum,
     Configuration,
     FitnessApproachConfig,
     GeneticAlgorithmConfig,
@@ -12,54 +10,12 @@ from nn_websocket.protobuf.compiled.NNWebsocketClasses_pb2 import (
     NeuroevolutionConfig,
 )
 from nn_websocket.protobuf.neural_network_types import (
-    ActivationFunctionEnumData,
     ConfigurationData,
     FitnessApproachConfigData,
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     NeuroevolutionConfigData,
 )
-
-
-class TestActivationFunctionEnumData:
-    """Test cases for ActivationFunctionEnumData conversions and mapping."""
-
-    def test_get_class(self) -> None:
-        """Test getting the activation class from enum."""
-        assert ActivationFunctionEnumData.LINEAR.get_class() == LinearActivation
-        assert ActivationFunctionEnumData.RELU.get_class() == ReluActivation
-        assert ActivationFunctionEnumData.SIGMOID.get_class() == SigmoidActivation
-        assert ActivationFunctionEnumData.TANH.get_class() == TanhActivation
-
-    def test_from_class(self) -> None:
-        """Test getting the enum from the activation class."""
-        assert ActivationFunctionEnumData.from_class(LinearActivation) == ActivationFunctionEnumData.LINEAR
-        assert ActivationFunctionEnumData.from_class(ReluActivation) == ActivationFunctionEnumData.RELU
-        assert ActivationFunctionEnumData.from_class(SigmoidActivation) == ActivationFunctionEnumData.SIGMOID
-        assert ActivationFunctionEnumData.from_class(TanhActivation) == ActivationFunctionEnumData.TANH
-
-    def test_from_protobuf(self) -> None:
-        """Test creating enum from Protobuf enum value."""
-        assert (
-            ActivationFunctionEnumData.from_protobuf(ActivationFunctionEnum.LINEAR) == ActivationFunctionEnumData.LINEAR
-        )
-        assert ActivationFunctionEnumData.from_protobuf(ActivationFunctionEnum.RELU) == ActivationFunctionEnumData.RELU
-        assert (
-            ActivationFunctionEnumData.from_protobuf(ActivationFunctionEnum.SIGMOID)
-            == ActivationFunctionEnumData.SIGMOID
-        )
-        assert ActivationFunctionEnumData.from_protobuf(ActivationFunctionEnum.TANH) == ActivationFunctionEnumData.TANH
-
-    def test_to_protobuf(self) -> None:
-        """Test getting the Protobuf enum value from enum."""
-        assert (
-            ActivationFunctionEnumData.to_protobuf(ActivationFunctionEnumData.LINEAR) == ActivationFunctionEnum.LINEAR
-        )
-        assert ActivationFunctionEnumData.to_protobuf(ActivationFunctionEnumData.RELU) == ActivationFunctionEnum.RELU
-        assert (
-            ActivationFunctionEnumData.to_protobuf(ActivationFunctionEnumData.SIGMOID) == ActivationFunctionEnum.SIGMOID
-        )
-        assert ActivationFunctionEnumData.to_protobuf(ActivationFunctionEnumData.TANH) == ActivationFunctionEnum.TANH
 
 
 class TestNeuralNetworkDataType:
@@ -79,7 +35,20 @@ class TestNeuralNetworkDataType:
         assert neural_network_data_type.input_activation == neural_network_config.input_activation
         assert neural_network_data_type.hidden_activation == neural_network_config.hidden_activation
         assert neural_network_data_type.output_activation == neural_network_config.output_activation
-        assert neural_network_data_type.learning_rate == neural_network_config.learning_rate
+        assert neural_network_data_type.optimizer.sgd.learning_rate == pytest.approx(
+            neural_network_config.optimizer.sgd.learning_rate
+        )
+        assert neural_network_data_type.optimizer.learning_rate_scheduler.decay_rate == pytest.approx(
+            neural_network_config.optimizer.learning_rate_scheduler.decay_rate
+        )
+        assert (
+            neural_network_data_type.optimizer.learning_rate_scheduler.decay_steps
+            == neural_network_config.optimizer.learning_rate_scheduler.decay_steps
+        )
+        assert (
+            neural_network_data_type.optimizer.learning_rate_scheduler.method
+            == neural_network_config.optimizer.learning_rate_scheduler.method
+        )
 
     def test_to_protobuf(self, neural_network_config_data: NeuralNetworkConfigData) -> None:
         """Test converting NeuralNetworkConfigData to NeuralNetworkConfig Protobuf."""
@@ -95,7 +64,18 @@ class TestNeuralNetworkDataType:
         assert protobuf_data.input_activation == neural_network_config_data.input_activation
         assert protobuf_data.hidden_activation == neural_network_config_data.hidden_activation
         assert protobuf_data.output_activation == neural_network_config_data.output_activation
-        assert protobuf_data.learning_rate == neural_network_config_data.learning_rate
+        assert protobuf_data.optimizer.sgd.learning_rate == pytest.approx(
+            neural_network_config_data.optimizer.sgd.learning_rate
+        )
+        assert protobuf_data.optimizer.learning_rate_scheduler.decay_rate == pytest.approx(
+            neural_network_config_data.optimizer.learning_rate_scheduler.decay_rate
+        )
+        assert protobuf_data.optimizer.learning_rate_scheduler.decay_steps == pytest.approx(
+            neural_network_config_data.optimizer.learning_rate_scheduler.decay_steps
+        )
+        assert protobuf_data.optimizer.learning_rate_scheduler.method == pytest.approx(
+            neural_network_config_data.optimizer.learning_rate_scheduler.method
+        )
 
     def test_to_bytes(self, neural_network_config_data: NeuralNetworkConfigData) -> None:
         """Test serializing NeuralNetworkConfigData to bytes."""
@@ -116,7 +96,18 @@ class TestNeuralNetworkDataType:
         assert result.weights_max == pytest.approx(neural_network_config_data.weights_max)
         assert result.bias_min == pytest.approx(neural_network_config_data.bias_min)
         assert result.bias_max == pytest.approx(neural_network_config_data.bias_max)
-        assert result.learning_rate == neural_network_config_data.learning_rate
+        assert result.optimizer.sgd.learning_rate == pytest.approx(
+            neural_network_config_data.optimizer.sgd.learning_rate
+        )
+        assert result.optimizer.learning_rate_scheduler.decay_rate == pytest.approx(
+            neural_network_config_data.optimizer.learning_rate_scheduler.decay_rate
+        )
+        assert result.optimizer.learning_rate_scheduler.decay_steps == pytest.approx(
+            neural_network_config_data.optimizer.learning_rate_scheduler.decay_steps
+        )
+        assert result.optimizer.learning_rate_scheduler.method == pytest.approx(
+            neural_network_config_data.optimizer.learning_rate_scheduler.method
+        )
 
 
 # Training methods

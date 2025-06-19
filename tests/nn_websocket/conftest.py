@@ -6,6 +6,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import numpy as np
 import pytest
+from neural_network.protobuf.neural_network_types import (
+    ActivationFunctionEnum,
+    LearningRateMethodEnum,
+    LearningRateSchedulerDataType,
+    OptimizerDataType,
+    SGDOptimizerDataType,
+)
 
 from nn_websocket.ga.nn_ga import NeuralNetworkGA
 from nn_websocket.ga.nn_member import NeuralNetworkMember
@@ -34,7 +41,6 @@ from nn_websocket.protobuf.frame_data_types import (
     TrainRequestData,
 )
 from nn_websocket.protobuf.neural_network_types import (
-    ActivationFunctionEnumData,
     ConfigurationData,
     FitnessApproachConfigData,
     GeneticAlgorithmConfigData,
@@ -42,8 +48,6 @@ from nn_websocket.protobuf.neural_network_types import (
     NeuroevolutionConfigData,
 )
 from nn_websocket.tools.base_client import BaseClient
-
-# from nn_websocket.models.nn_suite import NeuralNetworkSuite
 
 rng = np.random.default_rng()
 
@@ -56,10 +60,20 @@ MOCK_WEIGHTS_MIN = -1.0
 MOCK_WEIGHTS_MAX = 1.0
 MOCK_BIAS_MIN = -1.0
 MOCK_BIAS_MAX = 1.0
-MOCK_INPUT_ACTIVATION = ActivationFunctionEnumData.LINEAR
-MOCK_HIDDEN_ACTIVATION = ActivationFunctionEnumData.RELU
-MOCK_OUTPUT_ACTIVATION = ActivationFunctionEnumData.SIGMOID
+MOCK_INPUT_ACTIVATION = ActivationFunctionEnum.LINEAR
+MOCK_HIDDEN_ACTIVATION = ActivationFunctionEnum.RELU
+MOCK_OUTPUT_ACTIVATION = ActivationFunctionEnum.SIGMOID
 MOCK_LEARNING_RATE = 0.01
+MOCK_DECAY_RATE = 0.1
+MOCK_DECAY_STEPS = 1000
+MOCK_LEARNING_RATE_METHOD = LearningRateMethodEnum.STEP_DECAY
+MOCK_OPTIMIZER = OptimizerDataType(
+    adam=None,
+    sgd=SGDOptimizerDataType(learning_rate=MOCK_LEARNING_RATE),
+    learning_rate_scheduler=LearningRateSchedulerDataType(
+        decay_rate=MOCK_DECAY_RATE, decay_steps=MOCK_DECAY_STEPS, method=MOCK_LEARNING_RATE_METHOD
+    ),
+)
 
 MOCK_POPULATION_SIZE = 10
 MOCK_MUTATION_RATE = 0.1
@@ -77,10 +91,10 @@ def neural_network_config() -> NeuralNetworkConfig:
         weights_max=MOCK_WEIGHTS_MAX,
         bias_min=MOCK_BIAS_MIN,
         bias_max=MOCK_BIAS_MAX,
-        input_activation=ActivationFunctionEnumData.to_protobuf(MOCK_INPUT_ACTIVATION),
-        hidden_activation=ActivationFunctionEnumData.to_protobuf(MOCK_HIDDEN_ACTIVATION),
-        output_activation=ActivationFunctionEnumData.to_protobuf(MOCK_OUTPUT_ACTIVATION),
-        learning_rate=MOCK_LEARNING_RATE,
+        input_activation=ActivationFunctionEnum.to_protobuf(MOCK_INPUT_ACTIVATION),
+        hidden_activation=ActivationFunctionEnum.to_protobuf(MOCK_HIDDEN_ACTIVATION),
+        output_activation=ActivationFunctionEnum.to_protobuf(MOCK_OUTPUT_ACTIVATION),
+        optimizer=OptimizerDataType.to_protobuf(MOCK_OPTIMIZER),
     )
 
 
@@ -98,7 +112,7 @@ def neural_network_config_data(neural_network_config: NeuralNetworkConfig) -> Ne
         input_activation=MOCK_INPUT_ACTIVATION,
         hidden_activation=MOCK_HIDDEN_ACTIVATION,
         output_activation=MOCK_OUTPUT_ACTIVATION,
-        learning_rate=neural_network_config.learning_rate,
+        optimizer=MOCK_OPTIMIZER,
     )
 
 

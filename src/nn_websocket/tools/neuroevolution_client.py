@@ -6,12 +6,18 @@ Simulates a population-based neuroevolution approach for testing and demonstrati
 import logging
 
 import websockets
+from neural_network.protobuf.neural_network_types import (
+    ActivationFunctionEnum,
+    AdamOptimizerDataType,
+    LearningRateMethodEnum,
+    LearningRateSchedulerDataType,
+    OptimizerDataType,
+)
 
 from nn_websocket.protobuf.frame_data_types import (
     FrameRequestData,
 )
 from nn_websocket.protobuf.neural_network_types import (
-    ActivationFunctionEnumData,
     ConfigurationData,
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
@@ -31,10 +37,28 @@ WEIGHTS_MIN = -1.0
 WEIGHTS_MAX = 1.0
 BIAS_MIN = -0.2
 BIAS_MAX = 0.2
-INPUT_ACTIVATION = ActivationFunctionEnumData.LINEAR
-HIDDEN_ACTIVATION = ActivationFunctionEnumData.RELU
-OUTPUT_ACTIVATION = ActivationFunctionEnumData.SIGMOID
-LEARNING_RATE = 0.01
+INPUT_ACTIVATION = ActivationFunctionEnum.LINEAR
+HIDDEN_ACTIVATION = ActivationFunctionEnum.RELU
+OUTPUT_ACTIVATION = ActivationFunctionEnum.SIGMOID
+MOCK_LEARNING_RATE = 0.01
+MOCK_BETA1 = 0.9
+MOCK_BETA2 = 0.999
+MOCK_EPSILON = 1e-08
+MOCK_DECAY_RATE = 0.1
+MOCK_DECAY_STEPS = 1000
+MOCK_LEARNING_RATE_METHOD = LearningRateMethodEnum.EXPONENTIAL_DECAY
+MOCK_OPTIMIZER = OptimizerDataType(
+    adam=AdamOptimizerDataType(
+        learning_rate=MOCK_LEARNING_RATE,
+        beta1=MOCK_BETA1,
+        beta2=MOCK_BETA2,
+        epsilon=MOCK_EPSILON,
+    ),
+    sgd=None,
+    learning_rate_scheduler=LearningRateSchedulerDataType(
+        decay_rate=MOCK_DECAY_RATE, decay_steps=MOCK_DECAY_STEPS, method=MOCK_LEARNING_RATE_METHOD
+    ),
+)
 
 NUM_AGENTS = 10
 MUTATION_RATE = 0.1
@@ -50,7 +74,7 @@ NN_CONFIG = NeuralNetworkConfigData(
     input_activation=INPUT_ACTIVATION,
     hidden_activation=HIDDEN_ACTIVATION,
     output_activation=OUTPUT_ACTIVATION,
-    learning_rate=LEARNING_RATE,
+    optimizer=MOCK_OPTIMIZER,
 )
 GA_CONFIG = GeneticAlgorithmConfigData(population_size=NUM_AGENTS, mutation_rate=MUTATION_RATE)
 

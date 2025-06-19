@@ -6,10 +6,16 @@ Simulates fitness-based training for testing and demonstration.
 import logging
 
 import websockets
+from neural_network.protobuf.neural_network_types import (
+    ActivationFunctionEnum,
+    LearningRateMethodEnum,
+    LearningRateSchedulerDataType,
+    OptimizerDataType,
+    SGDOptimizerDataType,
+)
 
 from nn_websocket.protobuf.frame_data_types import FrameRequestData
 from nn_websocket.protobuf.neural_network_types import (
-    ActivationFunctionEnumData,
     ConfigurationData,
     FitnessApproachConfigData,
     NeuralNetworkConfigData,
@@ -28,10 +34,20 @@ WEIGHTS_MIN = -1.0
 WEIGHTS_MAX = 1.0
 BIAS_MIN = -0.2
 BIAS_MAX = 0.2
-INPUT_ACTIVATION = ActivationFunctionEnumData.LINEAR
-HIDDEN_ACTIVATION = ActivationFunctionEnumData.RELU
-OUTPUT_ACTIVATION = ActivationFunctionEnumData.SIGMOID
-LEARNING_RATE = 0.01
+INPUT_ACTIVATION = ActivationFunctionEnum.LINEAR
+HIDDEN_ACTIVATION = ActivationFunctionEnum.RELU
+OUTPUT_ACTIVATION = ActivationFunctionEnum.SIGMOID
+MOCK_LEARNING_RATE = 0.01
+MOCK_DECAY_RATE = 0.1
+MOCK_DECAY_STEPS = 1000
+MOCK_LEARNING_RATE_METHOD = LearningRateMethodEnum.STEP_DECAY
+MOCK_OPTIMIZER = OptimizerDataType(
+    adam=None,
+    sgd=SGDOptimizerDataType(learning_rate=MOCK_LEARNING_RATE),
+    learning_rate_scheduler=LearningRateSchedulerDataType(
+        decay_rate=MOCK_DECAY_RATE, decay_steps=MOCK_DECAY_STEPS, method=MOCK_LEARNING_RATE_METHOD
+    ),
+)
 
 TRAINING_BATCH_SIZE = 5
 
@@ -46,7 +62,7 @@ NN_CONFIG = NeuralNetworkConfigData(
     input_activation=INPUT_ACTIVATION,
     hidden_activation=HIDDEN_ACTIVATION,
     output_activation=OUTPUT_ACTIVATION,
-    learning_rate=LEARNING_RATE,
+    optimizer=MOCK_OPTIMIZER,
 )
 
 FITNESS_CONFIG = FitnessApproachConfigData(neural_network=NN_CONFIG)
