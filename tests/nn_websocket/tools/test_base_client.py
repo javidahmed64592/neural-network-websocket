@@ -4,14 +4,14 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from nn_websocket.protobuf.neural_network_types import ConfigurationData
+from nn_websocket.protobuf.nn_websocket_data_types import ConfigDataType
 from nn_websocket.tools.base_client import EPISODE_LENGTH, BaseClient, run
 
 
 class TestBaseClient:
     """Test cases for BaseClient websocket client logic."""
 
-    def test_init(self, mock_base_client: BaseClient, configuration_data_neuroevolution: ConfigurationData) -> None:
+    def test_init(self, mock_base_client: BaseClient, configuration_data_neuroevolution: ConfigDataType) -> None:
         """Test BaseClient initialization."""
         assert mock_base_client.config_data == configuration_data_neuroevolution
 

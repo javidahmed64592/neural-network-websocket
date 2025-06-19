@@ -3,6 +3,13 @@ option optimize_for = LITE_RUNTIME;
 package NNWebsocket;
 import "NeuralNetwork.proto";
 
+message ConfigData {
+    oneof msg {
+        NeuroevolutionConfig neuroevolution = 1;
+        FitnessApproachConfig fitness_approach = 2;
+    }
+}
+
 message NeuralNetworkConfig {
     int32 num_inputs = 1;
     int32 num_outputs = 2;
@@ -15,14 +22,6 @@ message NeuralNetworkConfig {
     NeuralNetwork.ActivationFunctionData hidden_activation = 9;
     NeuralNetwork.ActivationFunctionData output_activation = 10;
     NeuralNetwork.OptimizerData optimizer = 11;
-}
-
-// Traning methods
-message Configuration {
-    oneof msg {
-        NeuroevolutionConfig neuroevolution = 1;
-        FitnessApproachConfig fitness_approach = 2;
-    }
 }
 
 // Neuroevolution

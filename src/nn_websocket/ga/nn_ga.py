@@ -7,8 +7,8 @@ from typing import cast
 from genetic_algorithm.ga import GeneticAlgorithm
 
 from nn_websocket.ga.nn_member import NeuralNetworkMember
-from nn_websocket.protobuf.frame_data_types import FitnessData
-from nn_websocket.protobuf.neural_network_types import GeneticAlgorithmConfigData, NeuralNetworkConfigData
+from nn_websocket.protobuf.frame_data_types import FitnessType
+from nn_websocket.protobuf.nn_websocket_data_types import GeneticAlgorithmConfigType, NeuralNetworkConfigType
 
 
 class NeuralNetworkGA(GeneticAlgorithm):
@@ -31,15 +31,15 @@ class NeuralNetworkGA(GeneticAlgorithm):
     @classmethod
     def from_config_data(
         cls,
-        nn_config_data: NeuralNetworkConfigData,
-        ga_config_data: GeneticAlgorithmConfigData,
+        nn_config_data: NeuralNetworkConfigType,
+        ga_config_data: GeneticAlgorithmConfigType,
     ) -> NeuralNetworkGA:
         """Create a NeuralNetworkGA from the provided configuration data.
 
-        :param NeuralNetworkConfigData nn_config_data:
-            Configuration data for the neural network.
-        :param GeneticAlgorithmConfigData ga_config_data:
-            Configuration data for the genetic algorithm.
+        :param NeuralNetworkConfigType nn_config_data:
+            ConfigData data for the neural network.
+        :param GeneticAlgorithmConfigType ga_config_data:
+            ConfigData data for the genetic algorithm.
         :return NeuralNetworkGA:
             Neural Network Genetic Algorithm.
         """
@@ -75,10 +75,10 @@ class NeuralNetworkGA(GeneticAlgorithm):
         for member, score in zip(self.nn_members, fitness_scores, strict=False):
             member.fitness = score
 
-    def evolve(self, fitness_data: FitnessData) -> None:
+    def evolve(self, fitness_data: FitnessType) -> None:
         """Evolve the population based on the provided fitness data.
 
-        :param FitnessData fitness_data:
+        :param FitnessType fitness_data:
             Population fitness data containing fitness scores.
         """
         self.set_population_fitness(fitness_data.values)

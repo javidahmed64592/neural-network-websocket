@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from nn_websocket.protobuf.frame_data_types import FrameRequestData
+from nn_websocket.protobuf.frame_data_types import FrameRequestDataType
 from nn_websocket.tools.neuroevolution_client import (
     CONFIG_DATA,
     NeuroevolutionClient,
@@ -27,7 +27,7 @@ class TestNeuroevolutionClient:
     ) -> None:
         """Test that send_observation sends the correct frame data as bytes."""
         with patch("nn_websocket.tools.client_utils.get_random_observation_frame") as mock_get_obs:
-            mock_get_obs.return_value = FrameRequestData()
+            mock_get_obs.return_value = FrameRequestDataType()
             await mock_neuroevolution_client.send_observation(mock_client_websocket)
 
         mock_client_websocket.send.assert_called_once()
@@ -40,7 +40,7 @@ class TestNeuroevolutionClient:
     ) -> None:
         """Test that send_training sends the correct frame data as bytes."""
         with patch("nn_websocket.tools.client_utils.get_random_fitness_frame") as mock_get_fitness:
-            mock_get_fitness.return_value = FrameRequestData()
+            mock_get_fitness.return_value = FrameRequestDataType()
             await mock_neuroevolution_client.send_training(mock_client_websocket)
 
         mock_client_websocket.send.assert_called_once()

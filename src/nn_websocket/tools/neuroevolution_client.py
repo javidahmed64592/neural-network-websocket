@@ -15,13 +15,13 @@ from neural_network.protobuf.neural_network_types import (
 )
 
 from nn_websocket.protobuf.frame_data_types import (
-    FrameRequestData,
+    FrameRequestDataType,
 )
-from nn_websocket.protobuf.neural_network_types import (
-    ConfigurationData,
-    GeneticAlgorithmConfigData,
-    NeuralNetworkConfigData,
-    NeuroevolutionConfigData,
+from nn_websocket.protobuf.nn_websocket_data_types import (
+    ConfigDataType,
+    GeneticAlgorithmConfigType,
+    NeuralNetworkConfigType,
+    NeuroevolutionConfigType,
 )
 from nn_websocket.tools.base_client import BaseClient, run
 from nn_websocket.tools.client_utils import get_random_fitness_frame, get_random_observation_frame
@@ -29,7 +29,7 @@ from nn_websocket.tools.client_utils import get_random_fitness_frame, get_random
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Configuration for the neuroevolution client
+# ConfigData for the neuroevolution client
 NUM_INPUTS = 5
 NUM_OUTPUTS = 2
 HIDDEN_LAYER_SIZES = [4, 4]
@@ -63,7 +63,7 @@ MOCK_OPTIMIZER = OptimizerDataType(
 NUM_AGENTS = 10
 MUTATION_RATE = 0.1
 
-NN_CONFIG = NeuralNetworkConfigData(
+NN_CONFIG = NeuralNetworkConfigType(
     num_inputs=NUM_INPUTS,
     num_outputs=NUM_OUTPUTS,
     hidden_layer_sizes=HIDDEN_LAYER_SIZES,
@@ -76,13 +76,13 @@ NN_CONFIG = NeuralNetworkConfigData(
     output_activation=OUTPUT_ACTIVATION,
     optimizer=MOCK_OPTIMIZER,
 )
-GA_CONFIG = GeneticAlgorithmConfigData(population_size=NUM_AGENTS, mutation_rate=MUTATION_RATE)
+GA_CONFIG = GeneticAlgorithmConfigType(population_size=NUM_AGENTS, mutation_rate=MUTATION_RATE)
 
-NEUROEVOLUTION_CONFIG = NeuroevolutionConfigData(
+NEUROEVOLUTION_CONFIG = NeuroevolutionConfigType(
     neural_network=NN_CONFIG,
     genetic_algorithm=GA_CONFIG,
 )
-CONFIG_DATA = ConfigurationData(neuroevolution=NEUROEVOLUTION_CONFIG)
+CONFIG_DATA = ConfigDataType(neuroevolution=NEUROEVOLUTION_CONFIG)
 
 
 class NeuroevolutionClient(BaseClient):
@@ -96,7 +96,7 @@ class NeuroevolutionClient(BaseClient):
         """
         await super().send_observation(ws)
         await ws.send(
-            FrameRequestData.to_bytes(
+            FrameRequestDataType.to_bytes(
                 get_random_observation_frame(
                     self.config_data.neuroevolution.neural_network.num_inputs  # type: ignore[union-attr]
                     * self.config_data.neuroevolution.genetic_algorithm.population_size  # type: ignore[union-attr]
@@ -112,7 +112,7 @@ class NeuroevolutionClient(BaseClient):
         """
         await super().send_training(ws)
         await ws.send(
-            FrameRequestData.to_bytes(
+            FrameRequestDataType.to_bytes(
                 get_random_fitness_frame(self.config_data.neuroevolution.genetic_algorithm.population_size)  # type: ignore[union-attr]
             )
         )

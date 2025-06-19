@@ -18,16 +18,16 @@ import websockets
 from nn_websocket.models.config import Config
 from nn_websocket.models.nn_suites import FitnessSuite, NeuroevolutionSuite
 from nn_websocket.protobuf.frame_data_types import (
-    ActionData,
-    FitnessData,
-    FrameRequestData,
-    ObservationData,
-    TrainRequestData,
+    ActionType,
+    FitnessType,
+    FrameRequestDataType,
+    ObservationType,
+    TrainRequestType,
 )
-from nn_websocket.protobuf.neural_network_types import (
-    ConfigurationData,
-    FitnessApproachConfigData,
-    NeuroevolutionConfigData,
+from nn_websocket.protobuf.nn_websocket_data_types import (
+    ConfigDataType,
+    FitnessApproachConfigType,
+    NeuroevolutionConfigType,
 )
 
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
@@ -49,36 +49,36 @@ class NeuralNetworkWebsocketServer:
         self.config = Config.load_config(self.config_filepath)
 
     @staticmethod
-    def configure_neural_network_suite(config: ConfigurationData) -> NeuroevolutionSuite | FitnessSuite:
+    def configure_neural_network_suite(config: ConfigDataType) -> NeuroevolutionSuite | FitnessSuite:
         """Configure the neural network suite based on the provided configuration data.
 
-        :param ConfigurationData config:
+        :param ConfigDataType config:
             The configuration data containing settings for the neural networks.
         :return NeuroevolutionSuite | FitnessSuite:
             An instance of NeuroevolutionSuite or FitnessSuite based on the configuration.
         :raises ValueError:
-            If no fitness approach is configured in the provided ConfigurationData.
+            If no fitness approach is configured in the provided ConfigDataType.
         """
         logger.info("Configuring neural networks...")
         if neuroevolution := config.neuroevolution:
-            return NeuroevolutionSuite.from_bytes(NeuroevolutionConfigData.to_bytes(neuroevolution))
+            return NeuroevolutionSuite.from_bytes(NeuroevolutionConfigType.to_bytes(neuroevolution))
 
         if not (fitness_approach := config.fitness_approach):
-            msg = "No fitness approach configured in the provided ConfigurationData."
+            msg = "No fitness approach configured in the provided ConfigDataType."
             raise ValueError(msg)
-        return FitnessSuite.from_bytes(FitnessApproachConfigData.to_bytes(fitness_approach))
+        return FitnessSuite.from_bytes(FitnessApproachConfigType.to_bytes(fitness_approach))
 
     @staticmethod
     def process_observations(
-        neural_network_suite: NeuroevolutionSuite | FitnessSuite, observation: ObservationData
-    ) -> ActionData:
+        neural_network_suite: NeuroevolutionSuite | FitnessSuite, observation: ObservationType
+    ) -> ActionType:
         """Process an observation through the neural network suite and return the resulting actions.
 
         :param NeuroevolutionSuite | FitnessSuite neural_network_suite:
             The neural network suite to process the observation.
-        :param ObservationData observation:
+        :param ObservationType observation:
             The observation data to process.
-        :return ActionData:
+        :return ActionType:
             The resulting action data from the neural network(s).
         """
         if isinstance(neural_network_suite, NeuroevolutionSuite):
@@ -86,23 +86,23 @@ class NeuralNetworkWebsocketServer:
         return neural_network_suite.feedforward(observation)
 
     @staticmethod
-    def crossover_neural_networks(neural_network_suite: NeuroevolutionSuite, fitness_data: FitnessData) -> None:
+    def crossover_neural_networks(neural_network_suite: NeuroevolutionSuite, fitness_data: FitnessType) -> None:
         """Perform crossover on the neural networks using the provided fitness data.
 
         :param NeuroevolutionSuite neural_network_suite:
             The neuroevolution suite containing the networks to crossover.
-        :param FitnessData fitness_data:
+        :param FitnessType fitness_data:
             The fitness data to guide the crossover process.
         """
         logger.info("Crossover neural networks...")
         neural_network_suite.crossover_networks(fitness_data)
 
     @staticmethod
-    def train(neural_network_suite: FitnessSuite, train_request: TrainRequestData) -> None:
+    def train(neural_network_suite: FitnessSuite, train_request: TrainRequestType) -> None:
         """Train the neural network using the provided training request.
 
         :param FitnessSuite neural_network_suite: The fitness suite containing the network to train.
-        :param TrainRequestData train_request: The training request data.
+        :param TrainRequestType train_request: The training request data.
         """
         logger.info("Training neural network...")
         neural_network_suite.train(train_request)
@@ -120,11 +120,11 @@ class NeuralNetworkWebsocketServer:
             # Initialise the neural network suite if not already done
             if neural_network_suite is None:
                 neural_network_suite = NeuralNetworkWebsocketServer.configure_neural_network_suite(
-                    ConfigurationData.from_bytes(message_bytes)
+                    ConfigDataType.from_bytes(message_bytes)
                 )
             # Check if client requesting actions or training
             else:
-                message_data = FrameRequestData.from_bytes(message_bytes)
+                message_data = FrameRequestDataType.from_bytes(message_bytes)
                 if observation := message_data.observation:
                     actions = NeuralNetworkWebsocketServer.process_observations(neural_network_suite, observation)
                     await websocket.send(actions.to_bytes(actions))

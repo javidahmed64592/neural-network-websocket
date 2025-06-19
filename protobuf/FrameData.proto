@@ -2,7 +2,7 @@ syntax = "proto3";
 option optimize_for = LITE_RUNTIME;
 package NNWebsocket;
 
-message FrameRequest {
+message FrameRequestData {
     oneof msg {
         Observation observation = 1;
         Fitness fitness = 2;
