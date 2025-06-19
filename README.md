@@ -68,9 +68,15 @@ src/
     cd neural-network-websocket
     ```
 
-2. **Install dependencies:**
+2. **Install uv:**
     ```sh
-    pip install -e .[dev]
+    curl -LsSf https://astral.sh/uv/install.sh | sh                                    # Linux/Mac
+    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex" # Windows
+    ```
+
+3. **Install dependencies:**
+    ```sh
+    uv sync --extra dev
     ```
 
 ---
@@ -93,13 +99,13 @@ Edit this file to change the server's network settings.
 Start the server using the provided script:
 
 ```sh
-nn-websocket
+uv run nn-websocket
 ```
 
 Or directly:
 
 ```sh
-python -m nn_websocket.main
+uv run nn_websocket/main.py
 ```
 
 The server will listen for websocket connections and handle Protobuf-encoded messages for neural network inference and training.
@@ -111,13 +117,13 @@ The server will listen for websocket connections and handle Protobuf-encoded mes
 Simulates a population of agents sending observations and fitness data.
 
 ```sh
-neuroevolution-client
+uv run neuroevolution-client
 ```
 
 Or:
 
 ```sh
-python -m nn_websocket.tools.neuroevolution_client
+uv run nn_websocket/tools/neuroevolution_client.py
 ```
 
 ### Fitness Client
@@ -125,13 +131,13 @@ python -m nn_websocket.tools.neuroevolution_client
 Simulates a single agent sending observations and training batches.
 
 ```sh
-fitness-client
+uv run fitness-client
 ```
 
 Or:
 
 ```sh
-python -m nn_websocket.tools.fitness_client
+uv run nn_websocket/tools/fitness_client.py
 ```
 
 Both clients connect to the server, send randomized data, and log responses for testing purposes.
@@ -145,13 +151,13 @@ All communication between clients and the server uses [Protocol Buffers](https:/
 If you modify or add `.proto` files, recompile them with:
 
 ```sh
-compile-websocket-protobuf
+uv run compile-websocket-protobuf
 ```
 
 Or:
 
 ```sh
-python -m nn_websocket.protobuf.compile_protobuf
+uv run nn_websocket/protobuf.compile_protobuf.py
 ```
 
 This will regenerate the Python classes used for message encoding/decoding.
@@ -164,10 +170,10 @@ This will regenerate the Python classes used for message encoding/decoding.
 
 ## Testing, Linting, and Type Checking
 
-- **Run tests:** `python -m pytest tests`
-- **Lint code:** `python -m ruff check .`
-- **Format code:** `python -m ruff format .`
-- **Type check:** `python -m mypy .`
+- **Run tests:** `uv run pytest`
+- **Lint code:** `uv run ruff check .`
+- **Format code:** `uv run ruff format .`
+- **Type check:** `uv run mypy .`
 
 ## License
 
