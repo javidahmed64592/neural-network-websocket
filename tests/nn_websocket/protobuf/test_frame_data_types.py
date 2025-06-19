@@ -2,7 +2,7 @@
 
 import pytest
 
-from nn_websocket.protobuf.compiled.FrameRequestClasses_pb2 import (
+from nn_websocket.protobuf.compiled.FrameData_pb2 import (
     Action,
     Fitness,
     FrameRequest,

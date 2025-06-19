@@ -19,7 +19,7 @@ from nn_websocket.ga.nn_member import NeuralNetworkMember
 from nn_websocket.main import NeuralNetworkWebsocketServer
 from nn_websocket.models.config import Config
 from nn_websocket.models.nn_suites import FitnessSuite, NeuroevolutionSuite
-from nn_websocket.protobuf.compiled.FrameRequestClasses_pb2 import (
+from nn_websocket.protobuf.compiled.FrameData_pb2 import (
     Action,
     Fitness,
     FrameRequest,
