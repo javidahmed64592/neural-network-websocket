@@ -10,11 +10,11 @@ from nn_websocket.protobuf.compiled.FrameData_pb2 import (
     TrainRequest,
 )
 from nn_websocket.protobuf.frame_data_types import (
-    ActionData,
-    FitnessData,
+    ActionType,
+    FitnessType,
     FrameRequestDataType,
-    ObservationData,
-    TrainRequestData,
+    ObservationType,
+    TrainRequestType,
 )
 
 
@@ -32,13 +32,13 @@ class TestFrameRequestData:
         frame_request_data_fitness = FrameRequestDataType.from_protobuf(frame_request_fitness)
         frame_request_data_train = FrameRequestDataType.from_protobuf(frame_request_train)
 
-        assert isinstance(frame_request_data_observation.observation, ObservationData)
+        assert isinstance(frame_request_data_observation.observation, ObservationType)
         assert frame_request_data_observation.observation.inputs == pytest.approx(
             frame_request_observation.observation.inputs
         )
-        assert isinstance(frame_request_data_fitness.fitness, FitnessData)
+        assert isinstance(frame_request_data_fitness.fitness, FitnessType)
         assert frame_request_data_fitness.fitness.values == pytest.approx(frame_request_fitness.fitness.values)
-        assert isinstance(frame_request_data_train.train_request, TrainRequestData)
+        assert isinstance(frame_request_data_train.train_request, TrainRequestType)
         assert isinstance(frame_request_data_train.train_request.observation, list)
         assert isinstance(frame_request_data_train.train_request.fitness, list)
 
@@ -72,123 +72,123 @@ class TestFrameRequestData:
         frame_request_train_bytes = FrameRequestDataType.to_bytes(frame_request_data_train)
         new_frame_request_train = FrameRequestDataType.from_bytes(frame_request_train_bytes)
 
-        assert isinstance(new_frame_request_observation.observation, ObservationData)
+        assert isinstance(new_frame_request_observation.observation, ObservationType)
         assert new_frame_request_observation.observation.inputs == pytest.approx(
             frame_request_data_observation.observation.inputs
         )
-        assert isinstance(new_frame_request_population.fitness, FitnessData)
+        assert isinstance(new_frame_request_population.fitness, FitnessType)
         assert new_frame_request_population.fitness.values == pytest.approx(frame_request_data_fitness.fitness.values)
-        assert isinstance(new_frame_request_train.train_request, TrainRequestData)
+        assert isinstance(new_frame_request_train.train_request, TrainRequestType)
         assert isinstance(new_frame_request_train.train_request.observation, list)
         assert isinstance(new_frame_request_train.train_request.fitness, list)
 
 
 class TestObservationData:
-    """Test cases for ObservationData conversions and serialization."""
+    """Test cases for ObservationType conversions and serialization."""
 
     def test_from_protobuf(self, observation: Observation) -> None:
-        """Test converting from Protobuf to ObservationData."""
-        observation_data = ObservationData.from_protobuf(observation)
-        assert isinstance(observation_data, ObservationData)
+        """Test converting from Protobuf to ObservationType."""
+        observation_data = ObservationType.from_protobuf(observation)
+        assert isinstance(observation_data, ObservationType)
         assert observation_data.inputs == pytest.approx(observation.inputs)
 
-    def test_to_protobuf(self, observation_data: ObservationData) -> None:
-        """Test converting ObservationData to Protobuf."""
-        observation = ObservationData.to_protobuf(observation_data)
+    def test_to_protobuf(self, observation_data: ObservationType) -> None:
+        """Test converting ObservationType to Protobuf."""
+        observation = ObservationType.to_protobuf(observation_data)
         assert isinstance(observation, Observation)
         assert observation.inputs == pytest.approx(observation_data.inputs)
 
-    def test_to_bytes(self, observation_data: ObservationData) -> None:
-        """Test serializing ObservationData to bytes."""
-        assert isinstance(ObservationData.to_bytes(observation_data), bytes)
+    def test_to_bytes(self, observation_data: ObservationType) -> None:
+        """Test serializing ObservationType to bytes."""
+        assert isinstance(ObservationType.to_bytes(observation_data), bytes)
 
-    def test_from_bytes(self, observation_data: ObservationData) -> None:
-        """Test deserializing ObservationData from bytes."""
-        msg_bytes = ObservationData.to_bytes(observation_data)
-        result = ObservationData.from_bytes(msg_bytes)
+    def test_from_bytes(self, observation_data: ObservationType) -> None:
+        """Test deserializing ObservationType from bytes."""
+        msg_bytes = ObservationType.to_bytes(observation_data)
+        result = ObservationType.from_bytes(msg_bytes)
 
         assert result.inputs == pytest.approx(observation_data.inputs)
 
 
 class TestActionData:
-    """Test cases for ActionData conversions and serialization."""
+    """Test cases for ActionType conversions and serialization."""
 
     def test_from_protobuf(self, action: Action) -> None:
-        """Test converting from Protobuf to ActionData."""
-        action_data = ActionData.from_protobuf(action)
-        assert isinstance(action_data, ActionData)
+        """Test converting from Protobuf to ActionType."""
+        action_data = ActionType.from_protobuf(action)
+        assert isinstance(action_data, ActionType)
         assert action_data.outputs == pytest.approx(action.outputs)
 
-    def test_to_protobuf(self, action_data: ActionData) -> None:
-        """Test converting ActionData to Protobuf."""
-        action = ActionData.to_protobuf(action_data)
+    def test_to_protobuf(self, action_data: ActionType) -> None:
+        """Test converting ActionType to Protobuf."""
+        action = ActionType.to_protobuf(action_data)
         assert isinstance(action, Action)
         assert action.outputs == pytest.approx(action_data.outputs)
 
-    def test_to_bytes(self, action_data: ActionData) -> None:
-        """Test serializing ActionData to bytes."""
-        assert isinstance(ActionData.to_bytes(action_data), bytes)
+    def test_to_bytes(self, action_data: ActionType) -> None:
+        """Test serializing ActionType to bytes."""
+        assert isinstance(ActionType.to_bytes(action_data), bytes)
 
-    def test_from_bytes(self, action_data: ActionData) -> None:
-        """Test deserializing ActionData from bytes."""
-        msg_bytes = ActionData.to_bytes(action_data)
-        result = ActionData.from_bytes(msg_bytes)
+    def test_from_bytes(self, action_data: ActionType) -> None:
+        """Test deserializing ActionType from bytes."""
+        msg_bytes = ActionType.to_bytes(action_data)
+        result = ActionType.from_bytes(msg_bytes)
 
         assert result.outputs == pytest.approx(action_data.outputs)
 
 
 class TestFitnessData:
-    """Test cases for FitnessData conversions and serialization."""
+    """Test cases for FitnessType conversions and serialization."""
 
     def test_from_protobuf(self, fitness: Fitness) -> None:
-        """Test converting from Protobuf to FitnessData."""
-        fitness_data = FitnessData.from_protobuf(fitness)
-        assert isinstance(fitness_data, FitnessData)
+        """Test converting from Protobuf to FitnessType."""
+        fitness_data = FitnessType.from_protobuf(fitness)
+        assert isinstance(fitness_data, FitnessType)
         assert fitness_data.values == pytest.approx(fitness.values)
 
-    def test_to_protobuf(self, fitness_data: FitnessData) -> None:
-        """Test converting FitnessData to Protobuf."""
-        fitness = FitnessData.to_protobuf(fitness_data)
+    def test_to_protobuf(self, fitness_data: FitnessType) -> None:
+        """Test converting FitnessType to Protobuf."""
+        fitness = FitnessType.to_protobuf(fitness_data)
         assert isinstance(fitness, Fitness)
         assert fitness.values == pytest.approx(fitness_data.values)
 
-    def test_to_bytes(self, fitness_data: FitnessData) -> None:
-        """Test serializing FitnessData to bytes."""
-        assert isinstance(FitnessData.to_bytes(fitness_data), bytes)
+    def test_to_bytes(self, fitness_data: FitnessType) -> None:
+        """Test serializing FitnessType to bytes."""
+        assert isinstance(FitnessType.to_bytes(fitness_data), bytes)
 
-    def test_from_bytes(self, fitness_data: FitnessData) -> None:
-        """Test deserializing FitnessData from bytes."""
-        msg_bytes = FitnessData.to_bytes(fitness_data)
-        result = FitnessData.from_bytes(msg_bytes)
+    def test_from_bytes(self, fitness_data: FitnessType) -> None:
+        """Test deserializing FitnessType from bytes."""
+        msg_bytes = FitnessType.to_bytes(fitness_data)
+        result = FitnessType.from_bytes(msg_bytes)
 
         assert result.values == pytest.approx(fitness_data.values)
 
 
 class TestTrainRequestData:
-    """Test cases for TrainRequestData conversions and serialization."""
+    """Test cases for TrainRequestType conversions and serialization."""
 
     def test_from_protobuf(self, train_request: TrainRequest) -> None:
-        """Test converting from Protobuf to TrainRequestData."""
-        train_request_data = TrainRequestData.from_protobuf(train_request)
-        assert isinstance(train_request_data, TrainRequestData)
+        """Test converting from Protobuf to TrainRequestType."""
+        train_request_data = TrainRequestType.from_protobuf(train_request)
+        assert isinstance(train_request_data, TrainRequestType)
         assert isinstance(train_request_data.observation, list)
         assert isinstance(train_request_data.fitness, list)
 
-    def test_to_protobuf(self, train_request_data: TrainRequestData) -> None:
-        """Test converting TrainRequestData to Protobuf."""
-        train_request = TrainRequestData.to_protobuf(train_request_data)
+    def test_to_protobuf(self, train_request_data: TrainRequestType) -> None:
+        """Test converting TrainRequestType to Protobuf."""
+        train_request = TrainRequestType.to_protobuf(train_request_data)
         assert isinstance(train_request, TrainRequest)
         assert len(train_request.observation) == len(train_request_data.observation)
         assert len(train_request.fitness) == len(train_request_data.fitness)
 
-    def test_to_bytes(self, train_request_data: TrainRequestData) -> None:
-        """Test serializing TrainRequestData to bytes."""
-        assert isinstance(TrainRequestData.to_bytes(train_request_data), bytes)
+    def test_to_bytes(self, train_request_data: TrainRequestType) -> None:
+        """Test serializing TrainRequestType to bytes."""
+        assert isinstance(TrainRequestType.to_bytes(train_request_data), bytes)
 
-    def test_from_bytes(self, train_request_data: TrainRequestData) -> None:
-        """Test deserializing TrainRequestData from bytes."""
-        msg_bytes = TrainRequestData.to_bytes(train_request_data)
-        result = TrainRequestData.from_bytes(msg_bytes)
+    def test_from_bytes(self, train_request_data: TrainRequestType) -> None:
+        """Test deserializing TrainRequestType from bytes."""
+        msg_bytes = TrainRequestType.to_bytes(train_request_data)
+        result = TrainRequestType.from_bytes(msg_bytes)
 
         assert isinstance(result.observation, list)
         assert isinstance(result.fitness, list)
@@ -196,8 +196,8 @@ class TestTrainRequestData:
         assert len(result.observation) == len(train_request_data.observation)
         assert len(result.fitness) == len(train_request_data.fitness)
 
-        assert isinstance(result.observation[0], ObservationData)
-        assert isinstance(result.fitness[0], FitnessData)
+        assert isinstance(result.observation[0], ObservationType)
+        assert isinstance(result.fitness[0], FitnessType)
 
         assert result.observation[0].inputs == pytest.approx(train_request_data.observation[0].inputs)
         assert result.fitness[0].values == pytest.approx(train_request_data.fitness[0].values)

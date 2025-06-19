@@ -19,9 +19,9 @@ from nn_websocket.protobuf.frame_data_types import (
 )
 from nn_websocket.protobuf.nn_websocket_data_types import (
     ConfigDataType,
-    GeneticAlgorithmConfigData,
-    NeuralNetworkConfigData,
-    NeuroevolutionConfigData,
+    GeneticAlgorithmConfigType,
+    NeuralNetworkConfigType,
+    NeuroevolutionConfigType,
 )
 from nn_websocket.tools.base_client import BaseClient, run
 from nn_websocket.tools.client_utils import get_random_fitness_frame, get_random_observation_frame
@@ -63,7 +63,7 @@ MOCK_OPTIMIZER = OptimizerDataType(
 NUM_AGENTS = 10
 MUTATION_RATE = 0.1
 
-NN_CONFIG = NeuralNetworkConfigData(
+NN_CONFIG = NeuralNetworkConfigType(
     num_inputs=NUM_INPUTS,
     num_outputs=NUM_OUTPUTS,
     hidden_layer_sizes=HIDDEN_LAYER_SIZES,
@@ -76,9 +76,9 @@ NN_CONFIG = NeuralNetworkConfigData(
     output_activation=OUTPUT_ACTIVATION,
     optimizer=MOCK_OPTIMIZER,
 )
-GA_CONFIG = GeneticAlgorithmConfigData(population_size=NUM_AGENTS, mutation_rate=MUTATION_RATE)
+GA_CONFIG = GeneticAlgorithmConfigType(population_size=NUM_AGENTS, mutation_rate=MUTATION_RATE)
 
-NEUROEVOLUTION_CONFIG = NeuroevolutionConfigData(
+NEUROEVOLUTION_CONFIG = NeuroevolutionConfigType(
     neural_network=NN_CONFIG,
     genetic_algorithm=GA_CONFIG,
 )

@@ -5,12 +5,12 @@ import pytest
 
 from nn_websocket.ga.nn_member import NeuralNetworkMember
 from nn_websocket.models.nn_suites import FitnessSuite, NeuroevolutionSuite
-from nn_websocket.protobuf.frame_data_types import FitnessData, ObservationData, TrainRequestData
+from nn_websocket.protobuf.frame_data_types import FitnessType, ObservationType, TrainRequestType
 from nn_websocket.protobuf.nn_websocket_data_types import (
-    FitnessApproachConfigData,
-    GeneticAlgorithmConfigData,
-    NeuralNetworkConfigData,
-    NeuroevolutionConfigData,
+    FitnessApproachConfigType,
+    GeneticAlgorithmConfigType,
+    NeuralNetworkConfigType,
+    NeuroevolutionConfigType,
 )
 
 rng = np.random.default_rng()
@@ -22,8 +22,8 @@ class TestNeuroevolutionSuite:
     def test_networks_property(
         self,
         mock_neuroevolution_suite: NeuroevolutionSuite,
-        genetic_algorithm_config_data: GeneticAlgorithmConfigData,
-        neural_network_config_data: NeuralNetworkConfigData,
+        genetic_algorithm_config_data: GeneticAlgorithmConfigType,
+        neural_network_config_data: NeuralNetworkConfigType,
     ) -> None:
         """Test that the networks property returns the correct neural networks."""
         suite = mock_neuroevolution_suite
@@ -38,7 +38,7 @@ class TestNeuroevolutionSuite:
                 for i, layer in enumerate(network._hidden_layers)
             )
 
-    def test_from_config_data(self, neuroevolution_config_data: NeuroevolutionConfigData) -> None:
+    def test_from_config_data(self, neuroevolution_config_data: NeuroevolutionConfigType) -> None:
         """Test that the NeuroevolutionSuite can be created from configuration data."""
         mock_neuroevolution_suite = NeuroevolutionSuite.from_config_data(neuroevolution_config_data)
         assert (
@@ -48,12 +48,12 @@ class TestNeuroevolutionSuite:
 
     def test_from_bytes(
         self,
-        neuroevolution_config_data: NeuroevolutionConfigData,
-        genetic_algorithm_config_data: GeneticAlgorithmConfigData,
+        neuroevolution_config_data: NeuroevolutionConfigType,
+        genetic_algorithm_config_data: GeneticAlgorithmConfigType,
     ) -> None:
         """Test that the NeuroevolutionSuite can be created from bytes."""
         mock_neuroevolution_suite = NeuroevolutionSuite.from_bytes(
-            NeuroevolutionConfigData.to_bytes(neuroevolution_config_data)
+            NeuroevolutionConfigType.to_bytes(neuroevolution_config_data)
         )
         assert len(mock_neuroevolution_suite.nn_ga.nn_members) == genetic_algorithm_config_data.population_size
         assert mock_neuroevolution_suite.nn_ga._mutation_rate == pytest.approx(
@@ -63,7 +63,7 @@ class TestNeuroevolutionSuite:
     def test_crossover_networks(
         self,
         mock_neuroevolution_suite: NeuroevolutionSuite,
-        fitness_data: FitnessData,
+        fitness_data: FitnessType,
     ) -> None:
         """Test that the crossover of networks updates the fitness of each member."""
         suite = mock_neuroevolution_suite
@@ -74,9 +74,9 @@ class TestNeuroevolutionSuite:
     def test_feedforward_through_networks(
         self,
         mock_neuroevolution_suite: NeuroevolutionSuite,
-        genetic_algorithm_config_data: GeneticAlgorithmConfigData,
-        neural_network_config_data: NeuralNetworkConfigData,
-        observation_data: ObservationData,
+        genetic_algorithm_config_data: GeneticAlgorithmConfigType,
+        neural_network_config_data: NeuralNetworkConfigType,
+        observation_data: ObservationType,
     ) -> None:
         """Test that the feedforward through networks processes observation data correctly."""
         suite = mock_neuroevolution_suite
@@ -94,7 +94,7 @@ class TestFitnessSuite:
 
     def test_from_config_data(
         self,
-        fitness_approach_config_data: FitnessApproachConfigData,
+        fitness_approach_config_data: FitnessApproachConfigType,
     ) -> None:
         """Test that the FitnessSuite can be created from configuration data."""
         mock_fitness_suite = FitnessSuite.from_config_data(fitness_approach_config_data)
@@ -102,22 +102,22 @@ class TestFitnessSuite:
 
     def test_from_bytes(
         self,
-        fitness_approach_config_data: FitnessApproachConfigData,
+        fitness_approach_config_data: FitnessApproachConfigType,
     ) -> None:
         """Test that the FitnessSuite can be created from bytes."""
-        mock_fitness_suite = FitnessSuite.from_bytes(FitnessApproachConfigData.to_bytes(fitness_approach_config_data))
+        mock_fitness_suite = FitnessSuite.from_bytes(FitnessApproachConfigType.to_bytes(fitness_approach_config_data))
         assert isinstance(mock_fitness_suite.nn_member, NeuralNetworkMember)
 
     def test_feedforward(
         self,
         mock_fitness_suite: FitnessSuite,
-        observation_data: ObservationData,
+        observation_data: ObservationType,
     ) -> None:
         """Test that the feedforward method processes the observation data correctly."""
         action_data = mock_fitness_suite.feedforward(observation_data)
         assert len(action_data.outputs) == mock_fitness_suite.nn_member._nn._output_layer.size
 
-    def test_train(self, mock_fitness_suite: FitnessSuite, train_request_data: TrainRequestData) -> None:
+    def test_train(self, mock_fitness_suite: FitnessSuite, train_request_data: TrainRequestType) -> None:
         """Test that the training of the neural network works correctly."""
         initial_weights, initial_biases = mock_fitness_suite.nn_member.chromosome
         mock_fitness_suite.train(train_request_data)

@@ -10,7 +10,7 @@ from neural_network.math.matrix import Matrix
 from neural_network.math.optimizer import Optimizer
 from neural_network.neural_network import NeuralNetwork
 
-from nn_websocket.protobuf.nn_websocket_data_types import NeuralNetworkConfigData
+from nn_websocket.protobuf.nn_websocket_data_types import NeuralNetworkConfigType
 
 rng = np.random.default_rng()
 
@@ -83,10 +83,10 @@ class NeuralNetworkMember(Member):
         self._score: float = 0
 
     @classmethod
-    def from_config_data(cls, config_data: NeuralNetworkConfigData) -> NeuralNetworkMember:
+    def from_config_data(cls, config_data: NeuralNetworkConfigType) -> NeuralNetworkMember:
         """Create a NeuralNetworkMember from the provided configuration data.
 
-        :param NeuralNetworkConfigData config_data:
+        :param NeuralNetworkConfigType config_data:
             ConfigData data for the neural network.
         :return NeuralNetworkMember:
             A new instance of NeuralNetworkMember.

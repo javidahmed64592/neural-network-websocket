@@ -17,8 +17,8 @@ from neural_network.protobuf.neural_network_types import (
 from nn_websocket.protobuf.frame_data_types import FrameRequestDataType
 from nn_websocket.protobuf.nn_websocket_data_types import (
     ConfigDataType,
-    FitnessApproachConfigData,
-    NeuralNetworkConfigData,
+    FitnessApproachConfigType,
+    NeuralNetworkConfigType,
 )
 from nn_websocket.tools.base_client import BaseClient, run
 from nn_websocket.tools.client_utils import get_random_observation_frame, get_random_train_request_frame
@@ -51,7 +51,7 @@ MOCK_OPTIMIZER = OptimizerDataType(
 
 TRAINING_BATCH_SIZE = 5
 
-NN_CONFIG = NeuralNetworkConfigData(
+NN_CONFIG = NeuralNetworkConfigType(
     num_inputs=NUM_INPUTS,
     num_outputs=NUM_OUTPUTS,
     hidden_layer_sizes=HIDDEN_LAYER_SIZES,
@@ -65,7 +65,7 @@ NN_CONFIG = NeuralNetworkConfigData(
     optimizer=MOCK_OPTIMIZER,
 )
 
-FITNESS_CONFIG = FitnessApproachConfigData(neural_network=NN_CONFIG)
+FITNESS_CONFIG = FitnessApproachConfigType(neural_network=NN_CONFIG)
 CONFIG_DATA = ConfigDataType(fitness_approach=FITNESS_CONFIG)
 
 

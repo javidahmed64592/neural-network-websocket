@@ -17,9 +17,9 @@ from nn_websocket.protobuf.compiled.FrameData_pb2 import (
 class FrameRequestDataType:
     """Data class to hold frame request data."""
 
-    observation: ObservationData | None = None
-    fitness: FitnessData | None = None
-    train_request: TrainRequestData | None = None
+    observation: ObservationType | None = None
+    fitness: FitnessType | None = None
+    train_request: TrainRequestType | None = None
 
     @classmethod
     def from_protobuf(cls, frame_request: FrameRequestData) -> FrameRequestDataType:
@@ -35,11 +35,11 @@ class FrameRequestDataType:
         which_oneof = frame_request.WhichOneof("msg")
         match which_oneof:
             case "observation":
-                result.observation = ObservationData.from_protobuf(frame_request.observation)
+                result.observation = ObservationType.from_protobuf(frame_request.observation)
             case "fitness":
-                result.fitness = FitnessData.from_protobuf(frame_request.fitness)
+                result.fitness = FitnessType.from_protobuf(frame_request.fitness)
             case "train_request":
-                result.train_request = TrainRequestData.from_protobuf(frame_request.train_request)
+                result.train_request = TrainRequestType.from_protobuf(frame_request.train_request)
             case _:
                 pass
 
@@ -57,11 +57,11 @@ class FrameRequestDataType:
         frame_request = FrameRequestData()
 
         if frame_request_data.observation is not None:
-            frame_request.observation.CopyFrom(ObservationData.to_protobuf(frame_request_data.observation))
+            frame_request.observation.CopyFrom(ObservationType.to_protobuf(frame_request_data.observation))
         elif frame_request_data.fitness is not None:
-            frame_request.fitness.CopyFrom(FitnessData.to_protobuf(frame_request_data.fitness))
+            frame_request.fitness.CopyFrom(FitnessType.to_protobuf(frame_request_data.fitness))
         elif frame_request_data.train_request is not None:
-            frame_request.train_request.CopyFrom(TrainRequestData.to_protobuf(frame_request_data.train_request))
+            frame_request.train_request.CopyFrom(TrainRequestType.to_protobuf(frame_request_data.train_request))
 
         return frame_request
 
@@ -92,223 +92,223 @@ class FrameRequestDataType:
 
 
 @dataclass
-class ObservationData:
+class ObservationType:
     """Data class to hold observation data."""
 
     inputs: list[float]
 
     @classmethod
-    def from_protobuf(cls, observation: Observation) -> ObservationData:
-        """Create an ObservationData instance from Protobuf.
+    def from_protobuf(cls, observation: Observation) -> ObservationType:
+        """Create an ObservationType instance from Protobuf.
 
         :param Observation observation:
             The Protobuf Observation message.
-        :return ObservationData:
-            The corresponding ObservationData instance.
+        :return ObservationType:
+            The corresponding ObservationType instance.
         """
         return cls(inputs=list(observation.inputs))
 
     @staticmethod
-    def to_protobuf(observation_data: ObservationData) -> Observation:
-        """Convert ObservationData to Protobuf.
+    def to_protobuf(observation_data: ObservationType) -> Observation:
+        """Convert ObservationType to Protobuf.
 
-        :param ObservationData observation_data:
-            The ObservationData instance.
+        :param ObservationType observation_data:
+            The ObservationType instance.
         :return Observation:
             The Protobuf Observation message.
         """
         return Observation(inputs=observation_data.inputs)
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> ObservationData:
-        """Create an ObservationData instance from Protobuf bytes.
+    def from_bytes(cls, data: bytes) -> ObservationType:
+        """Create an ObservationType instance from Protobuf bytes.
 
         :param bytes data:
             The serialized Protobuf bytes.
-        :return ObservationData:
-            The corresponding ObservationData instance.
+        :return ObservationType:
+            The corresponding ObservationType instance.
         """
         observation = Observation()
         observation.ParseFromString(data)
         return cls.from_protobuf(observation)
 
     @staticmethod
-    def to_bytes(observation_data: ObservationData) -> bytes:
-        """Convert ObservationData to Protobuf bytes.
+    def to_bytes(observation_data: ObservationType) -> bytes:
+        """Convert ObservationType to Protobuf bytes.
 
-        :param ObservationData observation_data:
-            The ObservationData instance.
+        :param ObservationType observation_data:
+            The ObservationType instance.
         :return bytes:
             The serialized Protobuf bytes.
         """
-        observation = ObservationData.to_protobuf(observation_data)
+        observation = ObservationType.to_protobuf(observation_data)
         return observation.SerializeToString()
 
 
 @dataclass
-class ActionData:
+class ActionType:
     """Data class to hold action data."""
 
     outputs: list[float]
 
     @classmethod
-    def from_protobuf(cls, action: Action) -> ActionData:
-        """Create an ActionData instance from Protobuf.
+    def from_protobuf(cls, action: Action) -> ActionType:
+        """Create an ActionType instance from Protobuf.
 
         :param Action action:
             The Protobuf Action message.
-        :return ActionData:
-            The corresponding ActionData instance.
+        :return ActionType:
+            The corresponding ActionType instance.
         """
         return cls(outputs=list(action.outputs))
 
     @staticmethod
-    def to_protobuf(action_data: ActionData) -> Action:
-        """Convert ActionData to Protobuf.
+    def to_protobuf(action_data: ActionType) -> Action:
+        """Convert ActionType to Protobuf.
 
-        :param ActionData action_data:
-            The ActionData instance.
+        :param ActionType action_data:
+            The ActionType instance.
         :return Action:
             The Protobuf Action message.
         """
         return Action(outputs=action_data.outputs)
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> ActionData:
-        """Create an ActionData instance from Protobuf bytes.
+    def from_bytes(cls, data: bytes) -> ActionType:
+        """Create an ActionType instance from Protobuf bytes.
 
         :param bytes data:
             The serialized Protobuf bytes.
-        :return ActionData:
-            The corresponding ActionData instance.
+        :return ActionType:
+            The corresponding ActionType instance.
         """
         action = Action()
         action.ParseFromString(data)
         return cls.from_protobuf(action)
 
     @staticmethod
-    def to_bytes(action_data: ActionData) -> bytes:
-        """Convert ActionData to Protobuf bytes.
+    def to_bytes(action_data: ActionType) -> bytes:
+        """Convert ActionType to Protobuf bytes.
 
-        :param ActionData action_data:
-            The ActionData instance.
+        :param ActionType action_data:
+            The ActionType instance.
         :return bytes:
             The serialized Protobuf bytes.
         """
-        action = ActionData.to_protobuf(action_data)
+        action = ActionType.to_protobuf(action_data)
         return action.SerializeToString()
 
 
 @dataclass
-class FitnessData:
+class FitnessType:
     """Data class to hold population fitness data."""
 
     values: list[float]
 
     @classmethod
-    def from_protobuf(cls, fitness: Fitness) -> FitnessData:
-        """Create a FitnessData instance from Protobuf.
+    def from_protobuf(cls, fitness: Fitness) -> FitnessType:
+        """Create a FitnessType instance from Protobuf.
 
         :param Fitness fitness:
             The Protobuf Fitness message.
-        :return FitnessData:
-            The corresponding FitnessData instance.
+        :return FitnessType:
+            The corresponding FitnessType instance.
         """
         return cls(values=list(fitness.values))
 
     @staticmethod
-    def to_protobuf(fitness_data: FitnessData) -> Fitness:
-        """Convert FitnessData to Protobuf.
+    def to_protobuf(fitness_data: FitnessType) -> Fitness:
+        """Convert FitnessType to Protobuf.
 
-        :param FitnessData fitness_data:
-            The FitnessData instance.
+        :param FitnessType fitness_data:
+            The FitnessType instance.
         :return Fitness:
             The Protobuf Fitness message.
         """
         return Fitness(values=fitness_data.values)
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> FitnessData:
-        """Create a FitnessData instance from Protobuf bytes.
+    def from_bytes(cls, data: bytes) -> FitnessType:
+        """Create a FitnessType instance from Protobuf bytes.
 
         :param bytes data:
             The serialized Protobuf bytes.
-        :return FitnessData:
-            The corresponding FitnessData instance.
+        :return FitnessType:
+            The corresponding FitnessType instance.
         """
         fitness = Fitness()
         fitness.ParseFromString(data)
         return cls.from_protobuf(fitness)
 
     @staticmethod
-    def to_bytes(fitness_data: FitnessData) -> bytes:
-        """Convert FitnessData to Protobuf bytes.
+    def to_bytes(fitness_data: FitnessType) -> bytes:
+        """Convert FitnessType to Protobuf bytes.
 
-        :param FitnessData fitness_data:
-            The FitnessData instance.
+        :param FitnessType fitness_data:
+            The FitnessType instance.
         :return bytes:
             The serialized Protobuf bytes.
         """
-        fitness = FitnessData.to_protobuf(fitness_data)
+        fitness = FitnessType.to_protobuf(fitness_data)
         return fitness.SerializeToString()
 
 
 @dataclass
-class TrainRequestData:
+class TrainRequestType:
     """Data class to hold training request data."""
 
-    observation: list[ObservationData]
-    fitness: list[FitnessData]
+    observation: list[ObservationType]
+    fitness: list[FitnessType]
 
     @classmethod
-    def from_protobuf(cls, train_request: TrainRequest) -> TrainRequestData:
-        """Create a TrainRequestData instance from Protobuf.
+    def from_protobuf(cls, train_request: TrainRequest) -> TrainRequestType:
+        """Create a TrainRequestType instance from Protobuf.
 
         :param TrainRequest train_request:
             The Protobuf TrainRequest message.
-        :return TrainRequestData:
-            The corresponding TrainRequestData instance.
+        :return TrainRequestType:
+            The corresponding TrainRequestType instance.
         """
         return cls(
-            observation=[ObservationData.from_protobuf(obs) for obs in train_request.observation],
-            fitness=[FitnessData.from_protobuf(fit) for fit in train_request.fitness],
+            observation=[ObservationType.from_protobuf(obs) for obs in train_request.observation],
+            fitness=[FitnessType.from_protobuf(fit) for fit in train_request.fitness],
         )
 
     @classmethod
-    def to_protobuf(cls, train_request: TrainRequestData) -> TrainRequest:
-        """Convert TrainRequestData to Protobuf.
+    def to_protobuf(cls, train_request: TrainRequestType) -> TrainRequest:
+        """Convert TrainRequestType to Protobuf.
 
-        :param TrainRequestData train_request:
-            The TrainRequestData instance.
+        :param TrainRequestType train_request:
+            The TrainRequestType instance.
         :return TrainRequest:
             The Protobuf TrainRequest message.
         """
         return TrainRequest(
-            observation=[ObservationData.to_protobuf(observation) for observation in train_request.observation],
-            fitness=[FitnessData.to_protobuf(fitness) for fitness in train_request.fitness],
+            observation=[ObservationType.to_protobuf(observation) for observation in train_request.observation],
+            fitness=[FitnessType.to_protobuf(fitness) for fitness in train_request.fitness],
         )
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> TrainRequestData:
-        """Create a TrainRequestData instance from Protobuf bytes.
+    def from_bytes(cls, data: bytes) -> TrainRequestType:
+        """Create a TrainRequestType instance from Protobuf bytes.
 
         :param bytes data:
             The serialized Protobuf bytes.
-        :return TrainRequestData:
-            The corresponding TrainRequestData instance.
+        :return TrainRequestType:
+            The corresponding TrainRequestType instance.
         """
         train_request = TrainRequest()
         train_request.ParseFromString(data)
         return cls.from_protobuf(train_request)
 
     @staticmethod
-    def to_bytes(train_request: TrainRequestData) -> bytes:
-        """Convert TrainRequestData to Protobuf bytes.
+    def to_bytes(train_request: TrainRequestType) -> bytes:
+        """Convert TrainRequestType to Protobuf bytes.
 
-        :param TrainRequestData train_request:
-            The TrainRequestData instance.
+        :param TrainRequestType train_request:
+            The TrainRequestType instance.
         :return bytes:
             The serialized Protobuf bytes.
         """
-        train_request_proto = TrainRequestData.to_protobuf(train_request)
+        train_request_proto = TrainRequestType.to_protobuf(train_request)
         return train_request_proto.SerializeToString()

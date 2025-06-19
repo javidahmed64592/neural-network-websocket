@@ -9,10 +9,10 @@ import numpy as np
 
 from nn_websocket.models.config import Config
 from nn_websocket.protobuf.frame_data_types import (
-    FitnessData,
+    FitnessType,
     FrameRequestDataType,
-    ObservationData,
-    TrainRequestData,
+    ObservationType,
+    TrainRequestType,
 )
 
 rng = np.random.default_rng()
@@ -38,7 +38,7 @@ def get_random_observation_frame(num_inputs: int) -> FrameRequestDataType:
         Frame containing the random observation.
     """
     inputs = rng.uniform(low=-1, high=1, size=num_inputs).astype(np.float32).tolist()
-    observation = ObservationData(inputs=inputs)
+    observation = ObservationType(inputs=inputs)
     return FrameRequestDataType(observation=observation)
 
 
@@ -51,7 +51,7 @@ def get_random_fitness_frame(num_agents: int) -> FrameRequestDataType:
         Frame containing the random fitness values.
     """
     fitness_values = rng.uniform(low=0, high=1, size=num_agents).astype(np.float32).tolist()
-    fitness_data = FitnessData(values=fitness_values)
+    fitness_data = FitnessType(values=fitness_values)
     return FrameRequestDataType(fitness=fitness_data)
 
 
@@ -72,5 +72,5 @@ def get_random_train_request_frame(batch_size: int, num_inputs: int) -> FrameReq
         observations.append(get_random_observation_frame(num_inputs).observation)
         fitness_values.append(get_random_fitness_frame(1).fitness)
 
-    train_request = TrainRequestData(observation=observations, fitness=fitness_values)  # type: ignore[arg-type]
+    train_request = TrainRequestType(observation=observations, fitness=fitness_values)  # type: ignore[arg-type]
     return FrameRequestDataType(train_request=train_request)

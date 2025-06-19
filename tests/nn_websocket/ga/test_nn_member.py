@@ -4,14 +4,14 @@ from neural_network.layer import HiddenLayer, InputLayer, OutputLayer
 from neural_network.math.matrix import Matrix
 
 from nn_websocket.ga.nn_member import NeuralNetworkMember
-from nn_websocket.protobuf.nn_websocket_data_types import NeuralNetworkConfigData
+from nn_websocket.protobuf.nn_websocket_data_types import NeuralNetworkConfigType
 
 
 class TestNeuralNetworkMember:
     """Test suite for the NeuralNetworkMember class."""
 
     def test_initialization(
-        self, mock_neural_network_member: NeuralNetworkMember, neural_network_config_data: NeuralNetworkConfigData
+        self, mock_neural_network_member: NeuralNetworkMember, neural_network_config_data: NeuralNetworkConfigType
     ) -> None:
         """Test initialization of NeuralNetworkMember."""
         assert mock_neural_network_member._num_inputs == neural_network_config_data.num_inputs
@@ -40,7 +40,7 @@ class TestNeuralNetworkMember:
         )
 
     def test_nn_layers_property(
-        self, mock_neural_network_member: NeuralNetworkMember, neural_network_config_data: NeuralNetworkConfigData
+        self, mock_neural_network_member: NeuralNetworkMember, neural_network_config_data: NeuralNetworkConfigType
     ) -> None:
         """Test the nn_layers property."""
         layers = mock_neural_network_member.nn_layers
@@ -50,7 +50,7 @@ class TestNeuralNetworkMember:
         assert isinstance(layers[-1], OutputLayer)
 
     def test_chromosome_property(
-        self, mock_neural_network_member: NeuralNetworkMember, neural_network_config_data: NeuralNetworkConfigData
+        self, mock_neural_network_member: NeuralNetworkMember, neural_network_config_data: NeuralNetworkConfigType
     ) -> None:
         """Test the chromosome property."""
         weights, bias = mock_neural_network_member.chromosome
@@ -64,7 +64,7 @@ class TestNeuralNetworkMember:
             assert isinstance(bias_matrix, Matrix)
 
     def test_chromosome_setter(
-        self, mock_neural_network_member: NeuralNetworkMember, neural_network_config_data: NeuralNetworkConfigData
+        self, mock_neural_network_member: NeuralNetworkMember, neural_network_config_data: NeuralNetworkConfigType
     ) -> None:
         """Test the chromosome setter."""
         other_member = NeuralNetworkMember.from_config_data(neural_network_config_data)
@@ -101,7 +101,7 @@ class TestNeuralNetworkMember:
         result = mock_neural_network_member.crossover_genes(element, other_element, roll, mutation_rate, random_range)
         assert result not in (element, other_element)
 
-    def test_crossover(self, neural_network_config_data: NeuralNetworkConfigData) -> None:
+    def test_crossover(self, neural_network_config_data: NeuralNetworkConfigType) -> None:
         """Test the crossover method."""
         parent_a = NeuralNetworkMember.from_config_data(neural_network_config_data)
         parent_b = NeuralNetworkMember.from_config_data(neural_network_config_data)

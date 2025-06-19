@@ -4,8 +4,8 @@ import numpy as np
 
 from nn_websocket.ga.nn_ga import NeuralNetworkGA
 from nn_websocket.ga.nn_member import NeuralNetworkMember
-from nn_websocket.protobuf.frame_data_types import FitnessData
-from nn_websocket.protobuf.nn_websocket_data_types import GeneticAlgorithmConfigData, NeuralNetworkConfigData
+from nn_websocket.protobuf.frame_data_types import FitnessType
+from nn_websocket.protobuf.nn_websocket_data_types import GeneticAlgorithmConfigType, NeuralNetworkConfigType
 
 
 class TestNeuralNetworkGA:
@@ -14,8 +14,8 @@ class TestNeuralNetworkGA:
     def test_initialization(
         self,
         mock_neural_network_ga: NeuralNetworkGA,
-        genetic_algorithm_config_data: GeneticAlgorithmConfigData,
-        neural_network_config_data: NeuralNetworkConfigData,
+        genetic_algorithm_config_data: GeneticAlgorithmConfigType,
+        neural_network_config_data: NeuralNetworkConfigType,
     ) -> None:
         """Test initialization of NeuralNetworkGA."""
         assert len(mock_neural_network_ga.nn_members) == genetic_algorithm_config_data.population_size
@@ -56,7 +56,7 @@ class TestNeuralNetworkGA:
     def test_nn_members_property(
         self,
         mock_neural_network_ga: NeuralNetworkGA,
-        neural_network_config_data: NeuralNetworkConfigData,
+        neural_network_config_data: NeuralNetworkConfigType,
     ) -> None:
         """Test the nn_members property."""
         members = mock_neural_network_ga.nn_members
@@ -76,13 +76,13 @@ class TestNeuralNetworkGA:
             assert member._output_activation == neural_network_config_data.output_activation.get_class()
 
     def test_population_size_property(
-        self, mock_neural_network_ga: NeuralNetworkGA, genetic_algorithm_config_data: GeneticAlgorithmConfigData
+        self, mock_neural_network_ga: NeuralNetworkGA, genetic_algorithm_config_data: GeneticAlgorithmConfigType
     ) -> None:
         """Test the population_size property."""
         assert mock_neural_network_ga.population_size == genetic_algorithm_config_data.population_size
 
     def test_set_population_fitness(
-        self, mock_neural_network_ga: NeuralNetworkGA, genetic_algorithm_config_data: GeneticAlgorithmConfigData
+        self, mock_neural_network_ga: NeuralNetworkGA, genetic_algorithm_config_data: GeneticAlgorithmConfigType
     ) -> None:
         """Test setting population fitness."""
         fitness_scores = np.arange(genetic_algorithm_config_data.population_size, dtype=float).tolist()
@@ -94,7 +94,7 @@ class TestNeuralNetworkGA:
     def test_evolve(
         self,
         mock_neural_network_ga: NeuralNetworkGA,
-        fitness_data: FitnessData,
+        fitness_data: FitnessType,
     ) -> None:
         """Test evolution of the neural network population."""
         initial_chromosomes = [member.chromosome for member in mock_neural_network_ga.nn_members]

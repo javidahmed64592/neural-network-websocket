@@ -44,7 +44,7 @@ class BaseClient:
         :param websockets.ClientConnection ws:
             The websocket connection to send data to.
         """
-        logger.info("Sending ObservationData to server.")
+        logger.info("Sending ObservationType to server.")
 
     async def send_training(self, ws: websockets.ClientConnection) -> None:
         """Send training data to the server.

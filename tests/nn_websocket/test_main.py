@@ -9,11 +9,11 @@ from nn_websocket.main import NeuralNetworkWebsocketServer, run
 from nn_websocket.models.config import Config
 from nn_websocket.models.nn_suites import FitnessSuite, NeuroevolutionSuite
 from nn_websocket.protobuf.frame_data_types import (
-    ActionData,
-    FitnessData,
+    ActionType,
+    FitnessType,
     FrameRequestDataType,
-    ObservationData,
-    TrainRequestData,
+    ObservationType,
+    TrainRequestType,
 )
 from nn_websocket.protobuf.nn_websocket_data_types import ConfigDataType
 
@@ -38,12 +38,12 @@ class TestNeuralNetworkWebsocketServer:
         assert isinstance(nn_suite, FitnessSuite)
 
     def test_process_observations_neuroevolution(
-        self, mock_neuroevolution_suite: NeuroevolutionSuite, observation_data: ObservationData
+        self, mock_neuroevolution_suite: NeuroevolutionSuite, observation_data: ObservationType
     ) -> None:
         """Test that the processing of observations works correctly for neuroevolution."""
         observation_data.inputs *= mock_neuroevolution_suite.nn_ga.population_size
         action_data = NeuralNetworkWebsocketServer.process_observations(mock_neuroevolution_suite, observation_data)
-        assert isinstance(action_data, ActionData)
+        assert isinstance(action_data, ActionType)
         assert (
             len(action_data.outputs)
             == mock_neuroevolution_suite.nn_ga.population_size
@@ -51,22 +51,22 @@ class TestNeuralNetworkWebsocketServer:
         )
 
     def test_process_observations_fitness_approach(
-        self, mock_fitness_suite: FitnessSuite, observation_data: ObservationData
+        self, mock_fitness_suite: FitnessSuite, observation_data: ObservationType
     ) -> None:
         """Test that the processing of observations works correctly for fitness approach."""
         action_data = NeuralNetworkWebsocketServer.process_observations(mock_fitness_suite, observation_data)
-        assert isinstance(action_data, ActionData)
+        assert isinstance(action_data, ActionType)
         assert len(action_data.outputs) == mock_fitness_suite.nn_member._num_outputs
 
     def test_crossover_neural_networks(
-        self, mock_neuroevolution_suite: NeuroevolutionSuite, fitness_data: FitnessData
+        self, mock_neuroevolution_suite: NeuroevolutionSuite, fitness_data: FitnessType
     ) -> None:
         """Test that the crossover of neural networks works correctly."""
         with patch.object(mock_neuroevolution_suite, "crossover_networks", autospec=True) as mock_crossover:
             NeuralNetworkWebsocketServer.crossover_neural_networks(mock_neuroevolution_suite, fitness_data)
             assert mock_crossover.called
 
-    def test_train_neural_network(self, mock_fitness_suite: FitnessSuite, train_request_data: TrainRequestData) -> None:
+    def test_train_neural_network(self, mock_fitness_suite: FitnessSuite, train_request_data: TrainRequestType) -> None:
         """Test that the training of neural networks works correctly."""
         with patch.object(mock_fitness_suite, "train", autospec=True) as mock_train:
             NeuralNetworkWebsocketServer.train(mock_fitness_suite, train_request_data)
@@ -82,7 +82,7 @@ class TestNeuralNetworkWebsocketServer:
         mock_configure_neural_networks_neuroevolution: MagicMock,
         mock_process_observations: MagicMock,
         mock_crossover_neural_networks: MagicMock,
-        action_data: ActionData,
+        action_data: ActionType,
     ) -> None:
         """Test that the handle_connection method works correctly for neuroevolution."""
         await NeuralNetworkWebsocketServer.handle_connection(mock_websocket_neuroevolution)
@@ -99,7 +99,7 @@ class TestNeuralNetworkWebsocketServer:
             mock_configure_neural_networks_neuroevolution.return_value, frame_request_data_fitness.fitness
         )
 
-        mock_websocket_neuroevolution.send.assert_called_once_with(ActionData.to_bytes(action_data))
+        mock_websocket_neuroevolution.send.assert_called_once_with(ActionType.to_bytes(action_data))
 
     @pytest.mark.asyncio
     async def test_handle_connection_fitness_approach(
@@ -111,7 +111,7 @@ class TestNeuralNetworkWebsocketServer:
         mock_configure_neural_networks_fitness: MagicMock,
         mock_process_observations: MagicMock,
         mock_train_neural_network: MagicMock,
-        action_data: ActionData,
+        action_data: ActionType,
     ) -> None:
         """Test that the handle_connection method works correctly for fitness approach."""
         await NeuralNetworkWebsocketServer.handle_connection(mock_websocket_fitness)
@@ -128,7 +128,7 @@ class TestNeuralNetworkWebsocketServer:
             mock_configure_neural_networks_fitness.return_value, frame_request_data_train.train_request
         )
 
-        mock_websocket_fitness.send.assert_called_once_with(ActionData.to_bytes(action_data))
+        mock_websocket_fitness.send.assert_called_once_with(ActionType.to_bytes(action_data))
 
     @pytest.mark.asyncio
     async def test_start(

@@ -34,18 +34,18 @@ from nn_websocket.protobuf.compiled.NNWebsocketData_pb2 import (
     NeuroevolutionConfig,
 )
 from nn_websocket.protobuf.frame_data_types import (
-    ActionData,
-    FitnessData,
+    ActionType,
+    FitnessType,
     FrameRequestDataType,
-    ObservationData,
-    TrainRequestData,
+    ObservationType,
+    TrainRequestType,
 )
 from nn_websocket.protobuf.nn_websocket_data_types import (
     ConfigDataType,
-    FitnessApproachConfigData,
-    GeneticAlgorithmConfigData,
-    NeuralNetworkConfigData,
-    NeuroevolutionConfigData,
+    FitnessApproachConfigType,
+    GeneticAlgorithmConfigType,
+    NeuralNetworkConfigType,
+    NeuroevolutionConfigType,
 )
 from nn_websocket.tools.base_client import BaseClient
 
@@ -123,9 +123,9 @@ def neural_network_config() -> NeuralNetworkConfig:
 
 
 @pytest.fixture
-def neural_network_config_data(neural_network_config: NeuralNetworkConfig) -> NeuralNetworkConfigData:
-    """Fixture for NeuralNetworkConfigData."""
-    return NeuralNetworkConfigData(
+def neural_network_config_data(neural_network_config: NeuralNetworkConfig) -> NeuralNetworkConfigType:
+    """Fixture for NeuralNetworkConfigType."""
+    return NeuralNetworkConfigType(
         num_inputs=neural_network_config.num_inputs,
         num_outputs=neural_network_config.num_outputs,
         hidden_layer_sizes=list(neural_network_config.hidden_layer_sizes),
@@ -150,9 +150,9 @@ def genetic_algorithm_config() -> GeneticAlgorithmConfig:
 
 
 @pytest.fixture
-def genetic_algorithm_config_data(genetic_algorithm_config: GeneticAlgorithmConfig) -> GeneticAlgorithmConfigData:
-    """Fixture for GeneticAlgorithmConfigData."""
-    return GeneticAlgorithmConfigData.from_protobuf(genetic_algorithm_config)
+def genetic_algorithm_config_data(genetic_algorithm_config: GeneticAlgorithmConfig) -> GeneticAlgorithmConfigType:
+    """Fixture for GeneticAlgorithmConfigType."""
+    return GeneticAlgorithmConfigType.from_protobuf(genetic_algorithm_config)
 
 
 @pytest.fixture
@@ -167,9 +167,9 @@ def neuroevolution_config(
 
 
 @pytest.fixture
-def neuroevolution_config_data(neuroevolution_config: NeuroevolutionConfig) -> NeuroevolutionConfigData:
-    """Fixture for NeuroevolutionConfigData."""
-    return NeuroevolutionConfigData.from_protobuf(neuroevolution_config)
+def neuroevolution_config_data(neuroevolution_config: NeuroevolutionConfig) -> NeuroevolutionConfigType:
+    """Fixture for NeuroevolutionConfigType."""
+    return NeuroevolutionConfigType.from_protobuf(neuroevolution_config)
 
 
 @pytest.fixture
@@ -179,9 +179,9 @@ def fitness_approach_config(neural_network_config: NeuralNetworkConfig) -> Fitne
 
 
 @pytest.fixture
-def fitness_approach_config_data(fitness_approach_config: FitnessApproachConfig) -> FitnessApproachConfigData:
-    """Fixture for FitnessApproachConfigData."""
-    return FitnessApproachConfigData.from_protobuf(fitness_approach_config)
+def fitness_approach_config_data(fitness_approach_config: FitnessApproachConfig) -> FitnessApproachConfigType:
+    """Fixture for FitnessApproachConfigType."""
+    return FitnessApproachConfigType.from_protobuf(fitness_approach_config)
 
 
 # FrameRequestClasses_pb2.proto
@@ -228,9 +228,9 @@ def observation() -> Observation:
 
 
 @pytest.fixture
-def observation_data(observation: Observation) -> ObservationData:
-    """Fixture for ObservationData."""
-    return ObservationData.from_protobuf(observation)
+def observation_data(observation: Observation) -> ObservationType:
+    """Fixture for ObservationType."""
+    return ObservationType.from_protobuf(observation)
 
 
 @pytest.fixture
@@ -240,9 +240,9 @@ def action() -> Action:
 
 
 @pytest.fixture
-def action_data(action: Action) -> ActionData:
-    """Fixture for ActionData."""
-    return ActionData.from_protobuf(action)
+def action_data(action: Action) -> ActionType:
+    """Fixture for ActionType."""
+    return ActionType.from_protobuf(action)
 
 
 @pytest.fixture
@@ -252,9 +252,9 @@ def fitness() -> Fitness:
 
 
 @pytest.fixture
-def fitness_data(fitness: Fitness) -> FitnessData:
-    """Fixture for FitnessData."""
-    return FitnessData.from_protobuf(fitness)
+def fitness_data(fitness: Fitness) -> FitnessType:
+    """Fixture for FitnessType."""
+    return FitnessType.from_protobuf(fitness)
 
 
 @pytest.fixture
@@ -264,21 +264,21 @@ def train_request(observation: Observation, fitness: Fitness) -> TrainRequest:
 
 
 @pytest.fixture
-def train_request_data(train_request: TrainRequest) -> TrainRequestData:
-    """Fixture for TrainRequestData."""
-    return TrainRequestData.from_protobuf(train_request)
+def train_request_data(train_request: TrainRequest) -> TrainRequestType:
+    """Fixture for TrainRequestType."""
+    return TrainRequestType.from_protobuf(train_request)
 
 
 # Genetic Algorithm fixtures
 @pytest.fixture
-def mock_neural_network_member(neural_network_config_data: NeuralNetworkConfigData) -> NeuralNetworkMember:
+def mock_neural_network_member(neural_network_config_data: NeuralNetworkConfigType) -> NeuralNetworkMember:
     """Fixture for NeuralNetworkMember."""
     return NeuralNetworkMember.from_config_data(neural_network_config_data)
 
 
 @pytest.fixture
 def mock_neural_network_ga(
-    neural_network_config_data: NeuralNetworkConfigData, genetic_algorithm_config_data: GeneticAlgorithmConfigData
+    neural_network_config_data: NeuralNetworkConfigType, genetic_algorithm_config_data: GeneticAlgorithmConfigType
 ) -> NeuralNetworkGA:
     """Fixture for NeuralNetworkGA."""
     return NeuralNetworkGA.from_config_data(neural_network_config_data, genetic_algorithm_config_data)
@@ -300,13 +300,13 @@ def mock_load_config(mock_config: Config) -> Generator[MagicMock, None, None]:
 
 
 @pytest.fixture
-def mock_neuroevolution_suite(neuroevolution_config_data: NeuroevolutionConfigData) -> NeuroevolutionSuite:
+def mock_neuroevolution_suite(neuroevolution_config_data: NeuroevolutionConfigType) -> NeuroevolutionSuite:
     """Fixture for NeuroevolutionSuite."""
     return NeuroevolutionSuite.from_config_data(neuroevolution_config_data)
 
 
 @pytest.fixture
-def mock_fitness_suite(fitness_approach_config_data: FitnessApproachConfigData) -> FitnessSuite:
+def mock_fitness_suite(fitness_approach_config_data: FitnessApproachConfigType) -> FitnessSuite:
     """Fixture for FitnessSuite."""
     return FitnessSuite.from_config_data(fitness_approach_config_data)
 
@@ -341,7 +341,7 @@ def mock_configure_neural_networks_fitness(
 
 
 @pytest.fixture
-def mock_process_observations(action_data: ActionData) -> Generator[MagicMock, None, None]:
+def mock_process_observations(action_data: ActionType) -> Generator[MagicMock, None, None]:
     """Patch the process_observations function."""
     with patch("nn_websocket.main.NeuralNetworkWebsocketServer.process_observations") as mock_process:
         mock_process.return_value = action_data
