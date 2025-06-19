@@ -9,12 +9,83 @@ from neural_network.protobuf.neural_network_types import (
 from pydantic.dataclasses import dataclass
 
 from nn_websocket.protobuf.compiled.NNWebsocketData_pb2 import (
-    Configuration,
+    ConfigData,
     FitnessApproachConfig,
     GeneticAlgorithmConfig,
     NeuralNetworkConfig,
     NeuroevolutionConfig,
 )
+
+
+@dataclass
+class ConfigDataType:
+    """Data class to hold configuration data for the websocket server."""
+
+    neuroevolution: NeuroevolutionConfigData | None = None
+    fitness_approach: FitnessApproachConfigData | None = None
+
+    @classmethod
+    def from_protobuf(cls, config: ConfigData) -> ConfigDataType:
+        """Create a ConfigDataType instance from Protobuf.
+
+        :param ConfigData config:
+            The Protobuf configuration.
+        :return ConfigDataType:
+            The created data instance.
+        """
+        result = cls()
+
+        which_oneof = config.WhichOneof("msg")
+        match which_oneof:
+            case "neuroevolution":
+                result.neuroevolution = NeuroevolutionConfigData.from_protobuf(config.neuroevolution)
+            case "fitness_approach":
+                result.fitness_approach = FitnessApproachConfigData.from_protobuf(config.fitness_approach)
+            case _:
+                pass
+
+        return result
+
+    @classmethod
+    def to_protobuf(cls, config_data: ConfigDataType) -> ConfigData:
+        """Convert ConfigDataType to Protobuf.
+
+        :param ConfigDataType config_data:
+            The data instance to convert.
+        :return ConfigData:
+            The Protobuf configuration.
+        """
+        neuroevolution = config_data.neuroevolution
+        fitness_approach = config_data.fitness_approach
+        return ConfigData(
+            neuroevolution=NeuroevolutionConfigData.to_protobuf(neuroevolution) if neuroevolution else None,
+            fitness_approach=FitnessApproachConfigData.to_protobuf(fitness_approach) if fitness_approach else None,
+        )
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> ConfigDataType:
+        """Create a ConfigDataType instance from Protobuf bytes.
+
+        :param bytes data:
+            The Protobuf bytes.
+        :return ConfigDataType:
+            The created data instance.
+        """
+        config = ConfigData()
+        config.ParseFromString(data)
+        return cls.from_protobuf(config)
+
+    @staticmethod
+    def to_bytes(config_data: ConfigDataType) -> bytes:
+        """Convert ConfigDataType to Protobuf bytes.
+
+        :param ConfigDataType config_data:
+            The data instance to convert.
+        :return bytes:
+            The Protobuf bytes.
+        """
+        config = ConfigDataType.to_protobuf(config_data)
+        return config.SerializeToString()
 
 
 @dataclass
@@ -102,78 +173,6 @@ class NeuralNetworkConfigData:
             The Protobuf bytes.
         """
         config = NeuralNetworkConfigData.to_protobuf(config_data)
-        return config.SerializeToString()
-
-
-# Training methods
-@dataclass
-class ConfigurationData:
-    """Data class to hold configuration data for the websocket server."""
-
-    neuroevolution: NeuroevolutionConfigData | None = None
-    fitness_approach: FitnessApproachConfigData | None = None
-
-    @classmethod
-    def from_protobuf(cls, config: Configuration) -> ConfigurationData:
-        """Create a ConfigurationData instance from Protobuf.
-
-        :param Configuration config:
-            The Protobuf configuration.
-        :return ConfigurationData:
-            The created data instance.
-        """
-        result = cls()
-
-        which_oneof = config.WhichOneof("msg")
-        match which_oneof:
-            case "neuroevolution":
-                result.neuroevolution = NeuroevolutionConfigData.from_protobuf(config.neuroevolution)
-            case "fitness_approach":
-                result.fitness_approach = FitnessApproachConfigData.from_protobuf(config.fitness_approach)
-            case _:
-                pass
-
-        return result
-
-    @classmethod
-    def to_protobuf(cls, config_data: ConfigurationData) -> Configuration:
-        """Convert ConfigurationData to Protobuf.
-
-        :param ConfigurationData config_data:
-            The data instance to convert.
-        :return Configuration:
-            The Protobuf configuration.
-        """
-        neuroevolution = config_data.neuroevolution
-        fitness_approach = config_data.fitness_approach
-        return Configuration(
-            neuroevolution=NeuroevolutionConfigData.to_protobuf(neuroevolution) if neuroevolution else None,
-            fitness_approach=FitnessApproachConfigData.to_protobuf(fitness_approach) if fitness_approach else None,
-        )
-
-    @classmethod
-    def from_bytes(cls, data: bytes) -> ConfigurationData:
-        """Create a ConfigurationData instance from Protobuf bytes.
-
-        :param bytes data:
-            The Protobuf bytes.
-        :return ConfigurationData:
-            The created data instance.
-        """
-        config = Configuration()
-        config.ParseFromString(data)
-        return cls.from_protobuf(config)
-
-    @staticmethod
-    def to_bytes(config_data: ConfigurationData) -> bytes:
-        """Convert ConfigurationData to Protobuf bytes.
-
-        :param ConfigurationData config_data:
-            The data instance to convert.
-        :return bytes:
-            The Protobuf bytes.
-        """
-        config = ConfigurationData.to_protobuf(config_data)
         return config.SerializeToString()
 
 

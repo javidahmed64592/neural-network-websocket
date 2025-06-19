@@ -14,9 +14,9 @@ from neural_network.protobuf.neural_network_types import (
     SGDOptimizerDataType,
 )
 
-from nn_websocket.protobuf.frame_data_types import FrameRequestData
+from nn_websocket.protobuf.frame_data_types import FrameRequestDataType
 from nn_websocket.protobuf.nn_websocket_data_types import (
-    ConfigurationData,
+    ConfigDataType,
     FitnessApproachConfigData,
     NeuralNetworkConfigData,
 )
@@ -26,7 +26,7 @@ from nn_websocket.tools.client_utils import get_random_observation_frame, get_ra
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Configuration for the fitness approach client
+# ConfigData for the fitness approach client
 NUM_INPUTS = 5
 NUM_OUTPUTS = 2
 HIDDEN_LAYER_SIZES = [4, 4]
@@ -66,7 +66,7 @@ NN_CONFIG = NeuralNetworkConfigData(
 )
 
 FITNESS_CONFIG = FitnessApproachConfigData(neural_network=NN_CONFIG)
-CONFIG_DATA = ConfigurationData(fitness_approach=FITNESS_CONFIG)
+CONFIG_DATA = ConfigDataType(fitness_approach=FITNESS_CONFIG)
 
 
 class FitnessClient(BaseClient):
@@ -80,7 +80,7 @@ class FitnessClient(BaseClient):
         """
         await super().send_observation(ws)
         await ws.send(
-            FrameRequestData.to_bytes(
+            FrameRequestDataType.to_bytes(
                 get_random_observation_frame(self.config_data.fitness_approach.neural_network.num_inputs)  # type: ignore[union-attr]
             )
         )
@@ -93,7 +93,7 @@ class FitnessClient(BaseClient):
         """
         await super().send_training(ws)
         await ws.send(
-            FrameRequestData.to_bytes(
+            FrameRequestDataType.to_bytes(
                 get_random_train_request_frame(
                     TRAINING_BATCH_SIZE,
                     self.config_data.fitness_approach.neural_network.num_inputs,  # type: ignore[union-attr]

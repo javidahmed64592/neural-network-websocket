@@ -20,12 +20,12 @@ from nn_websocket.models.nn_suites import FitnessSuite, NeuroevolutionSuite
 from nn_websocket.protobuf.frame_data_types import (
     ActionData,
     FitnessData,
-    FrameRequestData,
+    FrameRequestDataType,
     ObservationData,
     TrainRequestData,
 )
 from nn_websocket.protobuf.nn_websocket_data_types import (
-    ConfigurationData,
+    ConfigDataType,
     FitnessApproachConfigData,
     NeuroevolutionConfigData,
 )
@@ -49,22 +49,22 @@ class NeuralNetworkWebsocketServer:
         self.config = Config.load_config(self.config_filepath)
 
     @staticmethod
-    def configure_neural_network_suite(config: ConfigurationData) -> NeuroevolutionSuite | FitnessSuite:
+    def configure_neural_network_suite(config: ConfigDataType) -> NeuroevolutionSuite | FitnessSuite:
         """Configure the neural network suite based on the provided configuration data.
 
-        :param ConfigurationData config:
+        :param ConfigDataType config:
             The configuration data containing settings for the neural networks.
         :return NeuroevolutionSuite | FitnessSuite:
             An instance of NeuroevolutionSuite or FitnessSuite based on the configuration.
         :raises ValueError:
-            If no fitness approach is configured in the provided ConfigurationData.
+            If no fitness approach is configured in the provided ConfigDataType.
         """
         logger.info("Configuring neural networks...")
         if neuroevolution := config.neuroevolution:
             return NeuroevolutionSuite.from_bytes(NeuroevolutionConfigData.to_bytes(neuroevolution))
 
         if not (fitness_approach := config.fitness_approach):
-            msg = "No fitness approach configured in the provided ConfigurationData."
+            msg = "No fitness approach configured in the provided ConfigDataType."
             raise ValueError(msg)
         return FitnessSuite.from_bytes(FitnessApproachConfigData.to_bytes(fitness_approach))
 
@@ -120,11 +120,11 @@ class NeuralNetworkWebsocketServer:
             # Initialise the neural network suite if not already done
             if neural_network_suite is None:
                 neural_network_suite = NeuralNetworkWebsocketServer.configure_neural_network_suite(
-                    ConfigurationData.from_bytes(message_bytes)
+                    ConfigDataType.from_bytes(message_bytes)
                 )
             # Check if client requesting actions or training
             else:
-                message_data = FrameRequestData.from_bytes(message_bytes)
+                message_data = FrameRequestDataType.from_bytes(message_bytes)
                 if observation := message_data.observation:
                     actions = NeuralNetworkWebsocketServer.process_observations(neural_network_suite, observation)
                     await websocket.send(actions.to_bytes(actions))

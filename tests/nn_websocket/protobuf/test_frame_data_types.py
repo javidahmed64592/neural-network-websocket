@@ -5,32 +5,32 @@ import pytest
 from nn_websocket.protobuf.compiled.FrameData_pb2 import (
     Action,
     Fitness,
-    FrameRequest,
+    FrameRequestData,
     Observation,
     TrainRequest,
 )
 from nn_websocket.protobuf.frame_data_types import (
     ActionData,
     FitnessData,
-    FrameRequestData,
+    FrameRequestDataType,
     ObservationData,
     TrainRequestData,
 )
 
 
 class TestFrameRequestData:
-    """Test cases for FrameRequestData conversions and serialization."""
+    """Test cases for FrameRequestDataType conversions and serialization."""
 
     def test_from_protobuf(
         self,
-        frame_request_observation: FrameRequest,
-        frame_request_fitness: FrameRequest,
-        frame_request_train: FrameRequest,
+        frame_request_observation: FrameRequestData,
+        frame_request_fitness: FrameRequestData,
+        frame_request_train: FrameRequestData,
     ) -> None:
-        """Test FrameRequestData.from_protobuf for all frame types."""
-        frame_request_data_observation = FrameRequestData.from_protobuf(frame_request_observation)
-        frame_request_data_fitness = FrameRequestData.from_protobuf(frame_request_fitness)
-        frame_request_data_train = FrameRequestData.from_protobuf(frame_request_train)
+        """Test FrameRequestDataType.from_protobuf for all frame types."""
+        frame_request_data_observation = FrameRequestDataType.from_protobuf(frame_request_observation)
+        frame_request_data_fitness = FrameRequestDataType.from_protobuf(frame_request_fitness)
+        frame_request_data_train = FrameRequestDataType.from_protobuf(frame_request_train)
 
         assert isinstance(frame_request_data_observation.observation, ObservationData)
         assert frame_request_data_observation.observation.inputs == pytest.approx(
@@ -44,33 +44,33 @@ class TestFrameRequestData:
 
     def test_to_bytes(
         self,
-        frame_request_data_observation: FrameRequestData,
-        frame_request_data_fitness: FrameRequestData,
-        frame_request_data_train: FrameRequestData,
+        frame_request_data_observation: FrameRequestDataType,
+        frame_request_data_fitness: FrameRequestDataType,
+        frame_request_data_train: FrameRequestDataType,
     ) -> None:
-        """Test serializing FrameRequestData to bytes for all frame types."""
-        assert isinstance(FrameRequestData.to_bytes(frame_request_data_observation), bytes)
-        assert isinstance(FrameRequestData.to_bytes(frame_request_data_fitness), bytes)
-        assert isinstance(FrameRequestData.to_bytes(frame_request_data_train), bytes)
-        assert isinstance(FrameRequestData.to_bytes(frame_request_data_train), bytes)
+        """Test serializing FrameRequestDataType to bytes for all frame types."""
+        assert isinstance(FrameRequestDataType.to_bytes(frame_request_data_observation), bytes)
+        assert isinstance(FrameRequestDataType.to_bytes(frame_request_data_fitness), bytes)
+        assert isinstance(FrameRequestDataType.to_bytes(frame_request_data_train), bytes)
+        assert isinstance(FrameRequestDataType.to_bytes(frame_request_data_train), bytes)
 
     def test_from_bytes(
         self,
-        frame_request_data_observation: FrameRequestData,
-        frame_request_data_fitness: FrameRequestData,
-        frame_request_data_train: FrameRequestData,
+        frame_request_data_observation: FrameRequestDataType,
+        frame_request_data_fitness: FrameRequestDataType,
+        frame_request_data_train: FrameRequestDataType,
     ) -> None:
-        """Test deserializing FrameRequestData from bytes for all frame types."""
+        """Test deserializing FrameRequestDataType from bytes for all frame types."""
         assert frame_request_data_observation.observation is not None
         assert frame_request_data_fitness.fitness is not None
         assert frame_request_data_train.train_request is not None
 
-        frame_request_observation_bytes = FrameRequestData.to_bytes(frame_request_data_observation)
-        new_frame_request_observation = FrameRequestData.from_bytes(frame_request_observation_bytes)
-        frame_request_population_bytes = FrameRequestData.to_bytes(frame_request_data_fitness)
-        new_frame_request_population = FrameRequestData.from_bytes(frame_request_population_bytes)
-        frame_request_train_bytes = FrameRequestData.to_bytes(frame_request_data_train)
-        new_frame_request_train = FrameRequestData.from_bytes(frame_request_train_bytes)
+        frame_request_observation_bytes = FrameRequestDataType.to_bytes(frame_request_data_observation)
+        new_frame_request_observation = FrameRequestDataType.from_bytes(frame_request_observation_bytes)
+        frame_request_population_bytes = FrameRequestDataType.to_bytes(frame_request_data_fitness)
+        new_frame_request_population = FrameRequestDataType.from_bytes(frame_request_population_bytes)
+        frame_request_train_bytes = FrameRequestDataType.to_bytes(frame_request_data_train)
+        new_frame_request_train = FrameRequestDataType.from_bytes(frame_request_train_bytes)
 
         assert isinstance(new_frame_request_observation.observation, ObservationData)
         assert new_frame_request_observation.observation.inputs == pytest.approx(

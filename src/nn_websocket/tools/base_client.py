@@ -6,7 +6,7 @@ import logging
 import websockets
 
 from nn_websocket.protobuf.nn_websocket_data_types import (
-    ConfigurationData,
+    ConfigDataType,
 )
 from nn_websocket.tools.client_utils import get_config
 
@@ -20,10 +20,10 @@ EPISODE_LENGTH = 10
 class BaseClient:
     """Base class for neural network websocket clients."""
 
-    def __init__(self, config_data: ConfigurationData) -> None:
+    def __init__(self, config_data: ConfigDataType) -> None:
         """Initialize the base client with configuration data.
 
-        :param ConfigurationData config_data:
+        :param ConfigDataType config_data:
             The configuration data for the client.
         """
         self.config_data = config_data
@@ -35,7 +35,7 @@ class BaseClient:
             The websocket connection to send data to.
         """
         logger.info("Sending ConfigData to server.")
-        await ws.send(ConfigurationData.to_bytes(self.config_data))
+        await ws.send(ConfigDataType.to_bytes(self.config_data))
         await asyncio.sleep(1)
 
     async def send_observation(self, ws: websockets.ClientConnection) -> None:

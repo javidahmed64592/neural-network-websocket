@@ -3,19 +3,61 @@
 import pytest
 
 from nn_websocket.protobuf.compiled.NNWebsocketData_pb2 import (
-    Configuration,
+    ConfigData,
     FitnessApproachConfig,
     GeneticAlgorithmConfig,
     NeuralNetworkConfig,
     NeuroevolutionConfig,
 )
 from nn_websocket.protobuf.nn_websocket_data_types import (
-    ConfigurationData,
+    ConfigDataType,
     FitnessApproachConfigData,
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
     NeuroevolutionConfigData,
 )
+
+
+class TestConfigDataType:
+    """Test cases for ConfigDataType conversions and serialization."""
+
+    def test_from_protobuf(self, configuration_neuroevolution: ConfigData, configuration_fitness: ConfigData) -> None:
+        """Test creating ConfigDataType from ConfigData Protobufs."""
+        config_data_neuroevolution = ConfigDataType.from_protobuf(configuration_neuroevolution)
+        config_data_fitness = ConfigDataType.from_protobuf(configuration_fitness)
+
+        assert isinstance(config_data_neuroevolution.neuroevolution, NeuroevolutionConfigData)
+        assert isinstance(config_data_fitness.fitness_approach, FitnessApproachConfigData)
+
+    def test_to_protobuf(
+        self, configuration_data_neuroevolution: ConfigDataType, configuration_data_fitness: ConfigDataType
+    ) -> None:
+        """Test converting ConfigDataType to ConfigData Protobufs."""
+        protobuf_neuroevolution = ConfigDataType.to_protobuf(configuration_data_neuroevolution)
+        protobuf_fitness = ConfigDataType.to_protobuf(configuration_data_fitness)
+
+        assert isinstance(protobuf_neuroevolution.neuroevolution, NeuroevolutionConfig)
+        assert isinstance(protobuf_fitness.fitness_approach, FitnessApproachConfig)
+
+    def test_to_bytes(
+        self, configuration_data_neuroevolution: ConfigDataType, configuration_data_fitness: ConfigDataType
+    ) -> None:
+        """Test serializing ConfigDataType to bytes."""
+        assert isinstance(ConfigDataType.to_bytes(configuration_data_neuroevolution), bytes)
+        assert isinstance(ConfigDataType.to_bytes(configuration_data_fitness), bytes)
+
+    def test_from_bytes(
+        self, configuration_data_neuroevolution: ConfigDataType, configuration_data_fitness: ConfigDataType
+    ) -> None:
+        """Test deserializing bytes to ConfigDataType."""
+        msg_bytes_neuroevolution = ConfigDataType.to_bytes(configuration_data_neuroevolution)
+        msg_bytes_fitness = ConfigDataType.to_bytes(configuration_data_fitness)
+
+        result_neuroevolution = ConfigDataType.from_bytes(msg_bytes_neuroevolution)
+        result_fitness = ConfigDataType.from_bytes(msg_bytes_fitness)
+
+        assert isinstance(result_neuroevolution.neuroevolution, NeuroevolutionConfigData)
+        assert isinstance(result_fitness.fitness_approach, FitnessApproachConfigData)
 
 
 class TestNeuralNetworkDataType:
@@ -108,51 +150,6 @@ class TestNeuralNetworkDataType:
         assert result.optimizer.learning_rate_scheduler.method == pytest.approx(
             neural_network_config_data.optimizer.learning_rate_scheduler.method
         )
-
-
-# Training methods
-class TestConfigurationData:
-    """Test cases for ConfigurationData conversions and serialization."""
-
-    def test_from_protobuf(
-        self, configuration_neuroevolution: Configuration, configuration_fitness: Configuration
-    ) -> None:
-        """Test creating ConfigurationData from Configuration Protobufs."""
-        config_data_neuroevolution = ConfigurationData.from_protobuf(configuration_neuroevolution)
-        config_data_fitness = ConfigurationData.from_protobuf(configuration_fitness)
-
-        assert isinstance(config_data_neuroevolution.neuroevolution, NeuroevolutionConfigData)
-        assert isinstance(config_data_fitness.fitness_approach, FitnessApproachConfigData)
-
-    def test_to_protobuf(
-        self, configuration_data_neuroevolution: ConfigurationData, configuration_data_fitness: ConfigurationData
-    ) -> None:
-        """Test converting ConfigurationData to Configuration Protobufs."""
-        protobuf_neuroevolution = ConfigurationData.to_protobuf(configuration_data_neuroevolution)
-        protobuf_fitness = ConfigurationData.to_protobuf(configuration_data_fitness)
-
-        assert isinstance(protobuf_neuroevolution.neuroevolution, NeuroevolutionConfig)
-        assert isinstance(protobuf_fitness.fitness_approach, FitnessApproachConfig)
-
-    def test_to_bytes(
-        self, configuration_data_neuroevolution: ConfigurationData, configuration_data_fitness: ConfigurationData
-    ) -> None:
-        """Test serializing ConfigurationData to bytes."""
-        assert isinstance(ConfigurationData.to_bytes(configuration_data_neuroevolution), bytes)
-        assert isinstance(ConfigurationData.to_bytes(configuration_data_fitness), bytes)
-
-    def test_from_bytes(
-        self, configuration_data_neuroevolution: ConfigurationData, configuration_data_fitness: ConfigurationData
-    ) -> None:
-        """Test deserializing bytes to ConfigurationData."""
-        msg_bytes_neuroevolution = ConfigurationData.to_bytes(configuration_data_neuroevolution)
-        msg_bytes_fitness = ConfigurationData.to_bytes(configuration_data_fitness)
-
-        result_neuroevolution = ConfigurationData.from_bytes(msg_bytes_neuroevolution)
-        result_fitness = ConfigurationData.from_bytes(msg_bytes_fitness)
-
-        assert isinstance(result_neuroevolution.neuroevolution, NeuroevolutionConfigData)
-        assert isinstance(result_fitness.fitness_approach, FitnessApproachConfigData)
 
 
 class TestGeneticAlgorithmConfigData:

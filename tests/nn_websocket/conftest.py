@@ -22,12 +22,12 @@ from nn_websocket.models.nn_suites import FitnessSuite, NeuroevolutionSuite
 from nn_websocket.protobuf.compiled.FrameData_pb2 import (
     Action,
     Fitness,
-    FrameRequest,
+    FrameRequestData,
     Observation,
     TrainRequest,
 )
 from nn_websocket.protobuf.compiled.NNWebsocketData_pb2 import (
-    Configuration,
+    ConfigData,
     FitnessApproachConfig,
     GeneticAlgorithmConfig,
     NeuralNetworkConfig,
@@ -36,12 +36,12 @@ from nn_websocket.protobuf.compiled.NNWebsocketData_pb2 import (
 from nn_websocket.protobuf.frame_data_types import (
     ActionData,
     FitnessData,
-    FrameRequestData,
+    FrameRequestDataType,
     ObservationData,
     TrainRequestData,
 )
 from nn_websocket.protobuf.nn_websocket_data_types import (
-    ConfigurationData,
+    ConfigDataType,
     FitnessApproachConfigData,
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,
@@ -81,6 +81,30 @@ MOCK_MUTATION_RATE = 0.1
 
 # NeuralNetwork.proto
 @pytest.fixture
+def configuration_neuroevolution(neural_network_config: NeuralNetworkConfig) -> ConfigData:
+    """Fixture for ConfigData with NeuroevolutionConfig."""
+    return ConfigData(neuroevolution=NeuroevolutionConfig(neural_network=neural_network_config))
+
+
+@pytest.fixture
+def configuration_fitness(neural_network_config: NeuralNetworkConfig) -> ConfigData:
+    """Fixture for ConfigData with FitnessApproachConfig."""
+    return ConfigData(fitness_approach=FitnessApproachConfig(neural_network=neural_network_config))
+
+
+@pytest.fixture
+def configuration_data_neuroevolution(configuration_neuroevolution: ConfigData) -> ConfigDataType:
+    """Fixture for ConfigDataType with NeuroevolutionConfig."""
+    return ConfigDataType.from_protobuf(configuration_neuroevolution)
+
+
+@pytest.fixture
+def configuration_data_fitness(configuration_fitness: ConfigData) -> ConfigDataType:
+    """Fixture for ConfigDataType with FitnessApproachConfig."""
+    return ConfigDataType.from_protobuf(configuration_fitness)
+
+
+@pytest.fixture
 def neural_network_config() -> NeuralNetworkConfig:
     """Fixture for NeuralNetworkConfig."""
     return NeuralNetworkConfig(
@@ -114,30 +138,6 @@ def neural_network_config_data(neural_network_config: NeuralNetworkConfig) -> Ne
         output_activation=MOCK_OUTPUT_ACTIVATION,
         optimizer=MOCK_OPTIMIZER,
     )
-
-
-@pytest.fixture
-def configuration_neuroevolution(neural_network_config: NeuralNetworkConfig) -> Configuration:
-    """Fixture for Configuration with NeuroevolutionConfig."""
-    return Configuration(neuroevolution=NeuroevolutionConfig(neural_network=neural_network_config))
-
-
-@pytest.fixture
-def configuration_fitness(neural_network_config: NeuralNetworkConfig) -> Configuration:
-    """Fixture for Configuration with FitnessApproachConfig."""
-    return Configuration(fitness_approach=FitnessApproachConfig(neural_network=neural_network_config))
-
-
-@pytest.fixture
-def configuration_data_neuroevolution(configuration_neuroevolution: Configuration) -> ConfigurationData:
-    """Fixture for ConfigurationData with NeuroevolutionConfig."""
-    return ConfigurationData.from_protobuf(configuration_neuroevolution)
-
-
-@pytest.fixture
-def configuration_data_fitness(configuration_fitness: Configuration) -> ConfigurationData:
-    """Fixture for ConfigurationData with FitnessApproachConfig."""
-    return ConfigurationData.from_protobuf(configuration_fitness)
 
 
 @pytest.fixture
@@ -186,39 +186,39 @@ def fitness_approach_config_data(fitness_approach_config: FitnessApproachConfig)
 
 # FrameRequestClasses_pb2.proto
 @pytest.fixture
-def frame_request_observation(observation: Observation) -> FrameRequest:
-    """Fixture for FrameRequest with Observation."""
-    return FrameRequest(observation=observation)
-
-
-@pytest.fixture
-def frame_request_fitness(fitness: Fitness) -> FrameRequest:
-    """Fixture for FrameRequest with Fitness."""
-    return FrameRequest(fitness=fitness)
-
-
-@pytest.fixture
-def frame_request_train(train_request: TrainRequest) -> FrameRequest:
-    """Fixture for FrameRequest with TrainRequest."""
-    return FrameRequest(train_request=train_request)
-
-
-@pytest.fixture
-def frame_request_data_observation(frame_request_observation: FrameRequest) -> FrameRequestData:
+def frame_request_observation(observation: Observation) -> FrameRequestData:
     """Fixture for FrameRequestData with Observation."""
-    return FrameRequestData.from_protobuf(frame_request_observation)
+    return FrameRequestData(observation=observation)
 
 
 @pytest.fixture
-def frame_request_data_fitness(frame_request_fitness: FrameRequest) -> FrameRequestData:
+def frame_request_fitness(fitness: Fitness) -> FrameRequestData:
     """Fixture for FrameRequestData with Fitness."""
-    return FrameRequestData.from_protobuf(frame_request_fitness)
+    return FrameRequestData(fitness=fitness)
 
 
 @pytest.fixture
-def frame_request_data_train(frame_request_train: FrameRequest) -> FrameRequestData:
+def frame_request_train(train_request: TrainRequest) -> FrameRequestData:
     """Fixture for FrameRequestData with TrainRequest."""
-    return FrameRequestData.from_protobuf(frame_request_train)
+    return FrameRequestData(train_request=train_request)
+
+
+@pytest.fixture
+def frame_request_data_observation(frame_request_observation: FrameRequestData) -> FrameRequestDataType:
+    """Fixture for FrameRequestDataType with Observation."""
+    return FrameRequestDataType.from_protobuf(frame_request_observation)
+
+
+@pytest.fixture
+def frame_request_data_fitness(frame_request_fitness: FrameRequestData) -> FrameRequestDataType:
+    """Fixture for FrameRequestDataType with Fitness."""
+    return FrameRequestDataType.from_protobuf(frame_request_fitness)
+
+
+@pytest.fixture
+def frame_request_data_train(frame_request_train: FrameRequestData) -> FrameRequestDataType:
+    """Fixture for FrameRequestDataType with TrainRequest."""
+    return FrameRequestDataType.from_protobuf(frame_request_train)
 
 
 @pytest.fixture
@@ -366,39 +366,39 @@ def mock_train_neural_network() -> Generator[MagicMock, None, None]:
 
 @pytest.fixture
 def mock_websocket_neuroevolution(
-    configuration_data_neuroevolution: ConfigurationData,
-    frame_request_data_observation: FrameRequestData,
-    frame_request_data_fitness: FrameRequestData,
+    configuration_data_neuroevolution: ConfigDataType,
+    frame_request_data_observation: FrameRequestDataType,
+    frame_request_data_fitness: FrameRequestDataType,
 ) -> AsyncMock:
     """Fixture for a mock websocket connection."""
     mock_websocket = AsyncMock()
     mock_websocket.__aiter__.return_value = [
-        ConfigurationData.to_bytes(configuration_data_neuroevolution),
-        FrameRequestData.to_bytes(frame_request_data_observation),
-        FrameRequestData.to_bytes(frame_request_data_fitness),
+        ConfigDataType.to_bytes(configuration_data_neuroevolution),
+        FrameRequestDataType.to_bytes(frame_request_data_observation),
+        FrameRequestDataType.to_bytes(frame_request_data_fitness),
     ]
     return mock_websocket
 
 
 @pytest.fixture
 def mock_websocket_fitness(
-    configuration_data_fitness: ConfigurationData,
-    frame_request_data_observation: FrameRequestData,
-    frame_request_data_train: FrameRequestData,
+    configuration_data_fitness: ConfigDataType,
+    frame_request_data_observation: FrameRequestDataType,
+    frame_request_data_train: FrameRequestDataType,
 ) -> AsyncMock:
     """Fixture for a mock websocket connection for fitness approach."""
     mock_websocket = AsyncMock()
     mock_websocket.__aiter__.return_value = [
-        ConfigurationData.to_bytes(configuration_data_fitness),
-        FrameRequestData.to_bytes(frame_request_data_observation),
-        FrameRequestData.to_bytes(frame_request_data_train),
+        ConfigDataType.to_bytes(configuration_data_fitness),
+        FrameRequestDataType.to_bytes(frame_request_data_observation),
+        FrameRequestDataType.to_bytes(frame_request_data_train),
     ]
     return mock_websocket
 
 
 # Base Client fixtures
 @pytest.fixture
-def mock_base_client(configuration_data_neuroevolution: ConfigurationData, mock_load_config: MagicMock) -> BaseClient:
+def mock_base_client(configuration_data_neuroevolution: ConfigDataType, mock_load_config: MagicMock) -> BaseClient:
     """Fixture for BaseClient."""
     return BaseClient(configuration_data_neuroevolution)
 

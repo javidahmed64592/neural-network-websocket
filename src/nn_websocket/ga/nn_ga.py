@@ -37,9 +37,9 @@ class NeuralNetworkGA(GeneticAlgorithm):
         """Create a NeuralNetworkGA from the provided configuration data.
 
         :param NeuralNetworkConfigData nn_config_data:
-            Configuration data for the neural network.
+            ConfigData data for the neural network.
         :param GeneticAlgorithmConfigData ga_config_data:
-            Configuration data for the genetic algorithm.
+            ConfigData data for the genetic algorithm.
         :return NeuralNetworkGA:
             Neural Network Genetic Algorithm.
         """

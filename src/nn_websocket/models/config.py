@@ -1,4 +1,4 @@
-"""Configuration dataclass and loader for the neural network websocket server."""
+"""ConfigData dataclass and loader for the neural network websocket server."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from pydantic.dataclasses import dataclass
 
 @dataclass
 class Config:
-    """Configuration for the Websocket server."""
+    """ConfigData for the Websocket server."""
 
     host: str
     port: int

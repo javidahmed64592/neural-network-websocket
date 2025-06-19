@@ -39,7 +39,7 @@ class NeuroevolutionSuite:
         """Create a NeuroevolutionSuite from the provided configuration data.
 
         :param NeuroevolutionConfigData config_data:
-            Configuration data for the neural networks.
+            ConfigData data for the neural networks.
         :return NeuroevolutionSuite:
             An instance of NeuroevolutionSuite.
         """
@@ -103,7 +103,7 @@ class FitnessSuite:
         """Create a FitnessSuite from the provided configuration data.
 
         :param FitnessApproachConfigData config_data:
-            Configuration data for the fitness approach.
+            ConfigData data for the fitness approach.
         :return FitnessSuite:
             An instance of FitnessSuite.
         """

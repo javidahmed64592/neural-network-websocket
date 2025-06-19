@@ -11,11 +11,11 @@ from nn_websocket.models.nn_suites import FitnessSuite, NeuroevolutionSuite
 from nn_websocket.protobuf.frame_data_types import (
     ActionData,
     FitnessData,
-    FrameRequestData,
+    FrameRequestDataType,
     ObservationData,
     TrainRequestData,
 )
-from nn_websocket.protobuf.nn_websocket_data_types import ConfigurationData
+from nn_websocket.protobuf.nn_websocket_data_types import ConfigDataType
 
 
 class TestNeuralNetworkWebsocketServer:
@@ -27,12 +27,12 @@ class TestNeuralNetworkWebsocketServer:
         """Test that the NeuralNetworkWebsocketServer initializes with the correct configuration."""
         assert mock_neural_network_websocket_server.config == mock_config
 
-    def test_configure_nn_suite_neuroevolution(self, configuration_data_neuroevolution: ConfigurationData) -> None:
+    def test_configure_nn_suite_neuroevolution(self, configuration_data_neuroevolution: ConfigDataType) -> None:
         """Test that the neural network suite is configured for neuroevolution."""
         nn_suite = NeuralNetworkWebsocketServer.configure_neural_network_suite(configuration_data_neuroevolution)
         assert isinstance(nn_suite, NeuroevolutionSuite)
 
-    def test_configure_nn_suite_fitness_approach(self, configuration_data_fitness: ConfigurationData) -> None:
+    def test_configure_nn_suite_fitness_approach(self, configuration_data_fitness: ConfigDataType) -> None:
         """Test that the neural network suite is configured for fitness approach."""
         nn_suite = NeuralNetworkWebsocketServer.configure_neural_network_suite(configuration_data_fitness)
         assert isinstance(nn_suite, FitnessSuite)
@@ -76,9 +76,9 @@ class TestNeuralNetworkWebsocketServer:
     async def test_handle_connection_neuroevolution(
         self,
         mock_websocket_neuroevolution: AsyncMock,
-        configuration_data_neuroevolution: ConfigurationData,
-        frame_request_data_observation: FrameRequestData,
-        frame_request_data_fitness: FrameRequestData,
+        configuration_data_neuroevolution: ConfigDataType,
+        frame_request_data_observation: FrameRequestDataType,
+        frame_request_data_fitness: FrameRequestDataType,
         mock_configure_neural_networks_neuroevolution: MagicMock,
         mock_process_observations: MagicMock,
         mock_crossover_neural_networks: MagicMock,
@@ -88,7 +88,7 @@ class TestNeuralNetworkWebsocketServer:
         await NeuralNetworkWebsocketServer.handle_connection(mock_websocket_neuroevolution)
 
         mock_configure_neural_networks_neuroevolution.assert_called_once_with(
-            ConfigurationData.from_bytes(ConfigurationData.to_bytes(configuration_data_neuroevolution))
+            ConfigDataType.from_bytes(ConfigDataType.to_bytes(configuration_data_neuroevolution))
         )
 
         mock_process_observations.assert_called_once_with(
@@ -105,9 +105,9 @@ class TestNeuralNetworkWebsocketServer:
     async def test_handle_connection_fitness_approach(
         self,
         mock_websocket_fitness: AsyncMock,
-        configuration_data_fitness: ConfigurationData,
-        frame_request_data_observation: FrameRequestData,
-        frame_request_data_train: FrameRequestData,
+        configuration_data_fitness: ConfigDataType,
+        frame_request_data_observation: FrameRequestDataType,
+        frame_request_data_train: FrameRequestDataType,
         mock_configure_neural_networks_fitness: MagicMock,
         mock_process_observations: MagicMock,
         mock_train_neural_network: MagicMock,
@@ -117,7 +117,7 @@ class TestNeuralNetworkWebsocketServer:
         await NeuralNetworkWebsocketServer.handle_connection(mock_websocket_fitness)
 
         mock_configure_neural_networks_fitness.assert_called_once_with(
-            ConfigurationData.from_bytes(ConfigurationData.to_bytes(configuration_data_fitness))
+            ConfigDataType.from_bytes(ConfigDataType.to_bytes(configuration_data_fitness))
         )
 
         mock_process_observations.assert_called_once_with(

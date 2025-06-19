@@ -7,14 +7,14 @@ from pydantic.dataclasses import dataclass
 from nn_websocket.protobuf.compiled.FrameData_pb2 import (
     Action,
     Fitness,
-    FrameRequest,
+    FrameRequestData,
     Observation,
     TrainRequest,
 )
 
 
 @dataclass
-class FrameRequestData:
+class FrameRequestDataType:
     """Data class to hold frame request data."""
 
     observation: ObservationData | None = None
@@ -22,13 +22,13 @@ class FrameRequestData:
     train_request: TrainRequestData | None = None
 
     @classmethod
-    def from_protobuf(cls, frame_request: FrameRequest) -> FrameRequestData:
-        """Create a FrameRequestData instance from Protobuf.
+    def from_protobuf(cls, frame_request: FrameRequestData) -> FrameRequestDataType:
+        """Create a FrameRequestDataType instance from Protobuf.
 
-        :param FrameRequest frame_request:
-            The Protobuf FrameRequest message.
-        :return FrameRequestData:
-            The corresponding FrameRequestData instance.
+        :param FrameRequestData frame_request:
+            The Protobuf FrameRequestData message.
+        :return FrameRequestDataType:
+            The corresponding FrameRequestDataType instance.
         """
         result = cls()
 
@@ -46,15 +46,15 @@ class FrameRequestData:
         return result
 
     @staticmethod
-    def to_protobuf(frame_request_data: FrameRequestData) -> FrameRequest:
-        """Convert FrameRequestData to Protobuf.
+    def to_protobuf(frame_request_data: FrameRequestDataType) -> FrameRequestData:
+        """Convert FrameRequestDataType to Protobuf.
 
-        :param FrameRequestData frame_request_data:
-            The FrameRequestData instance.
-        :return FrameRequest:
-            The Protobuf FrameRequest message.
+        :param FrameRequestDataType frame_request_data:
+            The FrameRequestDataType instance.
+        :return FrameRequestData:
+            The Protobuf FrameRequestData message.
         """
-        frame_request = FrameRequest()
+        frame_request = FrameRequestData()
 
         if frame_request_data.observation is not None:
             frame_request.observation.CopyFrom(ObservationData.to_protobuf(frame_request_data.observation))
@@ -66,28 +66,28 @@ class FrameRequestData:
         return frame_request
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> FrameRequestData:
-        """Create a FrameRequestData instance from Protobuf bytes.
+    def from_bytes(cls, data: bytes) -> FrameRequestDataType:
+        """Create a FrameRequestDataType instance from Protobuf bytes.
 
         :param bytes data:
             The serialized Protobuf bytes.
-        :return FrameRequestData:
-            The corresponding FrameRequestData instance.
+        :return FrameRequestDataType:
+            The corresponding FrameRequestDataType instance.
         """
-        frame_request = FrameRequest()
+        frame_request = FrameRequestData()
         frame_request.ParseFromString(data)
         return cls.from_protobuf(frame_request)
 
     @staticmethod
-    def to_bytes(frame_request_data: FrameRequestData) -> bytes:
-        """Convert FrameRequestData to Protobuf bytes.
+    def to_bytes(frame_request_data: FrameRequestDataType) -> bytes:
+        """Convert FrameRequestDataType to Protobuf bytes.
 
-        :param FrameRequestData frame_request_data:
-            The FrameRequestData instance.
+        :param FrameRequestDataType frame_request_data:
+            The FrameRequestDataType instance.
         :return bytes:
             The serialized Protobuf bytes.
         """
-        frame_request = FrameRequestData.to_protobuf(frame_request_data)
+        frame_request = FrameRequestDataType.to_protobuf(frame_request_data)
         return frame_request.SerializeToString()
 
 

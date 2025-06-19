@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from nn_websocket.protobuf.frame_data_types import FrameRequestData
+from nn_websocket.protobuf.frame_data_types import FrameRequestDataType
 from nn_websocket.tools.fitness_client import (
     CONFIG_DATA,
     FitnessClient,
@@ -25,7 +25,7 @@ class TestFitnessClient:
     async def test_send_observation(self, mock_fitness_client: FitnessClient, mock_client_websocket: AsyncMock) -> None:
         """Test that send_observation sends the correct frame data."""
         with patch("nn_websocket.tools.client_utils.get_random_observation_frame") as mock_get_obs:
-            mock_get_obs.return_value = FrameRequestData()
+            mock_get_obs.return_value = FrameRequestDataType()
             await mock_fitness_client.send_observation(mock_client_websocket)
 
         mock_client_websocket.send.assert_called_once()
@@ -36,7 +36,7 @@ class TestFitnessClient:
     async def test_send_training(self, mock_fitness_client: FitnessClient, mock_client_websocket: AsyncMock) -> None:
         """Test that send_training sends the correct frame data."""
         with patch("nn_websocket.tools.client_utils.get_random_train_request_frame") as mock_get_train:
-            mock_get_train.return_value = FrameRequestData()
+            mock_get_train.return_value = FrameRequestDataType()
             await mock_fitness_client.send_training(mock_client_websocket)
 
         mock_client_websocket.send.assert_called_once()

@@ -87,7 +87,7 @@ class NeuralNetworkMember(Member):
         """Create a NeuralNetworkMember from the provided configuration data.
 
         :param NeuralNetworkConfigData config_data:
-            Configuration data for the neural network.
+            ConfigData data for the neural network.
         :return NeuralNetworkMember:
             A new instance of NeuralNetworkMember.
         """
