@@ -8,7 +8,7 @@ from neural_network.protobuf.neural_network_types import (
 )
 from pydantic.dataclasses import dataclass
 
-from nn_websocket.protobuf.compiled.NNWebsocketClasses_pb2 import (
+from nn_websocket.protobuf.compiled.NNWebsocketData_pb2 import (
     Configuration,
     FitnessApproachConfig,
     GeneticAlgorithmConfig,

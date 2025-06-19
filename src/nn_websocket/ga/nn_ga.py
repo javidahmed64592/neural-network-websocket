@@ -8,7 +8,7 @@ from genetic_algorithm.ga import GeneticAlgorithm
 
 from nn_websocket.ga.nn_member import NeuralNetworkMember
 from nn_websocket.protobuf.frame_data_types import FitnessData
-from nn_websocket.protobuf.neural_network_types import GeneticAlgorithmConfigData, NeuralNetworkConfigData
+from nn_websocket.protobuf.nn_websocket_data_types import GeneticAlgorithmConfigData, NeuralNetworkConfigData
 
 
 class NeuralNetworkGA(GeneticAlgorithm):

@@ -6,7 +6,7 @@ import pytest
 from nn_websocket.ga.nn_member import NeuralNetworkMember
 from nn_websocket.models.nn_suites import FitnessSuite, NeuroevolutionSuite
 from nn_websocket.protobuf.frame_data_types import FitnessData, ObservationData, TrainRequestData
-from nn_websocket.protobuf.neural_network_types import (
+from nn_websocket.protobuf.nn_websocket_data_types import (
     FitnessApproachConfigData,
     GeneticAlgorithmConfigData,
     NeuralNetworkConfigData,

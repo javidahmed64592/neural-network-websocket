@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from nn_websocket.protobuf.neural_network_types import ConfigurationData
+from nn_websocket.protobuf.nn_websocket_data_types import ConfigurationData
 from nn_websocket.tools.base_client import EPISODE_LENGTH, BaseClient, run
 
 

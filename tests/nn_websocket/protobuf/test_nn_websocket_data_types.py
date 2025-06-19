@@ -2,14 +2,14 @@
 
 import pytest
 
-from nn_websocket.protobuf.compiled.NNWebsocketClasses_pb2 import (
+from nn_websocket.protobuf.compiled.NNWebsocketData_pb2 import (
     Configuration,
     FitnessApproachConfig,
     GeneticAlgorithmConfig,
     NeuralNetworkConfig,
     NeuroevolutionConfig,
 )
-from nn_websocket.protobuf.neural_network_types import (
+from nn_websocket.protobuf.nn_websocket_data_types import (
     ConfigurationData,
     FitnessApproachConfigData,
     GeneticAlgorithmConfigData,

@@ -24,7 +24,7 @@ from nn_websocket.protobuf.frame_data_types import (
     ObservationData,
     TrainRequestData,
 )
-from nn_websocket.protobuf.neural_network_types import (
+from nn_websocket.protobuf.nn_websocket_data_types import (
     ConfigurationData,
     FitnessApproachConfigData,
     NeuroevolutionConfigData,

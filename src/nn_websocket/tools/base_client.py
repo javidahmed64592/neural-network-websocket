@@ -5,7 +5,7 @@ import logging
 
 import websockets
 
-from nn_websocket.protobuf.neural_network_types import (
+from nn_websocket.protobuf.nn_websocket_data_types import (
     ConfigurationData,
 )
 from nn_websocket.tools.client_utils import get_config
