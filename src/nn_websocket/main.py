@@ -33,7 +33,8 @@ from nn_websocket.protobuf.nn_websocket_data_types import (
 logging.basicConfig(format="%(asctime)s %(message)s", datefmt="[%d-%m-%Y|%I:%M:%S]", level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-CONFIG_FILEPATH = Path("config") / "websocket_config.json"
+ROOT_DIR = Path(os.environ.get("NN_WEBSOCKET_PATH", ".")).resolve()
+CONFIG_FILEPATH = ROOT_DIR / "config" / "websocket_config.json"
 
 
 class NeuralNetworkWebsocketServer:

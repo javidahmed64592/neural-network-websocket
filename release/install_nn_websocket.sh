@@ -42,7 +42,6 @@ echo "Creating API executable..."
 cat > "${EXE_PATH}" << EOF
 #!/bin/bash
 export NN_WEBSOCKET_PATH=${WD}
-export GEMINI_API_KEY=${GEMINI_API_KEY}
 "${BIN_DIR}/run_nn_websocket"
 EOF
 chmod +x "${EXE_PATH}"
