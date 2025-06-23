@@ -106,8 +106,8 @@ jobs:
             exit 1
           fi
 
-          if [ ! -f "neural_network_websocket" ]; then
-            echo "API executabe not found"
+          if [ ! -f "nn-websocket" ]; then
+            echo "API executable not found"
             exit 1
           fi
 
