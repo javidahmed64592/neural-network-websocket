@@ -111,8 +111,8 @@ jobs:
             exit 1
           fi
 
-          if [ ! -f "${HOME}/.config/nn_websocket/websocket_config.json" ]; then
-            echo "Config directory not found"
+          if [ ! -f "config/websocket_config.json" ]; then
+            echo "Config not found"
             exit 1
           fi
 
