@@ -106,7 +106,7 @@ jobs:
             exit 1
           fi
 
-          if [ ! -f "nn-websocket" ]; then
+          if [ ! -f "nn_websocket" ]; then
             echo "API executable not found"
             exit 1
           fi

@@ -42,7 +42,7 @@ echo "Creating API executable..."
 cat > "${EXE_PATH}" << EOF
 #!/bin/bash
 export NN_WEBSOCKET_PATH=${WD}
-"${BIN_DIR}/run_nn_websocket"
+"${BIN_DIR}/nn-websocket"
 EOF
 chmod +x "${EXE_PATH}"
 
