@@ -1,0 +1,147 @@
+name: Build API
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build_wheel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+      - name: Install dependencies
+        run: |
+          uv sync --extra dev
+      - name: Create wheel
+        run: |
+          uv build
+      - name: Upload wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: neural_network_websocket_wheel
+          path: dist/neural_network_websocket-*-py3-none-any.whl
+  create_installer:
+    runs-on: ubuntu-latest
+    needs: build_wheel
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: neural_network_websocket_wheel
+      - name: Prepare release directory
+        run: |
+          WHEEL_FILE=$(find . -name 'neural_network_websocket-*-py3-none-any.whl')
+          mv $WHEEL_FILE "release/${WHEEL_FILE}"
+          cp -r config release/config
+          chmod +x release/install_nn_websocket.sh
+          mv release nn_websocket
+
+          echo "nn_websocket/"
+          ls -l nn_websocket/
+      - name: Create release tarball
+        run: |
+          tar -czf nn_websocket.tar.gz nn_websocket
+      - name: Upload release tarball
+        uses: actions/upload-artifact@v4
+        with:
+          name: nn_websocket_release
+          path: nn_websocket.tar.gz
+  check_installer:
+    runs-on: ubuntu-latest
+    needs: create_installer
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+      - name: Download artifact from create_installer job
+        uses: actions/download-artifact@v4
+        with:
+          name: nn_websocket_release
+      - name: Extract release tarball
+        run: |
+          tar -xzf nn_websocket.tar.gz
+      - name: Run installer script
+        run: |
+          cd nn_websocket
+          ./install_nn_websocket.sh
+
+          echo "nn_websocket/"
+          ls -l
+
+          if [ -f "install_nn_websocket.sh" ]; then
+            echo "Installer script not removed"
+            exit 1
+          fi
+
+          if [ ! -d "venv" ]; then
+            echo "Virtual environment not found"
+            exit 1
+          fi
+
+          if [ ! -f "neural_network_websocket" ]; then
+            echo "API executabe not found"
+            exit 1
+          fi
+
+          if [ ! -f "${HOME}/.config/nn_websocket/websocket_config.json" ]; then
+            echo "Config directory not found"
+            exit 1
+          fi
+
+          if [ ! -d "logs" ]; then
+            echo "Logs directory not found"
+            exit 1
+          fi
+
+          if [ ! -f "service/nn_websocket.service" ]; then
+            echo "Service file not found"
+            exit 1
+          fi
+
+          if [ ! -f "service/start_service.sh" ]; then
+            echo "Service creation file not found"
+            exit 1
+          fi
+
+          if [ ! -f "service/stop_service.sh" ]; then
+            echo "Service stopping file not found"
+            exit 1
+          fi
+
+          if [ ! -f "uninstall_nn_websocket.sh" ]; then
+            echo "Uninstallation file not found"
+            exit 1
+          fi
+
+          if [ ! -f "README.txt" ]; then
+            echo "README file not found"
+            exit 1
+          fi
