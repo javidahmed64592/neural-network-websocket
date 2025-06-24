@@ -2,7 +2,7 @@
 set -eu
 
 WD=$(pwd)
-VENV_NAME="venv"
+VENV_NAME=".venv"
 EXE_NAME="nn_websocket"
 CONFIG_FILE="websocket_config.json"
 LOG_FILE="nn_websocket.log"
@@ -15,7 +15,7 @@ README_FILE="README.txt"
 CONFIG_DIR="${WD}/config"
 LOGS_DIR="${WD}/logs"
 SERVICE_DIR="${WD}/service"
-FULL_VENV_PATH="${WD}/.${VENV_NAME}"
+FULL_VENV_PATH="${WD}/${VENV_NAME}"
 BIN_DIR="${FULL_VENV_PATH}/bin"
 
 EXE_PATH="${WD}/${EXE_NAME}"
@@ -29,6 +29,9 @@ README_PATH="${WD}/${README_FILE}"
 
 mkdir -p "${LOGS_DIR}"
 mkdir -p "${SERVICE_DIR}"
+
+echo "Creating virtual environment..."
+uv venv ${VENV_NAME}
 
 echo "Installing from wheel..."
 WHEEL_FILE=$(find "${WD}" -name "neural_network_websocket-*-py3-none-any.whl")
