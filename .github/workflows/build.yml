@@ -94,14 +94,14 @@ jobs:
           ./install_nn_websocket.sh
 
           echo "nn_websocket/"
-          ls -l
+          ls -la
 
           if [ -f "install_nn_websocket.sh" ]; then
             echo "Installer script not removed"
             exit 1
           fi
 
-          if [ ! -d "venv" ]; then
+          if [ ! -d ".venv" ]; then
             echo "Virtual environment not found"
             exit 1
           fi
