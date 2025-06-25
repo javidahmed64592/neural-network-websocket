@@ -94,25 +94,25 @@ jobs:
           ./install_nn_websocket.sh
 
           echo "nn_websocket/"
-          ls -l
+          ls -la
 
           if [ -f "install_nn_websocket.sh" ]; then
             echo "Installer script not removed"
             exit 1
           fi
 
-          if [ ! -d "venv" ]; then
+          if [ ! -d ".venv" ]; then
             echo "Virtual environment not found"
             exit 1
           fi
 
-          if [ ! -f "neural_network_websocket" ]; then
-            echo "API executabe not found"
+          if [ ! -f "nn_websocket" ]; then
+            echo "API executable not found"
             exit 1
           fi
 
-          if [ ! -f "${HOME}/.config/nn_websocket/websocket_config.json" ]; then
-            echo "Config directory not found"
+          if [ ! -f "config/websocket_config.json" ]; then
+            echo "Config not found"
             exit 1
           fi
 

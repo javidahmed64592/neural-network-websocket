@@ -2,7 +2,7 @@
 set -eu
 
 WD=$(pwd)
-VENV_NAME="venv"
+VENV_NAME=".venv"
 EXE_NAME="nn_websocket"
 CONFIG_FILE="websocket_config.json"
 LOG_FILE="nn_websocket.log"
@@ -30,20 +30,19 @@ README_PATH="${WD}/${README_FILE}"
 mkdir -p "${LOGS_DIR}"
 mkdir -p "${SERVICE_DIR}"
 
-echo "Creating environment '${VENV_NAME}'..."
-python -m venv "${VENV_NAME}"
+echo "Creating virtual environment..."
+uv venv ${VENV_NAME}
 
 echo "Installing from wheel..."
 WHEEL_FILE=$(find "${WD}" -name "neural_network_websocket-*-py3-none-any.whl")
-"${BIN_DIR}/pip" install "${WHEEL_FILE}"
+uv pip install "${WHEEL_FILE}"
 rm "${WHEEL_FILE}"
 
 echo "Creating API executable..."
 cat > "${EXE_PATH}" << EOF
 #!/bin/bash
 export NN_WEBSOCKET_PATH=${WD}
-export GEMINI_API_KEY=${GEMINI_API_KEY}
-"${BIN_DIR}/run_nn_websocket"
+${BIN_DIR}/nn-websocket
 EOF
 chmod +x "${EXE_PATH}"
 
@@ -136,7 +135,6 @@ EOF
 chmod +x "${UNINSTALL_PATH}"
 
 cat > "${README_PATH}" << EOF
-===================================================================================================
 NN_WebSocket has been installed successfully.
 The WebSocket executable is located at: '${EXE_PATH}'
 Configure the WebSocket: '${CONFIG_PATH}'
@@ -147,9 +145,13 @@ To stop the service, run: './service/${STOP_SERVICE_FILE}'
 To view the logs: 'cat logs/${LOG_FILE}'
 
 To uninstall, run: './${UNINSTALL_FILE}'
-===================================================================================================
 EOF
 
+TERMINAL_WIDTH=$(tput cols 2>/dev/null || echo 80)
+SEPARATOR=$(printf '=%.0s' $(seq 1 $TERMINAL_WIDTH))
+
+echo "${SEPARATOR}"
 cat "${README_PATH}"
+echo "${SEPARATOR}"
 
 rm -- "$0"

@@ -3,6 +3,7 @@
 Provides helpers for loading configuration and generating random frame data for testing.
 """
 
+import os
 from pathlib import Path
 
 import numpy as np
@@ -17,7 +18,8 @@ from nn_websocket.protobuf.frame_data_types import (
 
 rng = np.random.default_rng()
 
-CONFIG_FILEPATH = Path("config") / "websocket_config.json"
+ROOT_DIR = Path(os.environ.get("NN_WEBSOCKET_PATH", ".")).resolve()
+CONFIG_FILEPATH = ROOT_DIR / "config" / "websocket_config.json"
 
 
 def get_config() -> Config:
