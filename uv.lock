@@ -186,7 +186,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "neural-network-websocket"
+name = "nn-websocket"
 version = "0.3.1"
 source = { editable = "." }
 dependencies = [
