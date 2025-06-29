@@ -34,7 +34,7 @@ echo "Creating virtual environment..."
 uv venv ${VENV_NAME}
 
 echo "Installing from wheel..."
-WHEEL_FILE=$(find "${WD}" -name "neural_network_websocket-*-py3-none-any.whl")
+WHEEL_FILE=$(find "${WD}" -name "nn_websocket-*-py3-none-any.whl")
 uv pip install "${WHEEL_FILE}"
 rm "${WHEEL_FILE}"
 
