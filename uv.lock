@@ -177,8 +177,8 @@ wheels = [
 
 [[package]]
 name = "neural-network"
-version = "1.15.5"
-source = { git = "https://github.com/javidahmed64592/neural-network#23b5e7e833ca6f2c28e81a1539c345118fb5c033" }
+version = "1.15.6"
+source = { git = "https://github.com/javidahmed64592/neural-network#20746b089b40cc66f85b921feefdb7d81ada8f61" }
 dependencies = [
     { name = "grpcio-tools" },
     { name = "numpy" },
