@@ -13,6 +13,7 @@ from nn_websocket.protobuf.frame_data_types import (
 from nn_websocket.tools.client_utils import (
     CONFIG_FILEPATH,
     get_config,
+    get_random_action,
     get_random_fitness_frame,
     get_random_observation_frame,
     get_random_train_request_frame,
@@ -34,6 +35,17 @@ def test_get_random_observation_frame() -> None:
     assert isinstance(frame, FrameRequestDataType)
     assert isinstance(frame.observation, ObservationType)
     assert len(frame.observation.inputs) == num_inputs
+
+
+def test_get_random_action() -> None:
+    """Test that a random action is generated correctly."""
+    num_outputs = 3
+    action = get_random_action(num_outputs)
+
+    assert isinstance(action, ActionType)
+    assert len(action.outputs) == num_outputs
+    for output in action.outputs:
+        assert isinstance(output, float)  # Assuming outputs are floats
 
 
 def test_get_random_fitness_frame() -> None:
