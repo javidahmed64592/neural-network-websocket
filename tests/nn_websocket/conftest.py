@@ -258,9 +258,9 @@ def fitness_data(fitness: Fitness) -> FitnessType:
 
 
 @pytest.fixture
-def train_request(observation: Observation, fitness: Fitness) -> TrainRequest:
+def train_request(observation: Observation, action: Action, fitness: Fitness) -> TrainRequest:
     """Fixture for TrainRequest."""
-    return TrainRequest(observation=[observation], fitness=[fitness])
+    return TrainRequest(observation=[observation], action=[action], fitness=[fitness])
 
 
 @pytest.fixture

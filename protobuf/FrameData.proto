@@ -26,5 +26,6 @@ message Fitness {
 // Fitness approach
 message TrainRequest {
     repeated Observation observation = 1;
-    repeated Fitness fitness = 2;
+    repeated Action action = 2;
+    repeated Fitness fitness = 3;
 }
