@@ -120,6 +120,7 @@ class TestFitnessSuite:
     def test_train(self, mock_fitness_suite: FitnessSuite, train_request_data: TrainRequestType) -> None:
         """Test that the training of the neural network works correctly."""
         initial_weights, initial_biases = mock_fitness_suite.nn_member.chromosome
+        print(train_request_data)
         mock_fitness_suite.train(train_request_data)
         new_weights, new_biases = mock_fitness_suite.nn_member.chromosome
         assert not np.array_equal(

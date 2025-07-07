@@ -97,6 +97,7 @@ class FitnessClient(BaseClient):
                 get_random_train_request_frame(
                     TRAINING_BATCH_SIZE,
                     self.config_data.fitness_approach.neural_network.num_inputs,  # type: ignore[union-attr]
+                    self.config_data.fitness_approach.neural_network.num_outputs,  # type: ignore[union-attr]
                 )
             )
         )

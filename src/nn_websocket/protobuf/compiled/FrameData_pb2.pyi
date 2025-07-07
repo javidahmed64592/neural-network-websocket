@@ -35,9 +35,11 @@ class Fitness(_message.Message):
     def __init__(self, values: _Optional[_Iterable[float]] = ...) -> None: ...
 
 class TrainRequest(_message.Message):
-    __slots__ = ("observation", "fitness")
+    __slots__ = ("observation", "action", "fitness")
     OBSERVATION_FIELD_NUMBER: _ClassVar[int]
+    ACTION_FIELD_NUMBER: _ClassVar[int]
     FITNESS_FIELD_NUMBER: _ClassVar[int]
     observation: _containers.RepeatedCompositeFieldContainer[Observation]
+    action: _containers.RepeatedCompositeFieldContainer[Action]
     fitness: _containers.RepeatedCompositeFieldContainer[Fitness]
-    def __init__(self, observation: _Optional[_Iterable[_Union[Observation, _Mapping]]] = ..., fitness: _Optional[_Iterable[_Union[Fitness, _Mapping]]] = ...) -> None: ...
+    def __init__(self, observation: _Optional[_Iterable[_Union[Observation, _Mapping]]] = ..., action: _Optional[_Iterable[_Union[Action, _Mapping]]] = ..., fitness: _Optional[_Iterable[_Union[Fitness, _Mapping]]] = ...) -> None: ...

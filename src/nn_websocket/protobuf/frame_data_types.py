@@ -258,6 +258,7 @@ class TrainRequestType:
     """Data class to hold training request data."""
 
     observation: list[ObservationType]
+    action: list[ActionType]
     fitness: list[FitnessType]
 
     @classmethod
@@ -271,6 +272,7 @@ class TrainRequestType:
         """
         return cls(
             observation=[ObservationType.from_protobuf(obs) for obs in train_request.observation],
+            action=[ActionType.from_protobuf(act) for act in train_request.action],
             fitness=[FitnessType.from_protobuf(fit) for fit in train_request.fitness],
         )
 
@@ -285,6 +287,7 @@ class TrainRequestType:
         """
         return TrainRequest(
             observation=[ObservationType.to_protobuf(observation) for observation in train_request.observation],
+            action=[ActionType.to_protobuf(action) for action in train_request.action],
             fitness=[FitnessType.to_protobuf(fitness) for fitness in train_request.fitness],
         )
 

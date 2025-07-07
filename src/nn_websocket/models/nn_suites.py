@@ -141,5 +141,6 @@ class FitnessSuite:
         """
         self.nn_member._nn.run_fitness_training(
             [observation.inputs for observation in train_request_data.observation],
+            [action.outputs for action in train_request_data.action],
             [value for fitness in train_request_data.fitness for value in fitness.values],
         )

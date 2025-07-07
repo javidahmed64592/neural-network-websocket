@@ -3,7 +3,13 @@
 from unittest.mock import MagicMock
 
 from nn_websocket.models.config import Config
-from nn_websocket.protobuf.frame_data_types import FitnessType, FrameRequestDataType, ObservationType, TrainRequestType
+from nn_websocket.protobuf.frame_data_types import (
+    ActionType,
+    FitnessType,
+    FrameRequestDataType,
+    ObservationType,
+    TrainRequestType,
+)
 from nn_websocket.tools.client_utils import (
     CONFIG_FILEPATH,
     get_config,
@@ -44,16 +50,22 @@ def test_get_random_train_request_frame() -> None:
     """Test that a random train request frame is generated correctly."""
     batch_size = 5
     num_inputs = 3
-    frame = get_random_train_request_frame(batch_size, num_inputs)
+    num_outputs = 2
+    frame = get_random_train_request_frame(batch_size, num_inputs, num_outputs)
 
     assert isinstance(frame, FrameRequestDataType)
     assert isinstance(frame.train_request, TrainRequestType)
     assert len(frame.train_request.observation) == batch_size
+    assert len(frame.train_request.action) == batch_size
     assert len(frame.train_request.fitness) == batch_size
 
     for observation in frame.train_request.observation:
         assert isinstance(observation, ObservationType)
         assert len(observation.inputs) == num_inputs
+
+    for action in frame.train_request.action:
+        assert isinstance(action, ActionType)
+        assert len(action.outputs) == num_outputs
 
     for fitness in frame.train_request.fitness:
         assert isinstance(fitness, FitnessType)
